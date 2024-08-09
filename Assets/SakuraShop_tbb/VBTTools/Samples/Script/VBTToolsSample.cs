@@ -65,8 +65,6 @@ namespace SakuraScript.VBTTool
         public Text _adjustTextRot;
 
         public Image _imgRecvHMD;
-        private int _rxMarkValue = 0;
-
 
         // Start is called before the first frame update
         void Start()
