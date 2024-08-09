@@ -1,19 +1,19 @@
 # VBTTools
 Virtual Body (VRM Body) Tracking Tool
 
-リアルのボディにトラッカーを付けてトラッキングするのではなく、VRMモデルの姿勢をトラッキングして、Virtual Motion Tracker(VMT)に情報を渡して、SteamVR の仮想コントローラーとして利用しようとするものです。今のところ、以下のコントローラーに対応しています。
+リアルのボディにトラッカーを付けてトラッキングするのではなく、VRMモデルの姿勢をトラッキングして、Virtual Motion Tracker(VMT)に情報を渡して、SteamVR の仮想コントローラーとして利用しようとするものです。今のところ、以下のコントローラー入力に対応しています。
 
 - VRMモデルの指の動きを読みとって、Indexコントローラー互換コントローラー(Skeletal Input対応)で出力
 - VRMモデルの頭と手の相対位置およびHMDの位置情報から、Indexコントローラー互換コントローラーの位置・向きを出力
 - JoyCon を使用して/もしくは画面上のuiで、ボタン・スティックの操作
 
-VMCProtocol を受信できるので、TDPT、VSeeFace、などのソフトでWebカメラの情報で手の動きをトラッキングしてVRMに反映し、VRChat等で手を動かせます。位置情報を設定できるので、手首にVIVEトラッカーをつけたりする必要がありません。
+VMCProtocol を受信できるので、TDPT、VSeeFace、などのソフトでWebカメラの情報で手の動きをトラッキングしてVRMに反映し、VRChat(2024/8/9時点ではSkeletal Input はOpenBetaで対応)等で手を動かせます。位置情報を設定できるので、手首にVIVEトラッカーをつけたりする必要がありません。
 
 v0.0.1 時点ではコントローラーしか対応していないので Virtual Body (VRM Body) "Hand/Finger" Tracking Tool と言うべき所ですが、開発者の方であれば、コントローラー以外のトラッカーもあわせて利用するのは割と簡単にできると思います。
 （たとえば、VRMの頭の位置を仮想トラッカーに反映して、Tracking Override等できるはず）
 
 ## 暫定公開
-v0.0.1 はまだ十分テスト等行えていません。不便だなと思う部分も修正できておらず、説明（この文書）も不十分です。
+v0.0.1 はまだ十分テスト等行えていません。不便だなと思う部分も修正できておらず、説明（この文書）も不十分です。プログラム的にカスタマイズ可能なこともUIに実装されていなかったりします。
 すぐにでも試したい方、ソースコードを読んで自分で活用できる方向けです。
 
 
@@ -43,7 +43,7 @@ VRMモデル(VRoid Studio Beta 用モデルとしてCC0で公開されている 
 5. VBTTools.exe を起動します。起動するとVMCPの受信は即座に始まります。
 
 1でVMCPのソフトを起動していれば、手の位置等が反映されるはずです。VMCPのソフトを入れてない場合は、左上のListen To VMCPのチェックを外すと、手のボーンを動かすためのTest UIが表示されます。
-手の位置を動かすTest UIはまだありません、ごめんなさい。手を動かさないテストには後述の SkeletalPoseTester を使うと良いと思います。
+手の位置を動かすTest UIはまだありません、ごめんなさい。手を動かさないテストには後述の SkeletonPoseTester を使うと良いと思います。
 
 起動後の手順として
 VMTへの送信を開始する場合は右上のほうの Start Sending To にチェックを入れます（ポート番号等はVMT標準なのでそのままを推奨）Recvというところの赤い■が濃くなっていればHMDの位置情報を受信できています。できていない場合は
@@ -62,7 +62,7 @@ SteamVRの画面で手の位置とコントローラーの位置がかなりズ�
 手をうごかせない状態でTestUIを使う場合は SkeletonPoseTester ( https://github.com/gpsnmeajp/SkeletonPoseTester )を使って指の動きをテストできます。
 SteamVR起動中に SkeletonPoseTester を起動すると、PC画面で指の動作を確認できます。
 
-VMCPアプリを使っている場合は、VRChat や Moondust Knuckles Tech Demos などで動作を確認できます。
+VMCPアプリを使っている場合は、VRChat(Skeletal Input対応は現時点OpenBetaのみ) や Moondust Knuckles Tech Demos などで動作を確認できます。
 
 手の位置がおかしい場合は調整が必要です。
 Adjust UIのチェックを入れてスライダーを動かして調整できるのですが、とても難しい上に設定値を保存する機能がまだありません。
