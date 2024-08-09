@@ -9,6 +9,20 @@
 /[Bb]uilds/
 /[Ll]ogs/
 /[Uu]ser[Ss]ettings/
+/Assets/uOSC/
+/Assets/uOSC.meta
+/Assets/EVMC4U/
+/Assets/EVMC4U.meta
+/Assets/UniGLTF/
+/Assets/UniGLTF.meta
+/Assets/VRM/
+/Assets/VRM.meta
+/Assets/VRMShaders/
+/Assets/VRMShaders.meta
+/Assets/SakuraShop_tbb/VBTTools/Temp/
+/Assets/SakuraShop_tbb/VBTTools/Temp.meta
+/Assets/Scenes/
+/Assets/Scenes.meta
 
 # MemoryCaptures can get excessive in size.
 # They also could contain extremely sensitive data
