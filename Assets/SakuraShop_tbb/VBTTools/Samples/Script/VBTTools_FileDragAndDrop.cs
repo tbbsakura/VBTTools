@@ -45,16 +45,17 @@ public class VBTTools_FileDragAndDrop : MonoBehaviour
         UnityDragAndDropHook.OnDroppedFiles += OnFiles;
         m_topText = GameObject.Find("TopText").GetComponent<Text>();
 
-        /* buildせずにテストするときはドラッグ＆ドロップが効かないのでコードで読む場合、 true にする  */
-        #if true 
         if ( m_sampleProject != null && m_sampleProject._animationTarget == null ) {
+#if UNITY_EDITOR
             const char separatorChar = '/';
             string modelFilepath = "Assets/SakuraShop_tbb/VRM_CC0/HairSample_Male.vrm"; //CC0 model
             modelFilepath = modelFilepath.Replace( separatorChar, System.IO.Path.DirectorySeparatorChar );
             //modelFilepath = "Z:\\VR\\_VRM\\fumifumi\\3c6.0_noshoe_.vrm";
+#else
+            string modelFilepath = "HairSample_Male.vrm"; //CC0 model
+#endif
             LoadModel(modelFilepath);
         }
-        #endif
     }
     void OnDisable()
     {

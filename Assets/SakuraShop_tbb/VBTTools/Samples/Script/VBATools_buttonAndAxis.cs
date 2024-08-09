@@ -47,8 +47,8 @@ namespace SakuraScript.ModifiedVMTSample
 
         private void OnGUI()
         {
-            int guiX = isLeft ? 50 : 850;
-            int guiYNum = 16;
+            int guiX = isLeft ? 150 : Screen.width - 250;
+            int guiYNum = 2;
 
             GUIStyle styleWhite = new GUIStyle(); // gskin.label;
             styleWhite.normal.textColor = Color.white; // GUI.skin.label.normal.textColor;
@@ -56,31 +56,31 @@ namespace SakuraScript.ModifiedVMTSample
             styleTitle.normal.textColor  = Color.yellow; // new Color(1,0.1f,0.1f,0.8f);       
             styleTitle.fontStyle = FontStyle.Bold;        
 
-            GUI.Label(new Rect(guiX, 20 * guiYNum++ , 100, 20), isLeft ? "[LEFT]" : "[RIGHT]", styleTitle ); 
+            GUI.Label(new Rect(guiX, Screen.height / 2 + 20 * guiYNum++ , 100, 20), isLeft ? "[LEFT]" : "[RIGHT]", styleTitle ); 
 
-            bool Button0 = GUI.RepeatButton(new Rect(guiX, 20 * guiYNum++, 100, 20), "System");
+            bool Button0 = GUI.RepeatButton(new Rect(guiX, Screen.height / 2 + 20 * guiYNum++, 100, 20), "System");
             client.Send("/VMT/Input/Button", (int)index, (int)0, (float)timeoffset, Button0 ? 1 : 0);
 
-            bool Button1 = GUI.RepeatButton(new Rect(guiX, 20 * guiYNum++, 100, 20), "A");
+            bool Button1 = GUI.RepeatButton(new Rect(guiX, Screen.height / 2 + 20 * guiYNum++, 100, 20), "A");
             client.Send("/VMT/Input/Button", (int)index, (int)1, (float)timeoffset, Button1 ? 1 : 0);
 
-            bool Button3 = GUI.RepeatButton(new Rect(guiX, 20 * guiYNum++, 100, 20), "B");
+            bool Button3 = GUI.RepeatButton(new Rect(guiX, Screen.height / 2 + 20 * guiYNum++, 100, 20), "B");
             client.Send("/VMT/Input/Button", (int)index, (int)3, (float)timeoffset, Button3 ? 1 : 0);
 
-            GUI.Label(new Rect(guiX, 20 * guiYNum++, 100, 20), "Trigger", styleWhite);
-            Trigger0 = GUI.HorizontalSlider(new Rect(guiX, 20 * guiYNum++, 100, 20), Trigger0, 0, 1);
+            GUI.Label(new Rect(guiX, Screen.height / 2 +  20 * guiYNum++, 100, 20), "Trigger", styleWhite);
+            Trigger0 = GUI.HorizontalSlider(new Rect(guiX, Screen.height / 2 + 20 *  guiYNum++, 100, 20), Trigger0, 0, 1);
             client.Send("/VMT/Input/Trigger", (int)index, (int)0, (float)timeoffset, (float)Trigger0);
 
-            GUI.Label(new Rect(guiX, 20 * guiYNum++, 100, 20), "Grip", styleWhite);
-            Trigger1 = GUI.HorizontalSlider(new Rect(guiX, 20 * guiYNum++, 100, 20), Trigger1, 0, 1);
+            GUI.Label(new Rect(guiX, Screen.height / 2 + 20 * guiYNum++, 100, 20), "Grip", styleWhite);
+            Trigger1 = GUI.HorizontalSlider(new Rect(guiX, Screen.height / 2 + 20 *  guiYNum++, 100, 20), Trigger1, 0, 1);
             client.Send("/VMT/Input/Trigger", (int)index, (int)1, (float)timeoffset, (float)Trigger1);
 
-            GUI.Label(new Rect(guiX, 20 * guiYNum++, 100, 20), "Joystick", styleWhite);
-            JoystickX = GUI.HorizontalSlider(new Rect(guiX, 20 * guiYNum++, 100, 20), JoystickX, -1, 1);
-            JoystickY = GUI.HorizontalSlider(new Rect(guiX, 20 * guiYNum++, 100, 20), JoystickY, -1, 1);
+            GUI.Label(new Rect(guiX, Screen.height / 2 + 20 * guiYNum++, 100, 20), "Joystick", styleWhite);
+            JoystickX = GUI.HorizontalSlider(new Rect(guiX, Screen.height / 2 + 20 *  guiYNum++, 100, 20), JoystickX, -1, 1);
+            JoystickY = GUI.HorizontalSlider(new Rect(guiX, Screen.height / 2 + 20 *  guiYNum++, 100, 20), JoystickY, -1, 1);
             client.Send("/VMT/Input/Joystick", (int)index, (int)0, (float)timeoffset, (float)JoystickX, (float)JoystickY);
 
-            bool JoystickTouch = GUI.RepeatButton(new Rect(guiX, 20 * guiYNum++, 100, 20), "Touch");
+            bool JoystickTouch = GUI.RepeatButton(new Rect(guiX, Screen.height / 2 + 20 *  guiYNum++, 100, 20), "Touch");
             client.Send("/VMT/Input/Joystick/Touch", (int)index, (int)0, (float)timeoffset, JoystickTouch ? 1 : 0);
 
         }
