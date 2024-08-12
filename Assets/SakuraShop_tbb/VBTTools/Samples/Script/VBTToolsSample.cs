@@ -63,6 +63,7 @@ namespace SakuraScript.VBTTool
         [NonSerialized] public Transform _sphereR;
         public Text _adjustTextPos;
         public Text _adjustTextRot;
+        private bool _wristRotate = false;
 
         public Image _imgRecvHMD;
 
@@ -299,15 +300,53 @@ namespace SakuraScript.VBTTool
                 if (_animationTarget == null ) return;
 
                 _adjustTextPos.text = $"pos {_adjustPos}";
-                _animationTarget.GetBoneTransform(HumanBodyBones.LeftHand).localPosition = _adjustPos;
-                _animationTarget.GetBoneTransform(HumanBodyBones.LeftHand).localRotation =  Quaternion.Euler(_adjustRotEu);
+                _vbtHandPosTrack._transformVirtualLController.localPosition = _adjustPos;
+                _vbtHandPosTrack._transformVirtualLController.localRotation =  Quaternion.Euler(_adjustRotEu);
 
                 _adjustTextRot.text = $"pos {_adjustRotEu}";
-                _animationTarget.GetBoneTransform(HumanBodyBones.RightHand).localPosition
-                            = new Vector3(-_adjustPos.x,_adjustPos.y,_adjustPos.z);
-                _animationTarget.GetBoneTransform(HumanBodyBones.RightHand).localRotation
-                            =  Quaternion.Euler(_adjustRotEu.x, 360f - _adjustRotEu.y, 360f - _adjustRotEu.z );
+                _vbtHandPosTrack._transformVirtualRController.localPosition = new Vector3(-_adjustPos.x,_adjustPos.y,_adjustPos.z);
+                _vbtHandPosTrack._transformVirtualRController.localRotation
+                                        =  Quaternion.Euler(_adjustRotEu.x, 360f - _adjustRotEu.y, 360f - _adjustRotEu.z );
             }
+
+            if (_wristRotate) {
+                if ( _handler == null ) {
+                    //Debug.Log( "_handler is null" );
+                }
+                else {
+                    _handler.GetHumanPose(ref _targetHumanPose);   
+                    // lower arm twist: 43/52,   upper arm twist: 41/50
+                    float newVal = GetNextRotateTwist();
+                    _targetHumanPose.muscles[43] = newVal;
+                    _targetHumanPose.muscles[52] = newVal;
+                    _targetHumanPose.muscles[41] = newVal;
+                    _targetHumanPose.muscles[50] = newVal;
+                    _handler.SetHumanPose(ref _targetHumanPose);   
+                }
+            }
+        }
+        readonly float [] _wristRotateArray = new float[] { -1f, -0.75f, -0.5f, -0.25f, 0f, 0.25f, 0.5f, 0.75f, 1f };
+        int _rotateCurrentIndex = 0;
+        private float _rotateWristRate = 0.1f;
+        private float _nextRotate = 0.0f;
+        private int _rotateDirection = 1;
+
+        public float GetNextRotateTwist() {
+            if ( Time.time > _nextRotate ) {
+                if (_rotateCurrentIndex == _wristRotateArray.Length -1 ) {
+                    _rotateDirection = -1;
+                }
+                if ( _rotateCurrentIndex == 0 ) {
+                    _rotateDirection = 1;
+                }
+                if ( _rotateCurrentIndex < 0 || _rotateDirection >= _wristRotateArray.Length ) {
+                    _rotateCurrentIndex = 0;
+                }
+                _rotateCurrentIndex += _rotateDirection;
+                _nextRotate = Time.time + _rotateWristRate;
+                //Debug.Log( $"rotateIndex : {_rotateCurrentIndex}, next : {_nextRotate}");
+            }
+            return _wristRotateArray[_rotateCurrentIndex];
         }
 
         // VMT TEST UI
@@ -431,6 +470,13 @@ namespace SakuraScript.VBTTool
         public void OnSliderRotXChanged(float val) { _adjustRotEu.x = val; }
         public void OnSliderRotYChanged(float val) { _adjustRotEu.y = val; }
         public void OnSliderRotZChanged(float val) { _adjustRotEu.z = val; }
+
+        public void OnToggleChangeWristRotate(bool val) {
+            _wristRotate = val;
+            if ( val ) {
+                _toggleServer.isOn = false; // stop server
+            }
+        }
 
     };   // class end
 }
