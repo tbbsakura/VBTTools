@@ -303,7 +303,7 @@ namespace SakuraScript.VBTTool
                 _vbtHandPosTrack._transformVirtualLController.localPosition = _adjustPos;
                 _vbtHandPosTrack._transformVirtualLController.localRotation =  Quaternion.Euler(_adjustRotEu);
 
-                _adjustTextRot.text = $"pos {_adjustRotEu}";
+                _adjustTextRot.text = $"rot {_adjustRotEu}";
                 _vbtHandPosTrack._transformVirtualRController.localPosition = new Vector3(-_adjustPos.x,_adjustPos.y,_adjustPos.z);
                 _vbtHandPosTrack._transformVirtualRController.localRotation
                                         =  Quaternion.Euler(_adjustRotEu.x, 360f - _adjustRotEu.y, 360f - _adjustRotEu.z );
