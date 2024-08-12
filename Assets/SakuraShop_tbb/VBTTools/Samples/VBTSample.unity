@@ -10160,6 +10160,10 @@ PrefabInstance:
     m_TransformParent: {fileID: 0}
     m_Modifications:
     - target: {fileID: 4740143680597435056, guid: 86b1e8192cb57cd47890882526664df1, type: 3}
+      propertyPath: m_Enabled
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 4740143680597435056, guid: 86b1e8192cb57cd47890882526664df1, type: 3}
       propertyPath: CutBoneLeftEye
       value: 1
       objectReference: {fileID: 0}
@@ -10170,6 +10174,14 @@ PrefabInstance:
     - target: {fileID: 4740143680597435056, guid: 86b1e8192cb57cd47890882526664df1, type: 3}
       propertyPath: CutBoneRightEye
       value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 4740143680597435056, guid: 86b1e8192cb57cd47890882526664df1, type: 3}
+      propertyPath: RootPositionSynchronize
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 4740143680597435056, guid: 86b1e8192cb57cd47890882526664df1, type: 3}
+      propertyPath: RootRotationSynchronize
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 4740143680597435057, guid: 86b1e8192cb57cd47890882526664df1, type: 3}
       propertyPath: m_Name
@@ -10217,6 +10229,10 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 4740143680597435062, guid: 86b1e8192cb57cd47890882526664df1, type: 3}
       propertyPath: m_LocalEulerAnglesHint.z
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 4740143680597435063, guid: 86b1e8192cb57cd47890882526664df1, type: 3}
+      propertyPath: autoStart
       value: 0
       objectReference: {fileID: 0}
     m_RemovedComponents: []

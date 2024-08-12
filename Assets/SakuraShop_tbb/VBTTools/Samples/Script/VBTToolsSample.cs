@@ -319,8 +319,8 @@ namespace SakuraScript.VBTTool
                     float newVal = GetNextRotateTwist();
                     _targetHumanPose.muscles[43] = newVal;
                     _targetHumanPose.muscles[52] = newVal;
-                    _targetHumanPose.muscles[41] = newVal;
-                    _targetHumanPose.muscles[50] = newVal;
+                    //_targetHumanPose.muscles[41] = newVal; // This would move the wrist position.
+                    //_targetHumanPose.muscles[50] = newVal; // This would move the wrist position. 
                     _handler.SetHumanPose(ref _targetHumanPose);   
                 }
             }
@@ -473,6 +473,7 @@ namespace SakuraScript.VBTTool
 
         public void OnToggleChangeWristRotate(bool val) {
             _wristRotate = val;
+            _exr.gameObject.SetActive(!val); // Preventing external receiver from adjusting Hips pos.
             if ( val ) {
                 _toggleServer.isOn = false; // stop server
             }
