@@ -45,7 +45,7 @@ VRMモデル(VRoid Studio Beta 用モデルとしてCC0で公開されている 
 
 ![Image 1](https://github.com/tbbsakura/VBTTools/blob/main/Assets/SakuraShop_tbb/VBTTools/etc/tracker_setting.png)
 ![Image 2](https://github.com/tbbsakura/VBTTools/blob/main/Assets/SakuraShop_tbb/VBTTools/etc/vmt1_setting.png)
-![Image 3](https://github.com/tbbsakura/VBTTools/blob/main/Assets/SakuraShop_tbb/VBTTools/etc/vmt1_setting.png)
+![Image 3](https://github.com/tbbsakura/VBTTools/blob/main/Assets/SakuraShop_tbb/VBTTools/etc/vmt2_setting.png)
 
 
 1でVMCPのソフトを起動していれば、手の位置等が反映されるはずです。VMCPのソフトを入れてない場合は、左上のListen To VMCPのチェックを外すと、手のボーンを動かすためのTest UIが表示されます。
