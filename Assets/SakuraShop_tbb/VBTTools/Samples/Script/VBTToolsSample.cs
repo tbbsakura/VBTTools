@@ -74,6 +74,7 @@ namespace SakuraScript.VBTTool
 
         public GameObject _adjustingUI;
         private bool _wristRotate = false;
+        private bool _wristRotateRestartVMCPListen = false;
 
         [SerializeField] VBTToolsAdjustSetting _adjSetting;
 
@@ -132,9 +133,7 @@ namespace SakuraScript.VBTTool
             // default.json があれば読んで、_adjSetting を初期化する
             string path = AppDomain.CurrentDomain.BaseDirectory.TrimEnd('\\');//EXEを実行したカレントディレクトリ (ショートカット等でカレントディレクトリが変わるのでこの方式で)
             path += "\\default.json";
-            Debug.Log(path);
             if (System.IO.File.Exists(path) ) {
-                Debug.Log( "{path} exists");
                 LoadSettingFile(path);
             }
 
@@ -186,11 +185,11 @@ namespace SakuraScript.VBTTool
 
         public bool SetHandler()
         {
-            Debug.Log("Initializing HumanPoseHandler");
+            //Debug.Log("Initializing HumanPoseHandler");
             _handler = new HumanPoseHandler( _animationTarget.avatar, _animationTarget.transform);
             if ( _handler == null ) {
                 _topText.text = "HumanPoseHandler preparation failed.";
-                Debug.Log("HumanPoseHandler preparation failed.");
+                //Debug.Log("HumanPoseHandler preparation failed.");
                 return false;
             }
             return true;
@@ -250,11 +249,11 @@ namespace SakuraScript.VBTTool
 
         public void OnServerToggleChanged(bool value) 
         {
+            //Debug.Log( $"OnServerToggleChanged: {value}");
             if (_server == null) return;
             if ( _toggleServer.isOn == false ) {
                 _server.StopServer();
                 _topText.text = "OSC server stopped.";
-
                 _testUI.SetActive(true);
             }
             else 
@@ -559,10 +558,14 @@ namespace SakuraScript.VBTTool
 
         public void OnToggleChangeWristRotate(bool val) {
             _wristRotate = val;
-            _exr.gameObject.SetActive(!val); // Preventing external receiver from adjusting Hips pos.
             if ( val ) {
+                _wristRotateRestartVMCPListen = _toggleServer.isOn; // save state
                 _toggleServer.isOn = false; // stop server
             }
+            else if (_wristRotateRestartVMCPListen) { // restore state
+                _toggleServer.isOn = true; // restart server
+            }
+            _exr.gameObject.SetActive(!val); // Preventing external receiver from adjusting Hips pos.
         }
         // // // // // // // // // // // // // // // // //
         // Wrist rotation
@@ -612,7 +615,7 @@ namespace SakuraScript.VBTTool
             if (path.Length > 0)
             {
                 var json = JsonUtility.ToJson(_adjSetting, true);
-                Debug.Log( $"Saving to file {path} : " + json);
+                //Debug.Log( $"Saving to file {path} : " + json);
 
                 StreamWriter sw = new StreamWriter(path,false); 
                 sw.Write(json);
@@ -630,7 +633,7 @@ namespace SakuraScript.VBTTool
             var paths = StandaloneFileBrowser.OpenFilePanel("Open File", "", extensions, false);
             if (paths.Length > 0 && paths[0].Length > 0)
             {
-                Debug.Log( $"Opening file {paths[0]}");
+                //Debug.Log( $"Opening file {paths[0]}");
                 LoadSettingFile(paths[0]);
             }
         }
