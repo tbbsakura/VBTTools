@@ -31,9 +31,9 @@ namespace SakuraScript.VBTTool
         [Tooltip("VMTに送信する右コントローラーのTransformを設定するオブジェクト")]
         public Transform _transformRController;
 
-        [Tooltip("左手のpre位置補正(VRM Local)")]
+        [Tooltip("左手の表示位置補正(VRM Local)")]
         public Vector3 _handPosOffsetL = new Vector3( 0f, 0f, 0f);
-        [Tooltip("右手のpre位置補正(VRM Local)")]
+        [Tooltip("右手の表示位置補正(VRM Local)")]
         public Vector3 _handPosOffsetR = new Vector3( 0f, 0f, 0f);
 
         [Tooltip("左手の回転補正(Global)")]
@@ -136,7 +136,7 @@ namespace SakuraScript.VBTTool
                             + _handPosOffsetL;
             _transformLController.position = qRotHMDYaw * pos + _transformHMD.position;
             _transformLController.rotation = qRotHMDYaw * lsrc.rotation * qRotOffsetL;
-            SendHandTransform(true); // L
+            SendControllerTransform(true); // L
 
             // right hand
             Transform rsrc = _transformVirtualRController;
@@ -145,10 +145,10 @@ namespace SakuraScript.VBTTool
                         + _handPosOffsetR;
             _transformRController.position = qRotHMDYaw * pos + _transformHMD.position;
             _transformRController.rotation = qRotHMDYaw * rsrc.rotation * qRotOffsetR;
-            SendHandTransform(false); // R
+            SendControllerTransform(false); // R
         }
 
-        void SendHandTransform(bool isLeft) {
+        void SendControllerTransform(bool isLeft) {
             Vector3 pos =  (isLeft) ? _transformLController.position : _transformRController.position;
             Quaternion q =  (isLeft) ? _transformLController.rotation : _transformRController.rotation;
 

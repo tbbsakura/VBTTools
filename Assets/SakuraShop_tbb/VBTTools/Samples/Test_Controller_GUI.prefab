@@ -326,38 +326,25 @@ PrefabInstance:
       propertyPath: m_AnchorMax.y
       value: 0
       objectReference: {fileID: 0}
+    - target: {fileID: 9045326301727429812, guid: e6d0b741220b41b45bb5427bc17c3b12, type: 3}
+      propertyPath: index
+      value: 2
+      objectReference: {fileID: 0}
+    - target: {fileID: 9045326301727429812, guid: e6d0b741220b41b45bb5427bc17c3b12, type: 3}
+      propertyPath: client
+      value: 
+      objectReference: {fileID: 3628484550068743287}
+    - target: {fileID: 9045326301727429812, guid: e6d0b741220b41b45bb5427bc17c3b12, type: 3}
+      propertyPath: enable
+      value: 6
+      objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
     m_AddedGameObjects: []
-    m_AddedComponents:
-    - targetCorrespondingSourceObject: {fileID: 187888255468101254, guid: e6d0b741220b41b45bb5427bc17c3b12, type: 3}
-      insertIndex: -1
-      addedObject: {fileID: 7015078561112331434}
+    m_AddedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: e6d0b741220b41b45bb5427bc17c3b12, type: 3}
 --- !u!224 &1199858107099412489 stripped
 RectTransform:
   m_CorrespondingSourceObject: {fileID: 4729502324656537898, guid: e6d0b741220b41b45bb5427bc17c3b12, type: 3}
   m_PrefabInstance: {fileID: 5837881010351634723}
   m_PrefabAsset: {fileID: 0}
---- !u!1 &6025766300547360677 stripped
-GameObject:
-  m_CorrespondingSourceObject: {fileID: 187888255468101254, guid: e6d0b741220b41b45bb5427bc17c3b12, type: 3}
-  m_PrefabInstance: {fileID: 5837881010351634723}
-  m_PrefabAsset: {fileID: 0}
---- !u!114 &7015078561112331434
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 6025766300547360677}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 5f3d6218570cd1c48976b1ee8643e73c, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  isLeft: 0
-  index: 2
-  enable: 6
-  needEnable: 0
-  client: {fileID: 3628484550068743287}

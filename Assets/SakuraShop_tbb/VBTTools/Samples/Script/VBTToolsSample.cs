@@ -12,6 +12,7 @@ using System;
 
 using SakuraScript.ModifiedVMTSample;
 using OgLikeVMT;
+using UniGLTF;
 
 
 namespace SakuraScript.VBTTool
@@ -56,13 +57,17 @@ namespace SakuraScript.VBTTool
         [SerializeField] private GameObject _testUI;
 
         public GameObject _adjustingUI;
-        private Vector3 _adjustPos = Vector3.zero;
-        private Vector3 _adjustRotEu = Vector3.zero;
-
+        private Vector3 _adjustPosL = Vector3.zero;
+        private Vector3 _adjustRotEuL = Vector3.zero;
+        private Vector3 _adjustPosR = Vector3.zero;
+        private Vector3 _adjustRotEuR = Vector3.zero;
+        public Text _adjustTextPosL;
+        public Text _adjustTextRotL;
+        public Text _adjustTextPosR;
+        public Text _adjustTextRotR;
+        
         [NonSerialized] public Transform _sphereL;
         [NonSerialized] public Transform _sphereR;
-        public Text _adjustTextPos;
-        public Text _adjustTextRot;
         private bool _wristRotate = false;
 
         public Image _imgRecvHMD;
@@ -96,6 +101,52 @@ namespace SakuraScript.VBTTool
 
             _topText = GameObject.Find("TopText").GetComponent<Text>();
 
+            InitSliders();
+        }
+
+        private void InitSliders()
+        {
+            var sensorTemplateL = GameObject.Find("/origLeftHand/ControllerSensorL");
+            var sensorTemplateR = GameObject.Find("/origRightHand/ControllerSensorR");
+            _adjustPosL = sensorTemplateL.transform.localPosition;
+            _adjustRotEuL= sensorTemplateL.transform.localRotation.eulerAngles;
+            _adjustPosR = sensorTemplateR.transform.localPosition;
+            _adjustRotEuR = sensorTemplateR.transform.localRotation.eulerAngles;
+            SetAdjustSliderVal(true, _adjustPosL, _adjustRotEuL );
+            SetAdjustSliderVal(false, _adjustPosR, _adjustRotEuR );
+        }
+
+        public void OnVRMLoaded(Animator animator)
+        {
+            var sensorTemplateL = GameObject.Find("/origLeftHand/ControllerSensorL");
+            var sensorTemplateR = GameObject.Find("/origRightHand/ControllerSensorR");
+
+            _animationTarget = animator;
+            SetHandler();
+
+            var leftsensor = new GameObject("LeftSensor");
+            leftsensor.transform.parent = animator.GetBoneTransform( HumanBodyBones.LeftHand );
+            leftsensor.transform.localPosition = sensorTemplateL.transform.localPosition;
+            leftsensor.transform.localRotation = sensorTemplateL.transform.localRotation;
+            _vbtHandPosTrack._transformVirtualLController = leftsensor.transform;
+            var sl = GameObject.Find("/origLeftHand/ControllerSensorL/Sphere");
+            if (sl) {
+                sl.transform.parent = leftsensor.transform;
+                sl.transform.localPosition = Vector3.zero;
+                _sphereL = sl.transform;
+            }
+
+            var rightsensor = new GameObject("RightSensor");
+            rightsensor.transform.parent = animator.GetBoneTransform( HumanBodyBones.RightHand );
+            rightsensor.transform.localPosition = sensorTemplateR.transform.localPosition;
+            rightsensor.transform.localRotation = sensorTemplateR.transform.localRotation;
+            _vbtHandPosTrack._transformVirtualRController = rightsensor.transform;
+            var sr = GameObject.Find("/origLeftHand/ControllerSensorR/Sphere");
+            if (sr) {
+                sr.transform.parent = rightsensor.transform;
+                sr.transform.localPosition = Vector3.zero;
+                _sphereR = sr.transform;
+            }
         }
 
         public bool SetHandler()
@@ -298,15 +349,14 @@ namespace SakuraScript.VBTTool
 
             if (_adjustingUI.activeInHierarchy) {
                 if (_animationTarget == null ) return;
-
-                _adjustTextPos.text = $"pos {_adjustPos}";
-                _vbtHandPosTrack._transformVirtualLController.localPosition = _adjustPos;
-                _vbtHandPosTrack._transformVirtualLController.localRotation =  Quaternion.Euler(_adjustRotEu);
-
-                _adjustTextRot.text = $"rot {_adjustRotEu}";
-                _vbtHandPosTrack._transformVirtualRController.localPosition = new Vector3(-_adjustPos.x,_adjustPos.y,_adjustPos.z);
-                _vbtHandPosTrack._transformVirtualRController.localRotation
-                                        =  Quaternion.Euler(_adjustRotEu.x, 360f - _adjustRotEu.y, 360f - _adjustRotEu.z );
+                _vbtHandPosTrack._transformVirtualLController.localPosition = _adjustPosL;
+                _vbtHandPosTrack._transformVirtualLController.localRotation =  Quaternion.Euler(_adjustRotEuL);
+                _vbtHandPosTrack._transformVirtualRController.localPosition = _adjustPosR;
+                _vbtHandPosTrack._transformVirtualRController.localRotation =  Quaternion.Euler(_adjustRotEuR);
+                _adjustTextPosL.text = $"Left pos {_adjustPosL}";
+                _adjustTextRotL.text = $"Left rot {_adjustRotEuL}";
+                _adjustTextPosR.text = $"Right pos {_adjustPosR}";
+                _adjustTextRotR.text = $"Right rot {_adjustRotEuR}";
             }
 
             if (_wristRotate) {
@@ -325,30 +375,8 @@ namespace SakuraScript.VBTTool
                 }
             }
         }
-        readonly float [] _wristRotateArray = new float[] { -1f, -0.75f, -0.5f, -0.25f, 0f, 0.25f, 0.5f, 0.75f, 1f };
-        int _rotateCurrentIndex = 0;
-        private float _rotateWristRate = 0.1f;
-        private float _nextRotate = 0.0f;
-        private int _rotateDirection = 1;
 
-        public float GetNextRotateTwist() {
-            if ( Time.time > _nextRotate ) {
-                if (_rotateCurrentIndex == _wristRotateArray.Length -1 ) {
-                    _rotateDirection = -1;
-                }
-                if ( _rotateCurrentIndex == 0 ) {
-                    _rotateDirection = 1;
-                }
-                if ( _rotateCurrentIndex < 0 || _rotateDirection >= _wristRotateArray.Length ) {
-                    _rotateCurrentIndex = 0;
-                }
-                _rotateCurrentIndex += _rotateDirection;
-                _nextRotate = Time.time + _rotateWristRate;
-                //Debug.Log( $"rotateIndex : {_rotateCurrentIndex}, next : {_nextRotate}");
-            }
-            return _wristRotateArray[_rotateCurrentIndex];
-        }
-
+        // // // // // // // // // // // // // // // // //
         // VMT TEST UI
         // 2ndTrack Skeletal / UI mixed
         public void OnJointCurlSliderChanged( float val, int fingerIndex, int jointIndex ) { 
@@ -463,13 +491,25 @@ namespace SakuraScript.VBTTool
         
         public void OnToggleChangedMusmode(bool val) { _musmode = val ; }
 
-        public void OnToggleChangeAdjustUI(bool val) {_adjustingUI.SetActive(val);}
-        public void OnSliderPosXChanged(float val) { _adjustPos.x = val; }
-        public void OnSliderPosYChanged(float val) { _adjustPos.y = val; }
-        public void OnSliderPosZChanged(float val) { _adjustPos.z = val; }
-        public void OnSliderRotXChanged(float val) { _adjustRotEu.x = val; }
-        public void OnSliderRotYChanged(float val) { _adjustRotEu.y = val; }
-        public void OnSliderRotZChanged(float val) { _adjustRotEu.z = val; }
+
+
+        // // // // // // // // // // // // // // // // //
+        // Adjust UI
+        public void OnToggleChangeAdjustUI(bool val) { _adjustingUI.SetActive(val); }
+        // Left
+        public void OnSliderPosXChanged(float val) { _adjustPosL.x = val; }
+        public void OnSliderPosYChanged(float val) { _adjustPosL.y = val; }
+        public void OnSliderPosZChanged(float val) { _adjustPosL.z = val; }
+        public void OnSliderRotXChanged(float val) { _adjustRotEuL.x = val; }
+        public void OnSliderRotYChanged(float val) { _adjustRotEuL.y = val; }
+        public void OnSliderRotZChanged(float val) { _adjustRotEuL.z = val; }
+        // Right
+        public void OnSliderPosXChangedR(float val) { _adjustPosR.x = val; }
+        public void OnSliderPosYChangedR(float val) { _adjustPosR.y = val; }
+        public void OnSliderPosZChangedR(float val) { _adjustPosR.z = val; }
+        public void OnSliderRotXChangedR(float val) { _adjustRotEuR.x = val; }
+        public void OnSliderRotYChangedR(float val) { _adjustRotEuR.y = val; }
+        public void OnSliderRotZChangedR(float val) { _adjustRotEuR.z = val; }
 
         public void OnToggleChangeWristRotate(bool val) {
             _wristRotate = val;
@@ -477,6 +517,43 @@ namespace SakuraScript.VBTTool
             if ( val ) {
                 _toggleServer.isOn = false; // stop server
             }
+        }
+        // // // // // // // // // // // // // // // // //
+        // Wrist rotation
+        readonly float [] _wristRotateArray = new float[] { -1f, -0.75f, -0.5f, -0.25f, 0f, 0.25f, 0.5f, 0.75f, 1f };
+        int _rotateCurrentIndex = 0;
+        private float _rotateWristRate = 0.1f;
+        private float _nextRotate = 0.0f;
+        private int _rotateDirection = 1;
+
+        public float GetNextRotateTwist() {
+            if ( Time.time > _nextRotate ) {
+                if (_rotateCurrentIndex == _wristRotateArray.Length -1 ) {
+                    _rotateDirection = -1;
+                }
+                if ( _rotateCurrentIndex == 0 ) {
+                    _rotateDirection = 1;
+                }
+                if ( _rotateCurrentIndex < 0 || _rotateDirection >= _wristRotateArray.Length ) {
+                    _rotateCurrentIndex = 0;
+                }
+                _rotateCurrentIndex += _rotateDirection;
+                _nextRotate = Time.time + _rotateWristRate;
+                //Debug.Log( $"rotateIndex : {_rotateCurrentIndex}, next : {_nextRotate}");
+            }
+            return _wristRotateArray[_rotateCurrentIndex];
+        }
+
+        void SetAdjustSliderVal(bool isLeft, Vector3 pos, Vector3 rotEular ){
+            _adjustingUI.SetActive(true); 
+            string lr = isLeft ? "LeftGroup/" : "RightGroup/";
+            GameObject.Find(lr+"SliderBx").GetComponent<Slider>().value = pos.x;
+            GameObject.Find(lr+"SliderBy").GetComponent<Slider>().value = pos.y;
+            GameObject.Find(lr+"SliderBz").GetComponent<Slider>().value = pos.z;
+            GameObject.Find(lr+"SliderEux").GetComponent<Slider>().value = rotEular.x;
+            GameObject.Find(lr+"SliderEuy").GetComponent<Slider>().value = rotEular.y;
+            GameObject.Find(lr+"SliderEuz").GetComponent<Slider>().value = rotEular.z;
+            _adjustingUI.SetActive(false); 
         }
 
     };   // class end

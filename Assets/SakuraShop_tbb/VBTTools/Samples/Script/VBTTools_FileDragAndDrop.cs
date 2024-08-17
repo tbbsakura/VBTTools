@@ -91,43 +91,14 @@ public class VBTTools_FileDragAndDrop : MonoBehaviour
         m_target = root.AddComponent<UniHumanoid.HumanPoseTransfer>();
         if ( m_target != null ) 
         {
-            var animator = m_target.GetComponent<Animator>();
+            
+            Animator animator = m_target.GetComponent<Animator>();
             if (animator != null)
             {
                 if ( m_exrec is not null && m_target is not null && m_target.gameObject is not null ) m_exrec.Model = m_target.gameObject;
 
-
                 if ( m_sampleProject is not null ) {
-                    var sensorTemplateL = GameObject.Find("/origLeftHand/ControllerSensorL");
-                    var sensorTemplateR = GameObject.Find("/origRightHand/ControllerSensorR");
-
-                    m_sampleProject._animationTarget = animator;
-                    m_sampleProject.SetHandler();
-
-                    var leftsensor = new GameObject("LeftSensor");
-                    leftsensor.transform.parent = animator.GetBoneTransform( HumanBodyBones.LeftHand );
-                    leftsensor.transform.localPosition = sensorTemplateL.transform.localPosition;
-                    leftsensor.transform.localRotation = sensorTemplateL.transform.localRotation;
-                    m_sampleProject._vbtHandPosTrack._transformVirtualLController = leftsensor.transform;
-                    var sl = GameObject.Find("/origLeftHand/ControllerSensorL/Sphere");
-                    if (sl) {
-                        sl.transform.parent = leftsensor.transform;
-                        sl.transform.localPosition = Vector3.zero;
-                        m_sampleProject._sphereL = sl.transform;
-                    }
-
-                    var rightsensor = new GameObject("RightSensor");
-                    rightsensor.transform.parent = animator.GetBoneTransform( HumanBodyBones.RightHand );
-                    rightsensor.transform.localPosition = sensorTemplateR.transform.localPosition;
-                    rightsensor.transform.localRotation = sensorTemplateR.transform.localRotation;
-                    m_sampleProject._vbtHandPosTrack._transformVirtualRController = rightsensor.transform;
-                    var sr = GameObject.Find("/origLeftHand/ControllerSensorR/Sphere");
-                    if (sr) {
-                        sr.transform.parent = rightsensor.transform;
-                        sr.transform.localPosition = Vector3.zero;
-                        m_sampleProject._sphereR = sr.transform;
-                    }
-
+                    m_sampleProject.OnVRMLoaded(animator);
                 }
             }
         }
