@@ -41,6 +41,12 @@ VRMモデル(VRoid Studio Beta 用モデルとしてCC0で公開されている 
 3. VMT ManagerでVMTが有効であることを確認します。また、HMD のかわりにNull Driverでテストすることもできます。必要ならSteamVRを再起動したあと「VMT managerを終了」させてください。
 4. JoyConを使う場合は、PCとBluetooth接続させてください。
 5. VBTTools.exe を起動します。起動するとVMCPの受信は即座に始まります。
+6. 初回起動時はSteamVRの設定で VMT_1, VMT_2 のトラッカーをハンドヘルドの左手/右手に割り当てる必要があります。
+
+![Image 1](https://github.com/tbbsakura/VBTTools/blob/main/Assets/SakuraShop_tbb/VBTTools/etc/tracker_setting.png)
+![Image 2](https://github.com/tbbsakura/VBTTools/blob/main/Assets/SakuraShop_tbb/VBTTools/etc/vmt1_setting.png)
+![Image 3](https://github.com/tbbsakura/VBTTools/blob/main/Assets/SakuraShop_tbb/VBTTools/etc/vmt2_setting.png)
+
 
 1でVMCPのソフトを起動していれば、手の位置等が反映されるはずです。VMCPのソフトを入れてない場合は、左上のListen To VMCPのチェックを外すと、手のボーンを動かすためのTest UIが表示されます。
 手の位置を動かすTest UIはまだありません、ごめんなさい。手を動かさないテストには後述の SkeletonPoseTester を使うと良いと思います。
