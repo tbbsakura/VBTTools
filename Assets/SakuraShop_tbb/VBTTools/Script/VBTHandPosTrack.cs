@@ -36,10 +36,10 @@ namespace SakuraScript.VBTTool
         [Tooltip("右手の表示位置補正(VRM Local)")]
         public Vector3 _handPosOffsetR = new Vector3( 0f, 0f, 0f);
 
-        [Tooltip("左手の回転補正(Global)")]
-        public Vector3 _handEulerOffsetL = new Vector3( 0,180,0 );
-        [Tooltip("右手の回転補正(Global)")]
-        public Vector3 _handEulerOffsetR = new Vector3( 180, 0 ,0 );
+        [Tooltip("左手の回転補正(Global) 基本ゼロで")]
+        public Vector3 _handEulerOffsetL = new Vector3( 0, 0, 0 );
+        [Tooltip("右手の回転補正(Global) 基本ゼロで")]
+        public Vector3 _handEulerOffsetR = new Vector3( 0, 0 ,0 );
 
         [Tooltip("VMTに渡すパラメーター/左手のindex")]
         public int _VMTIndexLeft = 1;

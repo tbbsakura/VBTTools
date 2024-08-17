@@ -26,7 +26,7 @@ https://github.com/gpsnmeajp/VirtualMotionTracker/releases/tag/v0.15
 全面的にお世話になっています。v0.15 で開発しています。
 exe でインストーラーを走らせてください。
 
-続いて、VBTTools の Releases で公開している zip を解凍し、VBTTools.exe を起動します。
+続いて、VBTTools の Releases(https://github.com/tbbsakura/VBTTools/releases) で公開している zip を解凍し、VBTTools.exe を起動します。
 初回起動時はサーバーとして機能するためWindowsが確認ウィンドウを出すので通信許可をしてください。
 VRMモデル(VRoid Studio Beta 用モデルとしてCC0で公開されている HairSample_Male くん)がロードされると思いますが、いったん終了します。
 （VBTTools.exe と同じフォルダに同じ名前でVRMを置けば違うVRMも使えます）
@@ -83,7 +83,7 @@ VRで選択するためのレイ(光線)ポインターの向きが使いにく�
 開発者向け情報です。Unity 2022.3.22f1 で開発しています。
 
 ### Unity project に別途入れる必要があるもの
-テスト時バージョンと同じ unitypackage を入れるのが無難かと思います。
+テスト時バージョンと同じ unitypackage を入れるのが無難かと思います。全てMIT License で公開されているものです。
 
 1. EVMCP4U (Eazy Virtual Motion Capture for Unity), External Receiver Pack 
  https://booth.pm/ja/items/1801535
@@ -95,11 +95,15 @@ https://github.com/vrm-c/UniVRM/releases
 最新にしたい場合等は入れます。
     - テスト時バージョン: UniVRM-0.125.0_f812.unitypackage VRM0
 
-3. uOSC (MIT License)
+3. uOSC 
 https://github.com/hecomi/uOSC
     - テスト時バージョン： uOSC-v2.2.0.unitypackage
 
-新規のプロジェクトに1~3を入れてから、こちらのリポジトリの内容を追加すれば Build できると思います。
+4. UnityStandaloneFileBrowser 
+https://github.com/gkngkc/UnityStandaloneFileBrowser
+    - テスト時バージョン：  1.2
+
+新規のプロジェクトに1~4を入れてから、こちらのリポジトリの内容を追加すれば Build できると思います。
 
 
 ### MITライセンスで公開されているものの改変版が入っているもの

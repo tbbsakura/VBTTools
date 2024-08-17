@@ -9,11 +9,11 @@ using UnityEngine.UI;
 using uOSC;
 using System.IO;
 using System;
+using SFB;
 
 using SakuraScript.ModifiedVMTSample;
 using OgLikeVMT;
 using UniGLTF;
-
 
 namespace SakuraScript.VBTTool
 {
@@ -34,18 +34,22 @@ namespace SakuraScript.VBTTool
         private HumanPose _targetHumanPose;
         private HumanPoseHandler _handler;
 
-        private const int _portListen = 39544;
+        // UI
+        private Text _topText;
 
-        private InputField _inputFieldIP;
-        private InputField _inputFieldDestPort;
-        private InputField _inputFieldListenPort;
-        private InputField _inputFieldListenPortVMT;
-
+        // Server UI
         private Toggle _toggleServer;
         private Toggle _toggleServerCutEye;
-        private Toggle _toggleClient;
+        private InputField _inputFieldListenPort;
 
-        private Text _topText;
+        private const int _portListen = 39544;
+
+        // Client UI
+        private Toggle _toggleClient;
+        public Image _imgRecvHMD; // as a RX LED
+        private InputField _inputFieldIP;
+        private InputField _inputFieldDestPort;
+        private InputField _inputFieldListenPortVMT;
 
         // test object
         private bool [] toggleFingers = new bool [5];
@@ -56,21 +60,34 @@ namespace SakuraScript.VBTTool
         [SerializeField] private GameObject _ui2JoyCon;
         [SerializeField] private GameObject _testUI;
 
+        // Adjust setting UI
+        [System.Serializable]
+        private class VBTToolsAdjustSetting
+        {
+            public Vector3 PosL;
+            public Vector3 RotEuL;
+            public Vector3 PosR;
+            public Vector3 RotEuR;
+            public Vector3 HandPosL;
+            public Vector3 HandPosR;
+        }
+
         public GameObject _adjustingUI;
-        private Vector3 _adjustPosL = Vector3.zero;
-        private Vector3 _adjustRotEuL = Vector3.zero;
-        private Vector3 _adjustPosR = Vector3.zero;
-        private Vector3 _adjustRotEuR = Vector3.zero;
+        private bool _wristRotate = false;
+
+        [SerializeField] VBTToolsAdjustSetting _adjSetting;
+
+        // Display adjusting values
         public Text _adjustTextPosL;
         public Text _adjustTextRotL;
         public Text _adjustTextPosR;
         public Text _adjustTextRotR;
-        
+        public Text _adjustTextHandPosL;        
+        public Text _adjustTextHandPosR;        
+
         [NonSerialized] public Transform _sphereL;
         [NonSerialized] public Transform _sphereR;
-        private bool _wristRotate = false;
 
-        public Image _imgRecvHMD;
 
         // Start is called before the first frame update
         void Start()
@@ -101,19 +118,37 @@ namespace SakuraScript.VBTTool
 
             _topText = GameObject.Find("TopText").GetComponent<Text>();
 
+            // Read default adjusting values
+            var sensorTemplateL = GameObject.Find("/origLeftHand/ControllerSensorL");
+            var sensorTemplateR = GameObject.Find("/origRightHand/ControllerSensorR");
+            _adjSetting.PosL = sensorTemplateL.transform.localPosition;
+            _adjSetting.RotEuL= sensorTemplateL.transform.localRotation.eulerAngles;
+            _adjSetting.PosR = sensorTemplateR.transform.localPosition;
+            _adjSetting.RotEuR = sensorTemplateR.transform.localRotation.eulerAngles;
+            _adjSetting.HandPosL = _vbtHandPosTrack._handPosOffsetL;
+            _adjSetting.HandPosR = _vbtHandPosTrack._handPosOffsetR;
+
+            // TODO
+            // default.json があれば読んで、_adjSetting を初期化する
+            string path = AppDomain.CurrentDomain.BaseDirectory.TrimEnd('\\');//EXEを実行したカレントディレクトリ (ショートカット等でカレントディレクトリが変わるのでこの方式で)
+            path += "\\default.json";
+            Debug.Log(path);
+            if (System.IO.File.Exists(path) ) {
+                Debug.Log( "{path} exists");
+                LoadSettingFile(path);
+            }
+
+            _adjustingUI.SetActive(true); 
             InitSliders();
+            _adjustingUI.SetActive(false); 
         }
 
         private void InitSliders()
         {
-            var sensorTemplateL = GameObject.Find("/origLeftHand/ControllerSensorL");
-            var sensorTemplateR = GameObject.Find("/origRightHand/ControllerSensorR");
-            _adjustPosL = sensorTemplateL.transform.localPosition;
-            _adjustRotEuL= sensorTemplateL.transform.localRotation.eulerAngles;
-            _adjustPosR = sensorTemplateR.transform.localPosition;
-            _adjustRotEuR = sensorTemplateR.transform.localRotation.eulerAngles;
-            SetAdjustSliderVal(true, _adjustPosL, _adjustRotEuL );
-            SetAdjustSliderVal(false, _adjustPosR, _adjustRotEuR );
+            SetAdjustSliderVal("LeftGroup/", _adjSetting.PosL, _adjSetting.RotEuL, false );
+            SetAdjustSliderVal("RightGroup/", _adjSetting.PosR, _adjSetting.RotEuR, false );
+            SetAdjustSliderVal("HandPosGroupL/", _adjSetting.HandPosL, Vector3.zero, true );
+            SetAdjustSliderVal("HandPosGroupR/", _adjSetting.HandPosR, Vector3.zero, true );
         }
 
         public void OnVRMLoaded(Animator animator)
@@ -349,14 +384,19 @@ namespace SakuraScript.VBTTool
 
             if (_adjustingUI.activeInHierarchy) {
                 if (_animationTarget == null ) return;
-                _vbtHandPosTrack._transformVirtualLController.localPosition = _adjustPosL;
-                _vbtHandPosTrack._transformVirtualLController.localRotation =  Quaternion.Euler(_adjustRotEuL);
-                _vbtHandPosTrack._transformVirtualRController.localPosition = _adjustPosR;
-                _vbtHandPosTrack._transformVirtualRController.localRotation =  Quaternion.Euler(_adjustRotEuR);
-                _adjustTextPosL.text = $"Left pos {_adjustPosL}";
-                _adjustTextRotL.text = $"Left rot {_adjustRotEuL}";
-                _adjustTextPosR.text = $"Right pos {_adjustPosR}";
-                _adjustTextRotR.text = $"Right rot {_adjustRotEuR}";
+                _vbtHandPosTrack._transformVirtualLController.localPosition = _adjSetting.PosL;
+                _vbtHandPosTrack._transformVirtualLController.localRotation =  Quaternion.Euler(_adjSetting.RotEuL);
+                _vbtHandPosTrack._transformVirtualRController.localPosition = _adjSetting.PosR;
+                _vbtHandPosTrack._transformVirtualRController.localRotation =  Quaternion.Euler(_adjSetting.RotEuR);
+                _vbtHandPosTrack._handPosOffsetL = _adjSetting.HandPosL;
+                _vbtHandPosTrack._handPosOffsetR = _adjSetting.HandPosR;
+
+                _adjustTextPosL.text = $"Left pos {_adjSetting.PosL}";
+                _adjustTextRotL.text = $"Left rot {_adjSetting.RotEuL}";
+                _adjustTextPosR.text = $"Right pos {_adjSetting.PosR}";
+                _adjustTextRotR.text = $"Right rot {_adjSetting.RotEuR}";
+                _adjustTextHandPosL.text = $"Left Hand pos {_adjSetting.HandPosL}";
+                _adjustTextHandPosR.text = $"Right Hand pos {_adjSetting.HandPosR}";
             }
 
             if (_wristRotate) {
@@ -491,25 +531,31 @@ namespace SakuraScript.VBTTool
         
         public void OnToggleChangedMusmode(bool val) { _musmode = val ; }
 
-
-
         // // // // // // // // // // // // // // // // //
         // Adjust UI
         public void OnToggleChangeAdjustUI(bool val) { _adjustingUI.SetActive(val); }
         // Left
-        public void OnSliderPosXChanged(float val) { _adjustPosL.x = val; }
-        public void OnSliderPosYChanged(float val) { _adjustPosL.y = val; }
-        public void OnSliderPosZChanged(float val) { _adjustPosL.z = val; }
-        public void OnSliderRotXChanged(float val) { _adjustRotEuL.x = val; }
-        public void OnSliderRotYChanged(float val) { _adjustRotEuL.y = val; }
-        public void OnSliderRotZChanged(float val) { _adjustRotEuL.z = val; }
+        public void OnSliderPosXChanged(float val) { _adjSetting.PosL.x = val; }
+        public void OnSliderPosYChanged(float val) { _adjSetting.PosL.y = val; }
+        public void OnSliderPosZChanged(float val) { _adjSetting.PosL.z = val; }
+        public void OnSliderRotXChanged(float val) { _adjSetting.RotEuL.x = val; }
+        public void OnSliderRotYChanged(float val) { _adjSetting.RotEuL.y = val; }
+        public void OnSliderRotZChanged(float val) { _adjSetting.RotEuL.z = val; }
         // Right
-        public void OnSliderPosXChangedR(float val) { _adjustPosR.x = val; }
-        public void OnSliderPosYChangedR(float val) { _adjustPosR.y = val; }
-        public void OnSliderPosZChangedR(float val) { _adjustPosR.z = val; }
-        public void OnSliderRotXChangedR(float val) { _adjustRotEuR.x = val; }
-        public void OnSliderRotYChangedR(float val) { _adjustRotEuR.y = val; }
-        public void OnSliderRotZChangedR(float val) { _adjustRotEuR.z = val; }
+        public void OnSliderPosXChangedR(float val) { _adjSetting.PosR.x = val; }
+        public void OnSliderPosYChangedR(float val) { _adjSetting.PosR.y = val; }
+        public void OnSliderPosZChangedR(float val) { _adjSetting.PosR.z = val; }
+        public void OnSliderRotXChangedR(float val) { _adjSetting.RotEuR.x = val; }
+        public void OnSliderRotYChangedR(float val) { _adjSetting.RotEuR.y = val; }
+        public void OnSliderRotZChangedR(float val) { _adjSetting.RotEuR.z = val; }
+        // HandPos L
+        public void OnSliderHandPosXChangedL(float val) { _adjSetting.HandPosL.x = val; }
+        public void OnSliderHandPosYChangedL(float val) { _adjSetting.HandPosL.y = val; }
+        public void OnSliderHandPosZChangedL(float val) { _adjSetting.HandPosL.z = val; }
+        // HandPos R
+        public void OnSliderHandPosXChangedR(float val) { _adjSetting.HandPosR.x = val; }
+        public void OnSliderHandPosYChangedR(float val) { _adjSetting.HandPosR.y = val; }
+        public void OnSliderHandPosZChangedR(float val) { _adjSetting.HandPosR.z = val; }
 
         public void OnToggleChangeWristRotate(bool val) {
             _wristRotate = val;
@@ -544,17 +590,63 @@ namespace SakuraScript.VBTTool
             return _wristRotateArray[_rotateCurrentIndex];
         }
 
-        void SetAdjustSliderVal(bool isLeft, Vector3 pos, Vector3 rotEular ){
-            _adjustingUI.SetActive(true); 
-            string lr = isLeft ? "LeftGroup/" : "RightGroup/";
-            GameObject.Find(lr+"SliderBx").GetComponent<Slider>().value = pos.x;
-            GameObject.Find(lr+"SliderBy").GetComponent<Slider>().value = pos.y;
-            GameObject.Find(lr+"SliderBz").GetComponent<Slider>().value = pos.z;
-            GameObject.Find(lr+"SliderEux").GetComponent<Slider>().value = rotEular.x;
-            GameObject.Find(lr+"SliderEuy").GetComponent<Slider>().value = rotEular.y;
-            GameObject.Find(lr+"SliderEuz").GetComponent<Slider>().value = rotEular.z;
-            _adjustingUI.SetActive(false); 
+        void SetAdjustSliderVal(string group, Vector3 pos, Vector3 rotEular, bool posOnly ){
+            GameObject.Find(group+"SliderBx").GetComponent<Slider>().value = pos.x;
+            GameObject.Find(group+"SliderBy").GetComponent<Slider>().value = pos.y;
+            GameObject.Find(group+"SliderBz").GetComponent<Slider>().value = pos.z;
+            if ( !posOnly ) {
+                GameObject.Find(group+"SliderEux").GetComponent<Slider>().value = rotEular.x;
+                GameObject.Find(group+"SliderEuy").GetComponent<Slider>().value = rotEular.y;
+                GameObject.Find(group+"SliderEuz").GetComponent<Slider>().value = rotEular.z;
+            }
         }
 
+        public void OnSaveButton()
+        {
+            var extensions = new[] {
+                new ExtensionFilter("Json Files", "json" ),
+            };
+
+            var path = StandaloneFileBrowser.SaveFilePanel("Save File", "", "default.json", extensions);
+
+            if (path.Length > 0)
+            {
+                var json = JsonUtility.ToJson(_adjSetting, true);
+                Debug.Log( $"Saving to file {path} : " + json);
+
+                StreamWriter sw = new StreamWriter(path,false); 
+                sw.Write(json);
+                sw.Flush();
+                sw.Close();
+            }
+        }
+
+        public void OnLoadButton()
+        {
+            var extensions = new[] {
+                new ExtensionFilter("Json Files", "json" ),
+            };
+
+            var paths = StandaloneFileBrowser.OpenFilePanel("Open File", "", extensions, false);
+            if (paths.Length > 0 && paths[0].Length > 0)
+            {
+                Debug.Log( $"Opening file {paths[0]}");
+                LoadSettingFile(paths[0]);
+            }
+        }
+
+        private void LoadSettingFile(string path)
+        {
+            StreamReader sr = new StreamReader(path, false);
+            string json = "";
+            while(!sr.EndOfStream) {
+                json += sr.ReadLine ();
+            }
+            sr.Close();
+            var obj = JsonUtility.FromJson<VBTToolsAdjustSetting>(json);
+            _adjSetting = obj;
+            InitSliders(); 
+        }
+        
     };   // class end
 }
