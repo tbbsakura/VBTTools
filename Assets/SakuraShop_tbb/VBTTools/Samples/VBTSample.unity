@@ -10703,6 +10703,7 @@ MonoBehaviour:
   _client: {fileID: 7915717184814424444}
   _serverVMT: {fileID: 2037739012}
   _animationTarget: {fileID: 0}
+  _imgRecvHMD: {fileID: 799093711}
   _ui1Panel: {fileID: 1700551398795662085}
   _ui2JoyCon: {fileID: 66270191}
   _testUI: {fileID: 769779698}
@@ -10720,7 +10721,6 @@ MonoBehaviour:
   _adjustTextRotR: {fileID: 1901874815}
   _adjustTextHandPosL: {fileID: 1726921376}
   _adjustTextHandPosR: {fileID: 984632929}
-  _imgRecvHMD: {fileID: 799093711}
 --- !u!114 &1463970934
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -11271,6 +11271,85 @@ CanvasRenderer:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1558459771}
   m_CullTransparentMesh: 1
+--- !u!1 &1559516886
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 1559516887}
+  - component: {fileID: 1559516889}
+  - component: {fileID: 1559516888}
+  m_Layer: 5
+  m_Name: Text (Explain) (2)
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!224 &1559516887
+RectTransform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1559516886}
+  m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 1724143639}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+  m_AnchorMin: {x: 0, y: 1}
+  m_AnchorMax: {x: 1, y: 1}
+  m_AnchoredPosition: {x: -119, y: -585}
+  m_SizeDelta: {x: 208, y: 30}
+  m_Pivot: {x: 0.5, y: 0.5}
+--- !u!114 &1559516888
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1559516886}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 5f7201a12d95ffc409449d95f23cf332, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  m_Material: {fileID: 0}
+  m_Color: {r: 0.19607843, g: 0.19607843, b: 0.19607843, a: 1}
+  m_RaycastTarget: 1
+  m_RaycastPadding: {x: 0, y: 0, z: 0, w: 0}
+  m_Maskable: 1
+  m_OnCullStateChanged:
+    m_PersistentCalls:
+      m_Calls: []
+  m_FontData:
+    m_Font: {fileID: 10102, guid: 0000000000000000e000000000000000, type: 0}
+    m_FontSize: 20
+    m_FontStyle: 0
+    m_BestFit: 0
+    m_MinSize: 2
+    m_MaxSize: 40
+    m_Alignment: 0
+    m_AlignByGeometry: 0
+    m_RichText: 1
+    m_HorizontalOverflow: 1
+    m_VerticalOverflow: 1
+    m_LineSpacing: 1
+  m_Text: "default.json\u3092\u8D77\u52D5\u6642\u306B\u30ED\u30FC\u30C9\u3057\u307E\u3059"
+--- !u!222 &1559516889
+CanvasRenderer:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1559516886}
+  m_CullTransparentMesh: 0
 --- !u!1 &1561462208
 GameObject:
   m_ObjectHideFlags: 0
@@ -12292,7 +12371,7 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 1}
   m_AnchorMax: {x: 1, y: 1}
-  m_AnchoredPosition: {x: -135, y: -4}
+  m_AnchoredPosition: {x: -202, y: -4}
   m_SizeDelta: {x: 208, y: 30}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &1685887692
@@ -12328,7 +12407,7 @@ MonoBehaviour:
     m_HorizontalOverflow: 1
     m_VerticalOverflow: 1
     m_LineSpacing: 1
-  m_Text: "\u624B\u9996\u95A2\u7BC0\u3092\u56DE\u3057\u305F\u3068\u304D\u306B\u624B\u9996\u306E\u7A7A\u9593\u4F4D\u7F6E\u304C\u52D5\u304D\u3059\u304E\u308B\u3068\u304D\u306B\u8ABF\u6574\u3057\u307E\u3059"
+  m_Text: "\u300C\u624B\u9996\u95A2\u7BC0\u3092\u56DE\u3057\u305F\u3060\u3051\u306A\u306E\u306B\u3001\u624B\u9996\u306E\u4F4D\u7F6E\u304C\u52D5\u304D\u3059\u304E\u308B\u300D\u3068\u304D\u306B\u8ABF\u6574\u3057\u307E\u3059"
 --- !u!222 &1685887693
 CanvasRenderer:
   m_ObjectHideFlags: 0
@@ -12955,6 +13034,7 @@ RectTransform:
   - {fileID: 1685887691}
   - {fileID: 566938164}
   - {fileID: 380728233}
+  - {fileID: 1559516887}
   - {fileID: 1346025975}
   - {fileID: 490566724}
   - {fileID: 373537277}
