@@ -13,7 +13,7 @@ namespace OgLikeVMT
         // This clip must be a modified version of "Take 001" in glove_anim.glb.
         // Original Take 001 does not include properties that will not be changed, because pos/rot of them can be known from 3D model.
         // Modified anim need to include all pos/rot info of all 31 bones, so that this script can know all the info from a single source.
-        public OgLikeHandAnim _ogLikeHandAnim; 
+        private OgLikeHandAnim _ogLikeHandAnim; 
 
         public OgLikeHandData _leftHand = new OgLikeHandData(true);
         public OgLikeHandData _rightHand = new OgLikeHandData(false);
@@ -54,7 +54,7 @@ namespace OgLikeVMT
             SendOgLikeHandDataToVMT( _rightHand, scalarModeInt ); 
         }
 
-        public void SendOgLikeHandDataToVMT( OgLikeHandData data, int scalarModeInt )
+        private void SendOgLikeHandDataToVMT( OgLikeHandData data, int scalarModeInt )
         {
             for ( int i = 0; i < (int)HandSkeletonBone.COUNT; i++ ) {
                 SkeletalBoneTransform tfm = new SkeletalBoneTransform();
