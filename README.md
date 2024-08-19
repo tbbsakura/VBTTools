@@ -121,6 +121,10 @@ https://github.com/Looking-Glass/JoyconLib/releases
 
 ## OgLikeVMTと開発者向けサンプル
 VBTTools.exe そのものがサンプルではありますが、OpenGlovesライクにVMTを使うための機能である OgLikeVMT だけのサンプルを別途用意してあります。
-詳細は [こちら](docs/OgLikeVMT.md)
+
+- VBTTools/Sample/SimpleOgLikeVMTSample.unity (シーンファイル) 
+- VBTTools/Sample/Script/SimpleOgLikeVMTSample.cs (スクリプト)
+
+詳細説明は [こちら](docs/OgLikeVMT.md)
 
 
