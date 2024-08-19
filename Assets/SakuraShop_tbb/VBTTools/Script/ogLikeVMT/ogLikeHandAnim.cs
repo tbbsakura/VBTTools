@@ -48,7 +48,9 @@ namespace OgLikeVMT
 
         public float GetBoneCurveEvaluateLinearComplement( string boneName, BoneCurveType type, float f, Dictionary<string, BoneCurves> dic)
         {
-            if (f > 1.0f) f = 1.0f;
+            if (f > 0.9583333f) {
+				return GetBoneCurveEvaluate( boneName, type, animKeyTimes[animKeyTimes.Length - 1], dic);
+			}
             if (f < 0.0f) f = 0.0f;
             float ret = 0f;
             for ( int i = 0; i < animKeyTimes.Length - 1; i++ ) {
