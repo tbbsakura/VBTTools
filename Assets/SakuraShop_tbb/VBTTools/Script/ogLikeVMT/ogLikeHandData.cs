@@ -39,7 +39,7 @@ namespace OgLikeVMT
             get {return _isLeftHand;}
         }
 
-        public void TransformLeftBone(ref Quaternion q, ref Vector3 pos, HandSkeletonBone bone_index) {
+        private void TransformLeftBone(ref Quaternion q, ref Vector3 pos, HandSkeletonBone bone_index) {
             switch (bone_index) {
                 case HandSkeletonBone.Root: {
                     return;
