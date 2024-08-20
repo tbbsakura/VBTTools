@@ -84,6 +84,7 @@ VRで選択するためのレイ(光線)ポインターの向きが使いにく�
 
 ## Build方法
 開発者向け情報です。Unity 2022.3.22f1 で開発しています。
+必要物を一式プロジェクトにインポートしてから後述のシーンを開いてBuildします。
 
 ### Unity project に別途入れる必要があるもの
 テスト時バージョンと同じ unitypackage を入れるのが無難かと思います。全てMIT License で公開されているものです。
@@ -118,6 +119,10 @@ https://github.com/Bunny83/UnityWindowsFileDrag-Drop
 2. JoyConLib  (MIT License)
 https://github.com/Looking-Glass/JoyconLib/releases
 
+
+## シーンファイル等
+VBTTools.exe は　Assets/SakuraShop_tbb/VBTTools/Samples/VBTSample.unity を buildしたものです。
+PlayerSetting 等はウィンドウサイズ可変にする等していますが、特殊な設定は特にしていないので普通にbuildできるかと思います。
 
 ## OgLikeVMTと開発者向けサンプル
 VBTTools.exe そのものがサンプルではありますが、OpenGlovesライクにVMTを使うための機能である OgLikeVMT だけのサンプルを別途用意してあります。
