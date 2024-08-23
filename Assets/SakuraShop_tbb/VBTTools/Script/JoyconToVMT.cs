@@ -141,7 +141,8 @@ namespace SakuraScript.VBTTool {
                         continue;
                     }
                     case Joycon.Button.SHOULDER_2: {
-                        SendTriggerFloat( j.isLeft, 1, (_down||_hold) ? 0.99f: 0.0f );
+                        SendTriggerFloat( j.isLeft, 1, (_down||_hold) ? 0.99f: 0.0f ); // Grip
+                        SendTriggerFloat( j.isLeft, 2, (_down||_hold) ? 0.50f: 0.0f ); // Force
                         continue;
                     }
                     

@@ -95,7 +95,8 @@ namespace SakuraScript.ModifiedVMTSample
 
             GUI.Label(new Rect(guiX,guiY + GetGuiY(guiYNum++, guiHeight), guiWidth, guiHeight), "Grip", styleWhite);
             Trigger1 = GUI.HorizontalSlider(new Rect(guiX,guiY + GetGuiY(guiYNum++, guiHeight), guiWidth, guiHeight), Trigger1, 0, 1);
-            client.Send("/VMT/Input/Trigger", (int)index, (int)1, (float)timeoffset, (float)Trigger1);
+            client.Send("/VMT/Input/Trigger", (int)index, (int)1, (float)timeoffset, (float)Trigger1); // Grip
+            client.Send("/VMT/Input/Trigger", (int)index, (int)2, (float)timeoffset, (float)Trigger1/2.0f); // Force
 
             GUI.Label(new Rect(guiX,guiY + GetGuiY(guiYNum++, guiHeight), guiWidth, guiHeight), "Joystick", styleWhite);
             JoystickX = GUI.HorizontalSlider(new Rect(guiX,guiY + GetGuiY(guiYNum++, guiHeight), guiWidth, guiHeight), JoystickX, -1, 1);
