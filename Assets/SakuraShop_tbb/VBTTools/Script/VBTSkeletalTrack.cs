@@ -77,6 +77,24 @@ namespace SakuraScript.VBTTool
             data.SetSplay((FingerIndex)fingerIndex, valOg );
         }
 
+        public void SetRootWristOffset( bool left, Vector3 rootPos, Vector3 rootRotEuler, Vector3 wristPos, Vector3 wristRotEuler )
+        {
+            OgLikeHandData data = (left) ? _vmtclient._leftHand : _vmtclient._rightHand;
+            data._skeletalRootPosOffset = rootPos;
+            data._skeletalRootRotOffset = rootRotEuler;
+            data._skeletalWristPosOffset = wristPos;
+            data._skeletalWristRotOffset = wristRotEuler;
+        }
+
+        public void GetRootWristOffset( bool left, ref Vector3 rootPos, ref Vector3 rootRotEuler, ref Vector3 wristPos, ref Vector3 wristRotEuler )
+        {
+            OgLikeHandData data = (left) ? _vmtclient._leftHand : _vmtclient._rightHand;
+            rootPos = data._skeletalRootPosOffset;
+            rootRotEuler = data._skeletalRootRotOffset;
+            wristPos = data._skeletalWristPosOffset;
+            wristRotEuler = data._skeletalWristRotOffset;
+        }
+
         /////////////////////////////////////////////////
         // Update functions
         void Update()
