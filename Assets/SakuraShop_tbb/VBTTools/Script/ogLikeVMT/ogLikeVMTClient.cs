@@ -23,6 +23,9 @@ namespace OgLikeVMT
         [System.NonSerialized]
         public HandSkeletonBone _logBoneIndex; // Unknown なら出力しない、 .COUNT の場合は全て
 
+        private int GetVmtIndex(bool left) { return (left ? 1:2); }
+        private int GetVmtEnable(bool left) { return (left ? 5:6); }
+
         public void OnEnable()
         {
             _logBoneIndex = HandSkeletonBone.Unknown;
@@ -64,24 +67,24 @@ namespace OgLikeVMT
                 if (scalarMode) {
                     if (OgLikeHandData.GetRootFingerBoneFromFingerIndex(fi) == (HandSkeletonBone)i) {
                         float value = data.GetAverageFingerCurlValue(fi);
-                        _client.Send("/VMT/Skeleton/Scalar",  data.IsLeftHand? 1 : 2, (int)fi+1, 1f - value, 0, 0);
+                        _client.Send("/VMT/Skeleton/Scalar",  GetVmtIndex(data.IsLeftHand), (int)fi+1, 1f - value, 0, 0);
                     }
                     if ( OgLikeHandData.IsBoneSplayable((HandSkeletonBone)i) ) {
-                        _client.Send("/VMT/Skeleton/Unity", data.IsLeftHand? 1 : 2, (int)i,
+                        _client.Send("/VMT/Skeleton/Unity", GetVmtIndex(data.IsLeftHand), (int)i,
                             (float)tfm._position.x, (float)tfm._position.y, (float)tfm._position.z,
                             (float)tfm._rotation.x, (float)tfm._rotation.y, (float)tfm._rotation.z, (float)tfm._rotation.w
                         );
                     }
                 }
                 else {
-                    _client.Send("/VMT/Skeleton/Unity", data.IsLeftHand? 1 : 2, (int)i,
+                    _client.Send("/VMT/Skeleton/Unity", GetVmtIndex(data.IsLeftHand), (int)i,
                         (float)tfm._position.x, (float)tfm._position.y, (float)tfm._position.z,
                         (float)tfm._rotation.x, (float)tfm._rotation.y, (float)tfm._rotation.z, (float)tfm._rotation.w
                     );
                 }
             }
             
-            _client.Send("/VMT/Skeleton/Apply", data.IsLeftHand? 1:2, (float)0);
+            _client.Send("/VMT/Skeleton/Apply", GetVmtIndex(data.IsLeftHand), (float)0);
         }
     };
 }
