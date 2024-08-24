@@ -70,11 +70,26 @@ namespace SakuraScript.VBTTool
             public Vector3 RotEuR;
             public Vector3 HandPosL;
             public Vector3 HandPosR;
+
+            public Vector3 RootPosL;
+            public Vector3 RootRotL;
+            public Vector3 WristPosL;
+            public Vector3 WristRotL;
+            public Vector3 RootPosR;
+            public Vector3 RootRotR;
+            public Vector3 WristPosR;
+            public Vector3 WristRotR;
         }
 
         public GameObject _adjustingUI;
+        public GameObject _adjustingUISkeL;
+        public GameObject _adjustingUISkeR;
         private bool _wristRotate = false;
         private bool _wristRotateRestartVMCPListen = false;
+
+        public Toggle _wristRotateUI1;
+        public Toggle _wristRotateUI2;
+        public Toggle _wristRotateUI3;
 
         [SerializeField] VBTToolsAdjustSetting _adjSetting;
 
@@ -85,6 +100,16 @@ namespace SakuraScript.VBTTool
         public Text _adjustTextRotR;
         public Text _adjustTextHandPosL;        
         public Text _adjustTextHandPosR;        
+
+        public Text _adjustTextRootPosL; 
+        public Text _adjustTextRootRotL; 
+        public Text _adjustTextWristPosL;
+        public Text _adjustTextWristRotL;
+
+        public Text _adjustTextRootPosR;
+        public Text _adjustTextRootRotR;
+        public Text _adjustTextWristPosR;
+        public Text _adjustTextWristRotR;
 
         [NonSerialized] public Transform _sphereL;
         [NonSerialized] public Transform _sphereR;
@@ -129,25 +154,37 @@ namespace SakuraScript.VBTTool
             _adjSetting.HandPosL = _vbtHandPosTrack._handPosOffsetL;
             _adjSetting.HandPosR = _vbtHandPosTrack._handPosOffsetR;
 
-            // TODO
-            // default.json があれば読んで、_adjSetting を初期化する
             string path = AppDomain.CurrentDomain.BaseDirectory.TrimEnd('\\');//EXEを実行したカレントディレクトリ (ショートカット等でカレントディレクトリが変わるのでこの方式で)
             path += "\\default.json";
             if (System.IO.File.Exists(path) ) {
                 LoadSettingFile(path);
             }
 
-            _adjustingUI.SetActive(true); 
             InitSliders();
             _adjustingUI.SetActive(false); 
+            _adjustingUISkeL.SetActive(false); 
+            _adjustingUISkeR.SetActive(false); 
         }
 
         private void InitSliders()
         {
+            bool ui1View = _adjustingUI.activeInHierarchy;
+            bool ui2View = _adjustingUISkeL.activeInHierarchy;
+            bool ui3View = _adjustingUISkeR.activeInHierarchy;
+            _adjustingUI.SetActive(true); 
+            _adjustingUISkeL.SetActive(true); 
+            _adjustingUISkeR.SetActive(true); 
             SetAdjustSliderVal("LeftGroup/", _adjSetting.PosL, _adjSetting.RotEuL, false );
             SetAdjustSliderVal("RightGroup/", _adjSetting.PosR, _adjSetting.RotEuR, false );
             SetAdjustSliderVal("HandPosGroupL/", _adjSetting.HandPosL, Vector3.zero, true );
             SetAdjustSliderVal("HandPosGroupR/", _adjSetting.HandPosR, Vector3.zero, true );
+            SetAdjustSliderVal("RootGroupL/", _adjSetting.RootPosL, _adjSetting.RootRotL, false );
+            SetAdjustSliderVal("WristGroupL/", _adjSetting.WristPosL, _adjSetting.WristRotL, false );
+            SetAdjustSliderVal("RootGroupR/", _adjSetting.RootPosR, _adjSetting.RootRotR, false );
+            SetAdjustSliderVal("WristGroupR/", _adjSetting.WristPosR, _adjSetting.WristRotR, false );
+            _adjustingUI.SetActive(ui1View); 
+            _adjustingUISkeL.SetActive(ui2View); 
+            _adjustingUISkeR.SetActive(ui3View); 
         }
 
         public void OnVRMLoaded(Animator animator)
@@ -181,6 +218,8 @@ namespace SakuraScript.VBTTool
                 sr.transform.localPosition = Vector3.zero;
                 _sphereR = sr.transform;
             }
+
+            UpdateAdjust(0);
         }
 
         public bool SetHandler()
@@ -381,23 +420,6 @@ namespace SakuraScript.VBTTool
                 UodateRecvHMD(0.2f);
             }
 
-            if (_adjustingUI.activeInHierarchy) {
-                if (_animationTarget == null ) return;
-                _vbtHandPosTrack._transformVirtualLController.localPosition = _adjSetting.PosL;
-                _vbtHandPosTrack._transformVirtualLController.localRotation =  Quaternion.Euler(_adjSetting.RotEuL);
-                _vbtHandPosTrack._transformVirtualRController.localPosition = _adjSetting.PosR;
-                _vbtHandPosTrack._transformVirtualRController.localRotation =  Quaternion.Euler(_adjSetting.RotEuR);
-                _vbtHandPosTrack._handPosOffsetL = _adjSetting.HandPosL;
-                _vbtHandPosTrack._handPosOffsetR = _adjSetting.HandPosR;
-
-                _adjustTextPosL.text = $"Left pos {_adjSetting.PosL}";
-                _adjustTextRotL.text = $"Left rot {_adjSetting.RotEuL}";
-                _adjustTextPosR.text = $"Right pos {_adjSetting.PosR}";
-                _adjustTextRotR.text = $"Right rot {_adjSetting.RotEuR}";
-                _adjustTextHandPosL.text = $"Left Hand pos {_adjSetting.HandPosL}";
-                _adjustTextHandPosR.text = $"Right Hand pos {_adjSetting.HandPosR}";
-            }
-
             if (_wristRotate) {
                 if ( _handler == null ) {
                     //Debug.Log( "_handler is null" );
@@ -533,31 +555,103 @@ namespace SakuraScript.VBTTool
         // // // // // // // // // // // // // // // // //
         // Adjust UI
         public void OnToggleChangeAdjustUI(bool val) { _adjustingUI.SetActive(val); }
-        // Left
-        public void OnSliderPosXChanged(float val) { _adjSetting.PosL.x = val; }
-        public void OnSliderPosYChanged(float val) { _adjSetting.PosL.y = val; }
-        public void OnSliderPosZChanged(float val) { _adjSetting.PosL.z = val; }
-        public void OnSliderRotXChanged(float val) { _adjSetting.RotEuL.x = val; }
-        public void OnSliderRotYChanged(float val) { _adjSetting.RotEuL.y = val; }
-        public void OnSliderRotZChanged(float val) { _adjSetting.RotEuL.z = val; }
-        // Right
-        public void OnSliderPosXChangedR(float val) { _adjSetting.PosR.x = val; }
-        public void OnSliderPosYChangedR(float val) { _adjSetting.PosR.y = val; }
-        public void OnSliderPosZChangedR(float val) { _adjSetting.PosR.z = val; }
-        public void OnSliderRotXChangedR(float val) { _adjSetting.RotEuR.x = val; }
-        public void OnSliderRotYChangedR(float val) { _adjSetting.RotEuR.y = val; }
-        public void OnSliderRotZChangedR(float val) { _adjSetting.RotEuR.z = val; }
-        // HandPos L
-        public void OnSliderHandPosXChangedL(float val) { _adjSetting.HandPosL.x = val; }
-        public void OnSliderHandPosYChangedL(float val) { _adjSetting.HandPosL.y = val; }
-        public void OnSliderHandPosZChangedL(float val) { _adjSetting.HandPosL.z = val; }
-        // HandPos R
-        public void OnSliderHandPosXChangedR(float val) { _adjSetting.HandPosR.x = val; }
-        public void OnSliderHandPosYChangedR(float val) { _adjSetting.HandPosR.y = val; }
-        public void OnSliderHandPosZChangedR(float val) { _adjSetting.HandPosR.z = val; }
+        public void OnToggleChangeAdjustUI2(bool val) { _adjustingUISkeL.SetActive(val); }
+        public void OnToggleChangeAdjustUI3(bool val) { _adjustingUISkeR.SetActive(val); }
+
+        // Adjusting UI1 Left
+        public void OnSliderPosXChanged(float val) { _adjSetting.PosL.x = val; UpdateAdjust(1); }
+        public void OnSliderPosYChanged(float val) { _adjSetting.PosL.y = val; UpdateAdjust(1); }
+        public void OnSliderPosZChanged(float val) { _adjSetting.PosL.z = val; UpdateAdjust(1); }
+        public void OnSliderRotXChanged(float val) { _adjSetting.RotEuL.x = val; UpdateAdjust(1); }
+        public void OnSliderRotYChanged(float val) { _adjSetting.RotEuL.y = val; UpdateAdjust(1); }
+        public void OnSliderRotZChanged(float val) { _adjSetting.RotEuL.z = val; UpdateAdjust(1); }
+        // Adjusting UI1 Right
+        public void OnSliderPosXChangedR(float val) { _adjSetting.PosR.x = val; UpdateAdjust(1); }
+        public void OnSliderPosYChangedR(float val) { _adjSetting.PosR.y = val; UpdateAdjust(1); }
+        public void OnSliderPosZChangedR(float val) { _adjSetting.PosR.z = val; UpdateAdjust(1); }
+        public void OnSliderRotXChangedR(float val) { _adjSetting.RotEuR.x = val; UpdateAdjust(1); }
+        public void OnSliderRotYChangedR(float val) { _adjSetting.RotEuR.y = val; UpdateAdjust(1); }
+        public void OnSliderRotZChangedR(float val) { _adjSetting.RotEuR.z = val; UpdateAdjust(1); }
+        // Adjusting UI1 HandPos L
+        public void OnSliderHandPosXChangedL(float val) { _adjSetting.HandPosL.x = val; UpdateAdjust(1); }
+        public void OnSliderHandPosYChangedL(float val) { _adjSetting.HandPosL.y = val; UpdateAdjust(1); }
+        public void OnSliderHandPosZChangedL(float val) { _adjSetting.HandPosL.z = val; UpdateAdjust(1); }
+        // Adjusting UI1 HandPos R
+        public void OnSliderHandPosXChangedR(float val) { _adjSetting.HandPosR.x = val; UpdateAdjust(1); }
+        public void OnSliderHandPosYChangedR(float val) { _adjSetting.HandPosR.y = val; UpdateAdjust(1); }
+        public void OnSliderHandPosZChangedR(float val) { _adjSetting.HandPosR.z = val; UpdateAdjust(1); }
+
+        // Adjusting UI2 Root
+        public void OnSliderRootPosXChangedL(float val) { _adjSetting.RootPosL.x = val; UpdateAdjust(2); }
+        public void OnSliderRootPosYChangedL(float val) { _adjSetting.RootPosL.y = val; UpdateAdjust(2); }
+        public void OnSliderRootPosZChangedL(float val) { _adjSetting.RootPosL.z = val; UpdateAdjust(2); }
+        public void OnSliderRootRotXChangedL(float val) { _adjSetting.RootRotL.x = val; UpdateAdjust(2); }
+        public void OnSliderRootRotYChangedL(float val) { _adjSetting.RootRotL.y = val; UpdateAdjust(2); }
+        public void OnSliderRootRotZChangedL(float val) { _adjSetting.RootRotL.z = val; UpdateAdjust(2); }
+        // Adjusting UI2 Wrist
+        public void OnSliderWristPosXChangedL(float val) { _adjSetting.WristPosL.x = val; UpdateAdjust(2); }
+        public void OnSliderWristPosYChangedL(float val) { _adjSetting.WristPosL.y = val; UpdateAdjust(2); }
+        public void OnSliderWristPosZChangedL(float val) { _adjSetting.WristPosL.z = val; UpdateAdjust(2); }
+        public void OnSliderWristRotXChangedL(float val) { _adjSetting.WristRotL.x = val; UpdateAdjust(2); }
+        public void OnSliderWristRotYChangedL(float val) { _adjSetting.WristRotL.y = val; UpdateAdjust(2); }
+        public void OnSliderWristRotZChangedL(float val) { _adjSetting.WristRotL.z = val; UpdateAdjust(2); }
+
+        // Adjusting UI3 Root
+        public void OnSliderRootPosXChangedR(float val) { _adjSetting.RootPosR.x = val; UpdateAdjust(3); }
+        public void OnSliderRootPosYChangedR(float val) { _adjSetting.RootPosR.y = val; UpdateAdjust(3); }
+        public void OnSliderRootPosZChangedR(float val) { _adjSetting.RootPosR.z = val; UpdateAdjust(3); }
+        public void OnSliderRootRotXChangedR(float val) { _adjSetting.RootRotR.x = val; UpdateAdjust(3); }
+        public void OnSliderRootRotYChangedR(float val) { _adjSetting.RootRotR.y = val; UpdateAdjust(3); }
+        public void OnSliderRootRotZChangedR(float val) { _adjSetting.RootRotR.z = val; UpdateAdjust(3); }
+        // Adjusting UI3 Wrist
+        public void OnSliderWristPosXChangedR(float val) { _adjSetting.WristPosR.x = val; UpdateAdjust(3); }
+        public void OnSliderWristPosYChangedR(float val) { _adjSetting.WristPosR.y = val; UpdateAdjust(3); }
+        public void OnSliderWristPosZChangedR(float val) { _adjSetting.WristPosR.z = val; UpdateAdjust(3); }
+        public void OnSliderWristRotXChangedR(float val) { _adjSetting.WristRotR.x = val; UpdateAdjust(3); }
+        public void OnSliderWristRotYChangedR(float val) { _adjSetting.WristRotR.y = val; UpdateAdjust(3); }
+        public void OnSliderWristRotZChangedR(float val) { _adjSetting.WristRotR.z = val; UpdateAdjust(3); }
+
+        private void UpdateAdjust( int uiNum ) { // if 0 , all 
+            if ( uiNum == 0 || uiNum == 1)  {
+                if ( _animationTarget != null ) {
+                    _vbtHandPosTrack._transformVirtualLController.localPosition = _adjSetting.PosL;
+                    _vbtHandPosTrack._transformVirtualLController.localRotation =  Quaternion.Euler(_adjSetting.RotEuL);
+                    _vbtHandPosTrack._transformVirtualRController.localPosition = _adjSetting.PosR;
+                    _vbtHandPosTrack._transformVirtualRController.localRotation =  Quaternion.Euler(_adjSetting.RotEuR);
+                    _vbtHandPosTrack._handPosOffsetL = _adjSetting.HandPosL;
+                    _vbtHandPosTrack._handPosOffsetR = _adjSetting.HandPosR;
+                }
+
+                _adjustTextPosL.text = $"Left pos {_adjSetting.PosL}";
+                _adjustTextRotL.text = $"Left rot {_adjSetting.RotEuL}";
+                _adjustTextPosR.text = $"Right pos {_adjSetting.PosR}";
+                _adjustTextRotR.text = $"Right rot {_adjSetting.RotEuR}";
+                _adjustTextHandPosL.text = $"Left Hand pos {_adjSetting.HandPosL}";
+                _adjustTextHandPosR.text = $"Right Hand pos {_adjSetting.HandPosR}";
+            }
+            if ( uiNum == 0 || uiNum == 2)  {
+                _vbtSkeletalTrack.SetRootWristOffset( true, _adjSetting.RootPosL, _adjSetting.RootRotL, _adjSetting.WristPosL, _adjSetting.WristRotL );
+                _adjustTextRootPosL.text = $"Root pos {_adjSetting.RootPosL}";
+                _adjustTextRootRotL.text = $"Root rot {_adjSetting.RootRotL}";
+                _adjustTextWristPosL.text = $"Wrist pos {_adjSetting.WristPosL}";
+                _adjustTextWristRotL.text = $"Wrist rot {_adjSetting.WristRotL}";
+            }
+            if ( uiNum == 0 || uiNum == 3)  {
+                _vbtSkeletalTrack.SetRootWristOffset( false, _adjSetting.RootPosR, _adjSetting.RootRotR, _adjSetting.WristPosR, _adjSetting.WristRotR );
+                _adjustTextRootPosR.text = $"Root pos {_adjSetting.RootPosR}";
+                _adjustTextRootRotR.text = $"Root rot {_adjSetting.RootRotR}";
+                _adjustTextWristPosR.text = $"Wrist pos {_adjSetting.WristPosR}";
+                _adjustTextWristRotR.text = $"Wrist rot {_adjSetting.WristRotR}";
+            }
+        }
 
         public void OnToggleChangeWristRotate(bool val) {
             _wristRotate = val;
+            // 全てのAdjustUIパネルで選択を一致させる。修正の都度呼ばれるので未一致があった時は即 return する
+            if (_wristRotateUI1.isOn != val) { _wristRotateUI1.isOn = val; return; }
+            if (_wristRotateUI2.isOn != val) { _wristRotateUI2.isOn = val; return; }
+            if (_wristRotateUI3.isOn != val) { _wristRotateUI3.isOn = val; return; }
+
             if ( val ) {
                 _wristRotateRestartVMCPListen = _toggleServer.isOn; // save state
                 _toggleServer.isOn = false; // stop server
