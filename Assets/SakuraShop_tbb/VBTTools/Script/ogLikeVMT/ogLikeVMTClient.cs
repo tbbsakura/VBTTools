@@ -59,8 +59,8 @@ namespace OgLikeVMT
             for ( int i = 0; i < (int)HandSkeletonBone.COUNT; i++ ) {
                 SkeletalBoneTransform tfm = new SkeletalBoneTransform();
                 data.GetBoneTransform( ref tfm, i );
-                FingerIndex fi = OgLikeHandData.GetFingerFromBoneIndex((HandSkeletonBone)i);
-                bool scalarMode = GetScalarMode(fi, scalarModeInt);
+                FingerIndex fi = OgLikeHandData.GetFingerFromBoneIndex((HandSkeletonBone)i); // Root, Wrist は　Uknown が戻る
+                bool scalarMode = GetScalarMode(fi, scalarModeInt); // Root, Wrist は false になる
                 if (scalarMode) {
                     if (OgLikeHandData.GetRootFingerBoneFromFingerIndex(fi) == (HandSkeletonBone)i) {
                         float value = data.GetAverageFingerCurlValue(fi);
