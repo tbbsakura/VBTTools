@@ -154,10 +154,17 @@ namespace SakuraScript.VBTTool
             _adjSetting.HandPosL = _vbtHandPosTrack._handPosOffsetL;
             _adjSetting.HandPosR = _vbtHandPosTrack._handPosOffsetR;
 
+#if UNITY_EDITOR
+            string path = "Assets\\SakuraShop_tbb\\VBTTools\\etc\\setting";
+#else
             string path = AppDomain.CurrentDomain.BaseDirectory.TrimEnd('\\');//EXEを実行したカレントディレクトリ (ショートカット等でカレントディレクトリが変わるのでこの方式で)
+#endif
             path += "\\default.json";
             if (System.IO.File.Exists(path) ) {
                 LoadSettingFile(path);
+            }
+            else {
+                Debug.Log($"File not found: {path}");
             }
 
             InitSliders();
@@ -754,6 +761,7 @@ namespace SakuraScript.VBTTool
 
         private void LoadSettingFile(string path)
         {
+            Debug.Log( $"LoadSettingFile: {path}" ); 
             StreamReader sr = new StreamReader(path, false);
             string json = "";
             while(!sr.EndOfStream) {
