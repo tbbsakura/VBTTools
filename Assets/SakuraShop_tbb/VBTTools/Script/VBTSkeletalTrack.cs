@@ -2,9 +2,7 @@
 // MIT License. See "LICENSE" file.
 
 using UnityEngine;
-using uOSC;
 using OgLikeVMT;
-
 
 namespace SakuraScript.VBTTool
 {

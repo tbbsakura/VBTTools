@@ -4,11 +4,7 @@
 // 他のスクリプト等で初期化する場合は needEnable を　falseにすることで、最初の送信を省略できる
 
 using System;
-using System.Collections;
-using System.Collections.Generic;
-using System.Security.Cryptography.X509Certificates;
 using UnityEngine;
-using static UnityEngine.GraphicsBuffer;
 
 namespace SakuraScript.ModifiedVMTSample
 {

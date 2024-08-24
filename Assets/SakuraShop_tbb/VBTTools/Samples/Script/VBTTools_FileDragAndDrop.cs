@@ -2,19 +2,11 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
-using System.Linq;
 using B83.Win32;
 
 using System.IO;
-using System.Threading.Tasks;
 using VRM;
-
 using UniGLTF;
-using UniHumanoid;
-using VRMShaders;
-using System.Security.Cryptography;
-
-using OgLikeVMT;
 using SakuraScript.VBTTool;
 
 public class VBTTools_FileDragAndDrop : MonoBehaviour

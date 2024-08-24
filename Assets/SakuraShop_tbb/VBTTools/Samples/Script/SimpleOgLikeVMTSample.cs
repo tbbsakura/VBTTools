@@ -1,19 +1,10 @@
 ﻿// Copyright (c) 2023-2024 Sakura(さくら) / tbbsakura
 // MIT License. See "LICENSE" file.
 
-using System.Collections;
-using System.Collections.Generic;
 using System.Net;
 using UnityEngine;
 using UnityEngine.UI;
 using uOSC;
-using System.IO;
-using System;
-using SFB;
-
-using SakuraScript.ModifiedVMTSample;
-using OgLikeVMT;
-using UniGLTF;
 
 namespace OgLikeVMT.SimpleSample
 {
