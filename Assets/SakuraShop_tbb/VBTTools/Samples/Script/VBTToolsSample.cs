@@ -312,6 +312,24 @@ namespace SakuraScript.VBTTool
             }
         }
 
+        public void SendEnable()
+        {
+            _client.Send("/VMT/Room/Unity", 1, 5, 0.0f, 0f,0f,0f, 0f,0f,0f,0f);
+            _client.Send("/VMT/Room/Unity", 2, 6, 0.0f, 0f,0f,0f, 0f,0f,0f,0f);
+        }
+
+        public void SendDisable()
+        {
+            _client.Send("/VMT/Room/Unity", 1, 0, 0.0f, 0f,0f,0f, 0f,0f,0f,0f);
+            _client.Send("/VMT/Room/Unity", 2, 0, 0.0f, 0f,0f,0f, 0f,0f,0f,0f);
+        }
+
+        // 全てのVMTトラッカーの電源をオフにする
+        public void SendReset() 
+        {
+            _client.Send("/VMT/Reset");
+        }
+
         bool InitClient()
         {
             if (_client == null ) {
@@ -398,6 +416,8 @@ namespace SakuraScript.VBTTool
                 }
             }
             else {
+                // VMT の controller enable (種類)を 0: disable にする
+                SendDisable();
                 _toggleClient.isOn = false;
                 _vbtHandPosTrack.StopTrack();
                 _vbtSkeletalTrack._isOn = false;
