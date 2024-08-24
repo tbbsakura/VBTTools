@@ -15,6 +15,13 @@ namespace OgLikeVMT
         float [] _maxSplayAngleHumanoid = new float [(int)FingerIndex.COUNT] { 25f, 20f, 7.5f, 7.5f, 20f };
         private OgLikeHandAnim _animCalc;
 
+        // Hand-Root offset
+        public Vector3 _skeletalRootPosOffset = Vector3.zero; 
+        public Vector3 _skeletalRootRotOffset = Vector3.zero;
+        // Root-Wrist offset
+        public Vector3 _skeletalWristPosOffset = Vector3.zero; 
+        public Vector3 _skeletalWristRotOffset = Vector3.zero; 
+
         ///////////////////////////////////////////////////////////////////////////////
         // constructor, initializer
         public OgLikeHandData( bool isLeft ) {  
@@ -276,7 +283,14 @@ namespace OgLikeVMT
 
         void ComputeBoneTransforms()
         {
-            for (int i = 1; i < (int)HandSkeletonBone.COUNT; i++) { 
+            // Root and Wrist
+            _boneTransforms[0]._position = _skeletalRootPosOffset;
+            _boneTransforms[0]._rotation = Quaternion.Euler(_skeletalRootRotOffset);
+            _boneTransforms[1]._position = _skeletalWristPosOffset; 
+            _boneTransforms[1]._rotation = Quaternion.Euler(_skeletalWristRotOffset);
+
+            // five fingers
+            for (int i = 2; i < (int)HandSkeletonBone.COUNT; i++) { 
                 FingerIndex finger = GetFingerFromBoneIndex((HandSkeletonBone)i);
                 int iFinger = (int)finger;
                 if (finger == FingerIndex.Unknown ) continue; 
