@@ -9,8 +9,6 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 8341344551731794844}
-  - component: {fileID: 3444156633905750533}
-  - component: {fileID: 767425001415771074}
   m_Layer: 0
   m_Name: JoyconToVMTSample
   m_TagString: Untagged
@@ -34,13 +32,46 @@ Transform:
   - {fileID: 1934915379403495875}
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
---- !u!114 &3444156633905750533
+--- !u!1 &4815756745528915444
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 6149499725535573175}
+  - component: {fileID: 4151480494048210205}
+  - component: {fileID: 7789146573200792434}
+  m_Layer: 0
+  m_Name: JoyContoVMT
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &6149499725535573175
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 4815756745528915444}
+  serializedVersion: 2
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 1934915379403495875}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &4151480494048210205
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 4206319494666372460}
+  m_GameObject: {fileID: 4815756745528915444}
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: d36dd9fcae25042bbb815255411ff524, type: 3}
@@ -56,13 +87,13 @@ MonoBehaviour:
   onClientStopped:
     m_PersistentCalls:
       m_Calls: []
---- !u!114 &767425001415771074
+--- !u!114 &7789146573200792434
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 4206319494666372460}
+  m_GameObject: {fileID: 4815756745528915444}
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: f4e4d3df6a3bf7c4faebbafb479f3e47, type: 3}
@@ -74,6 +105,9 @@ MonoBehaviour:
     m_PersistentCalls:
       m_Calls: []
   onButtonUp:
+    m_PersistentCalls:
+      m_Calls: []
+  onStick:
     m_PersistentCalls:
       m_Calls: []
 --- !u!1 &5113465059649171056
@@ -105,7 +139,8 @@ Transform:
   m_LocalPosition: {x: -38.000526, y: -25.713865, z: -0.54452133}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
-  m_Children: []
+  m_Children:
+  - {fileID: 6149499725535573175}
   m_Father: {fileID: 8341344551731794844}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!114 &4622706966628708388
