@@ -109,7 +109,8 @@ namespace SakuraScript.VBTTool
         Vector3 _pauseHandPosOffsetL = Vector3.zero;
         Vector3 _pauseHandPosOffsetR = Vector3.zero;
 
-        // Start is called before the first frame update
+        // // // // // // // // // // // // // // // // // // 
+        // Start and initializing functions
         void Start()
         {
             _vbtSkeletalTrack = GetComponent<VBTSkeletalTrack>();
@@ -167,6 +168,7 @@ namespace SakuraScript.VBTTool
             _adjustingUISkeR.SetActive(false); 
         }
 
+        // 設定ファイル読み込み後に adjustingUIs のスライダーを再設定する
         private void InitSliders()
         {
             bool ui1View = _adjustingUI.activeInHierarchy;
@@ -186,6 +188,17 @@ namespace SakuraScript.VBTTool
             _adjustingUI.SetActive(ui1View); 
             _adjustingUISkeL.SetActive(ui2View); 
             _adjustingUISkeR.SetActive(ui3View); 
+        }
+
+        void SetAdjustSliderVal(string group, Vector3 pos, Vector3 rotEular, bool posOnly ){
+            GameObject.Find(group+"SliderBx").GetComponent<Slider>().value = pos.x;
+            GameObject.Find(group+"SliderBy").GetComponent<Slider>().value = pos.y;
+            GameObject.Find(group+"SliderBz").GetComponent<Slider>().value = pos.z;
+            if ( !posOnly ) {
+                GameObject.Find(group+"SliderEux").GetComponent<Slider>().value = rotEular.x;
+                GameObject.Find(group+"SliderEuy").GetComponent<Slider>().value = rotEular.y;
+                GameObject.Find(group+"SliderEuz").GetComponent<Slider>().value = rotEular.z;
+            }
         }
 
         public void OnVRMLoaded(Animator animator)
@@ -223,6 +236,8 @@ namespace SakuraScript.VBTTool
             return true;
         }
 
+        // // // // // // // // // // // // // // // // // // // // 
+        // Client related functions
         bool IsValidIpAddr( string ipString ) {
             IPAddress address;
             return (IPAddress.TryParse(ipString, out address));
@@ -240,83 +255,12 @@ namespace SakuraScript.VBTTool
             return port;
         }
 
+        // client toggle on をキャンセルする場合等に呼ぶ
         public void SetClientTogglesOff()
         {
             _toggleClient.isOn = false;
             _vbtHandPosTrack.StopTrack();
             _vbtSkeletalTrack._isOn = false;
-        }
-
-        public void OnServerCutEyeToggleChanged(bool value) 
-        {
-            if ( _exr == null ) return;
-
-            _exr.CutBoneNeck = false;
-            _exr.CutBoneHead = false;
-            _exr.CutBoneLeftEye = true;
-            _exr.CutBoneRightEye = true;
-            _exr.CutBoneJaw = false;
-
-            _exr.CutBoneHips = false;
-            _exr.CutBoneSpine = false;
-            _exr.CutBoneChest = false;
-            _exr.CutBoneUpperChest = false;
-
-            _exr.CutBoneLeftUpperLeg = false;
-            _exr.CutBoneLeftLowerLeg = false;
-            _exr.CutBoneLeftFoot = false;
-            _exr.CutBoneLeftToes = false;
-
-            _exr.CutBoneRightUpperLeg = false;
-            _exr.CutBoneRightLowerLeg = false;
-            _exr.CutBoneRightFoot = false;
-            _exr.CutBoneRightToes = false;
-
-            _exr.CutBonesEnable = value;                
-        }
-
-        public void OnServerToggleChanged(bool value) 
-        {
-            //Debug.Log( $"OnServerToggleChanged: {value}");
-            if (_server == null) return;
-            if ( _toggleServer.isOn == false ) {
-                _server.StopServer();
-                _topText.text = "OSC server stopped.";
-                _testUI.SetActive(true);
-            }
-            else 
-            {
-                int port = GetValidPortFromStr(_inputFieldListenPort.text);
-                if ( port > 0 ) 
-                {            
-                    _server.port = port;
-                    _server.StartServer();
-                    if ( _topText != null ) _topText.text = "OSC Server started.";
-                    _testUI.SetActive(false);
-                }
-                else {
-                    _toggleServer.isOn = false;
-                    _topText.text = "Invalid server port.";
-                }
-            }
-        }
-
-        public void SendEnable()
-        {
-            _client.Send("/VMT/Room/Unity", 1, 5, 0.0f, 0f,0f,0f, 0f,0f,0f,0f);
-            _client.Send("/VMT/Room/Unity", 2, 6, 0.0f, 0f,0f,0f, 0f,0f,0f,0f);
-        }
-
-        public void SendDisable()
-        {
-            _client.Send("/VMT/Room/Unity", 1, 0, 0.0f, 0f,0f,0f, 0f,0f,0f,0f);
-            _client.Send("/VMT/Room/Unity", 2, 0, 0.0f, 0f,0f,0f, 0f,0f,0f,0f);
-        }
-
-        // 全てのVMTトラッカーの電源をオフにする
-        public void SendReset() 
-        {
-            _client.Send("/VMT/Reset");
         }
 
         bool InitClient()
@@ -387,14 +331,8 @@ namespace SakuraScript.VBTTool
             return true;
         }
    
-        public void OnJoyConToggleChanged(bool value) {
-            _ui2JoyCon.SetActive(value);
-        }
-
-        public void OnUIPanelToggleChanged(bool value) {
-            _ui1Panel.SetActive(value);
-        }
-
+        // // // // // // // // // // // // // // // // // // 
+        // Client UI functions
         public void OnClientToggleChanged(bool value)
         {
             Debug.Log( "OnClientToggleChanged: " + value.ToString());
@@ -414,12 +352,15 @@ namespace SakuraScript.VBTTool
             }
         }
 
+        // HMDパケット受信インジケーターの処理
         public void UpdateRecvHMD( float alpha ) {
             Color color =_imgRecvHMD.color;
             color.a = alpha;
             _imgRecvHMD.color = color;
         }
 
+        // // // // // // // // // // // // // // // // // // 
+        // Update
         void Update()
         {
             if ( _vbtHandPosTrack ) {
@@ -446,9 +387,74 @@ namespace SakuraScript.VBTTool
             }
         }
 
+        // // // // // // // // // // // // // // // // // // 
+        // Server UI functions
+        public void OnServerCutEyeToggleChanged(bool value) 
+        {
+            if ( _exr == null ) return;
+
+            _exr.CutBoneNeck = false;
+            _exr.CutBoneHead = false;
+            _exr.CutBoneLeftEye = true;
+            _exr.CutBoneRightEye = true;
+            _exr.CutBoneJaw = false;
+
+            _exr.CutBoneHips = false;
+            _exr.CutBoneSpine = false;
+            _exr.CutBoneChest = false;
+            _exr.CutBoneUpperChest = false;
+
+            _exr.CutBoneLeftUpperLeg = false;
+            _exr.CutBoneLeftLowerLeg = false;
+            _exr.CutBoneLeftFoot = false;
+            _exr.CutBoneLeftToes = false;
+
+            _exr.CutBoneRightUpperLeg = false;
+            _exr.CutBoneRightLowerLeg = false;
+            _exr.CutBoneRightFoot = false;
+            _exr.CutBoneRightToes = false;
+
+            _exr.CutBonesEnable = value;                
+        }
+
+        public void OnServerToggleChanged(bool value) 
+        {
+            //Debug.Log( $"OnServerToggleChanged: {value}");
+            if (_server == null) return;
+            if ( _toggleServer.isOn == false ) {
+                _server.StopServer();
+                _topText.text = "OSC server stopped.";
+                _testUI.SetActive(true);
+            }
+            else 
+            {
+                int port = GetValidPortFromStr(_inputFieldListenPort.text);
+                if ( port > 0 ) 
+                {            
+                    _server.port = port;
+                    _server.StartServer();
+                    if ( _topText != null ) _topText.text = "OSC Server started.";
+                    _testUI.SetActive(false);
+                }
+                else {
+                    _toggleServer.isOn = false;
+                    _topText.text = "Invalid server port.";
+                }
+            }
+        }
+
+        // // // // // // // // // // // // // // // // // // 
+        // Controller UI functions
+        public void OnJoyConToggleChanged(bool value) {
+            _ui2JoyCon.SetActive(value);
+        }
+
+        public void OnUIPanelToggleChanged(bool value) {
+            _ui1Panel.SetActive(value);
+        }
+
         // // // // // // // // // // // // // // // // //
-        // VMT TEST UI
-        // 2ndTrack Skeletal / UI mixed
+        // Testing UI functions
         public void OnJointCurlSliderChanged( float val, int fingerIndex, int jointIndex ) { 
             Debug.Log( $"OnJointCurlSliderChanged( val = {val}, fingerIndex = {fingerIndex}, jointIndex = {jointIndex} )");
             _vbtSkeletalTrack.SetJointCurl(toggleLeft, val, fingerIndex, jointIndex);
@@ -561,8 +567,8 @@ namespace SakuraScript.VBTTool
         
         public void OnToggleChangedMusmode(bool val) { _musmode = val ; }
 
-        // // // // // // // // // // // // // // // // //
-        // Adjust UI
+        // // // // // // // // // // // // // // // // // 
+        // Adjusting UI
         public void OnToggleChangeAdjustUI(bool val) { _adjustingUI.SetActive(val); }
         public void OnToggleChangeAdjustUI2(bool val) { _adjustingUISkeL.SetActive(val); }
         public void OnToggleChangeAdjustUI3(bool val) { _adjustingUISkeR.SetActive(val); }
@@ -670,15 +676,16 @@ namespace SakuraScript.VBTTool
             }
             _exr.gameObject.SetActive(!val); // Preventing external receiver from adjusting Hips pos.
         }
+
         // // // // // // // // // // // // // // // // //
-        // Wrist rotation
+        // Adjusting UI - Wrist rotation
         readonly float [] _wristRotateArray = new float[] { -1f, -0.75f, -0.5f, -0.25f, 0f, 0.25f, 0.5f, 0.75f, 1f };
-        int _rotateCurrentIndex = 0;
+        private int _rotateCurrentIndex = 0;
         private float _rotateWristRate = 0.1f;
         private float _nextRotate = 0.0f;
         private int _rotateDirection = 1;
 
-        public float GetNextRotateTwist() {
+        private float GetNextRotateTwist() {
             if ( Time.time > _nextRotate ) {
                 if (_rotateCurrentIndex == _wristRotateArray.Length -1 ) {
                     _rotateDirection = -1;
@@ -696,17 +703,8 @@ namespace SakuraScript.VBTTool
             return _wristRotateArray[_rotateCurrentIndex];
         }
 
-        void SetAdjustSliderVal(string group, Vector3 pos, Vector3 rotEular, bool posOnly ){
-            GameObject.Find(group+"SliderBx").GetComponent<Slider>().value = pos.x;
-            GameObject.Find(group+"SliderBy").GetComponent<Slider>().value = pos.y;
-            GameObject.Find(group+"SliderBz").GetComponent<Slider>().value = pos.z;
-            if ( !posOnly ) {
-                GameObject.Find(group+"SliderEux").GetComponent<Slider>().value = rotEular.x;
-                GameObject.Find(group+"SliderEuy").GetComponent<Slider>().value = rotEular.y;
-                GameObject.Find(group+"SliderEuz").GetComponent<Slider>().value = rotEular.z;
-            }
-        }
-
+        // // // // // // // // // // // // // // // // // // 
+        // Adjusting UI - Setting File Save/Load
         public void OnSaveButton()
         {
             var extensions = new[] {
@@ -755,5 +753,24 @@ namespace SakuraScript.VBTTool
             InitSliders(); 
         }
         
+        // // // // // // // // // // // // // // // // // // 
+        // VMT Enable/Disable functions
+        public void SendEnable()
+        {
+            _client.Send("/VMT/Room/Unity", 1, 5, 0.0f, 0f,0f,0f, 0f,0f,0f,0f);
+            _client.Send("/VMT/Room/Unity", 2, 6, 0.0f, 0f,0f,0f, 0f,0f,0f,0f);
+        }
+
+        public void SendDisable()
+        {
+            _client.Send("/VMT/Room/Unity", 1, 0, 0.0f, 0f,0f,0f, 0f,0f,0f,0f);
+            _client.Send("/VMT/Room/Unity", 2, 0, 0.0f, 0f,0f,0f, 0f,0f,0f,0f);
+        }
+
+        // 全てのVMTトラッカーの電源をオフにする
+        public void SendReset() 
+        {
+            _client.Send("/VMT/Reset");
+        }
     };   // class end
 }
