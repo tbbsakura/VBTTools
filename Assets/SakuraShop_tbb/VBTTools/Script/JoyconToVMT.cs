@@ -23,7 +23,9 @@ namespace SakuraScript.VBTTool {
 	public class JoyconButtonDownEvent : UnityEvent<bool, int> {};
 	[System.Serializable]
     public class JoyconButtonUpEvent : UnityEvent<bool, int> {}; 
-
+	[System.Serializable]
+    public class JoyconStickEvent : UnityEvent<bool, int> {}; 
+    
     [RequireComponent(typeof(uOSC.uOscClient))]
     public class JoyconToVMT : MonoBehaviour {
         [Tooltip("VMTに渡すパラメーター/左手のindex")]
@@ -35,6 +37,8 @@ namespace SakuraScript.VBTTool {
 		public JoyconButtonDownEvent onButtonDown = new JoyconButtonDownEvent();
 		[SerializeField, Tooltip("bool は 左手ならtrue/右手ならfalse, int は Joycon.Button (0~12)")]
 		public JoyconButtonUpEvent onButtonUp = new JoyconButtonUpEvent();
+		[SerializeField, Tooltip("bool は 左手ならtrue/右手ならfalse, int は TenKey Layout (2=down, etc.)")]
+		public JoyconStickEvent onStick = new JoyconStickEvent();
 
 /*      defined in Joycon.cs of JoyConLib
         public enum Button : int
@@ -53,6 +57,9 @@ namespace SakuraScript.VBTTool {
         private Joycon      m_joyconR;
         private uOscClient  m_client;
 
+        // false にすると、一時的にstickをVMTに通知しなくなる(Callbackは処理される)
+        public bool enableStickMove = true;
+
         void Start ()
         {
             m_client = GetComponent<uOscClient>();
@@ -60,6 +67,10 @@ namespace SakuraScript.VBTTool {
 
         void OnEnable()
         {
+            if (JoyconManager.Instance == null ) {
+                Debug.Log( "JoyconManager.Instance is null." );
+                return;
+            }
             List<Joycon> _joycons = JoyconManager.Instance.j;
             if ( _joycons == null || _joycons.Count <= 0 ) return;
             m_joyconL = _joycons.Find( c =>  c.isLeft );
@@ -113,9 +124,11 @@ namespace SakuraScript.VBTTool {
                 bool _hold = j.GetButton(button);
 
                 if ( _down ) {  
+                    //Debug.Log($"calling onButtonDown.Invoke {button}");
                     onButtonDown.Invoke( j.isLeft, (int)button );
                 }
                 else if ( _up ) {
+                    //Debug.Log($"calling onButtonUp.Invoke {button}");
                     onButtonUp.Invoke( j.isLeft, (int)button );
                 }
                 else if ( !_hold ) {
@@ -166,8 +179,24 @@ namespace SakuraScript.VBTTool {
             if ( stick[0] >  0.75f ) jx =  1f;
             if ( stick[1] < -0.75f ) jy = -1f;
             if ( stick[1] >  0.75f ) jy =  1f;
-            m_client.Send("/VMT/Input/Joystick", (int)(j.isLeft? _VMTIndexLeft : _VMTIndexRight), (int)1, 0f, jx, jy );
 
+            // InvokeStickEvent で特殊なことをするため動きたくない場合、enableStickMove = false で Sendを止められる
+            if (enableStickMove)
+                m_client.Send("/VMT/Input/Joystick", (int)(j.isLeft? _VMTIndexLeft : _VMTIndexRight), (int)1, 0f, jx, jy );
+            InvokeStickEvent(j.isLeft, jx, jy);
+        }
+
+        void InvokeStickEvent( bool isLeft, float jx, float jy ) {
+            int stickNum = 0;
+            // 暫定的に4方向で運用
+            if ( jx == -1f && (jy != 1f && jy != -1f) ) stickNum = 4;
+            if ( jx ==  1f && (jy != 1f && jy != -1f) ) stickNum = 6;
+            if ( jy == -1f && (jx != 1f && jx != -1f) ) stickNum = 2;
+            if ( jy ==  1f && (jx != 1f && jx != -1f) ) stickNum = 8;
+            if ( stickNum != 0 ) {
+                //Debug.Log($"calling onStick.Invoke {stickNum}");
+                onStick.Invoke( isLeft, stickNum );
+            }
         }
     }
 }
