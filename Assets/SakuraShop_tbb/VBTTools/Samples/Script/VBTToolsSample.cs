@@ -49,10 +49,12 @@ namespace SakuraScript.VBTTool
         private bool [] toggleFingers = new bool [5];
         private bool toggleLeft = false;
         private bool _musmode = true;  
+        [SerializeField] private GameObject _testUI;
 
+        // Controller UI panel
         [SerializeField] private GameObject _ui1Panel;
         [SerializeField] private GameObject _ui2JoyCon;
-        [SerializeField] private GameObject _testUI;
+        [SerializeField] private JoyconToVMT _joyconToVMTInstance;
 
         // Adjust setting UI
         [System.Serializable]
@@ -105,7 +107,7 @@ namespace SakuraScript.VBTTool
         public Text _adjustTextWristPosR;
         public Text _adjustTextWristRotR;
 
-        // 一時停止＆手の一時的位置移動機能
+        // PauseHandPosAdjust : 一時停止＆手の一時的位置移動機能関連
         Vector3 _pauseHandPosOffsetL = Vector3.zero;
         Vector3 _pauseHandPosOffsetR = Vector3.zero;
 
@@ -751,6 +753,86 @@ namespace SakuraScript.VBTTool
             InitSliders(); 
         }
         
+        // // // // // // // // // // // // // // // // // // 
+        // PauseHandPosAdjust related functions
+        private const  float _movePos = 0.01f; // 1cm ずつ
+
+        // 初期導入では、pause = ServerOff : 将来は変更する可能性あり
+        public bool IsPauseMode {
+            get  { return !_toggleServer.isOn; }
+        }
+
+        public void OnJoyconButtonDown( bool isLeftCon, Int32 buttonIndex) {
+            //Debug.Log($"Joycon Button {buttonIndex}");
+            if ( buttonIndex == 2 ) {
+                PauseToggle();
+            }
+        }
+
+        public void OnJoyconStick( bool isLeftCon, Int32 stickIndex) {
+            if ( IsPauseMode ) {
+                switch (stickIndex) {  
+                    case 2: 
+                        if (isLeftCon) {
+                            PauseLeftHandPosDown();
+                        }
+                        else {
+                            PauseRightHandPosDown(); 
+                        }
+                        UpdateAdjust(0);
+                        break;
+                    case 4: 
+                        if (isLeftCon) {
+                            PauseLeftHandPosLeft();
+                        }
+                        else {
+                            PauseRightHandPosLeft(); 
+                        }
+                        UpdateAdjust(0);
+                        break;
+                    case 6:  
+                        if (isLeftCon) {
+                            PauseLeftHandPosRight();
+                        }
+                        else {
+                            PauseRightHandPosRight(); 
+                        }
+                        UpdateAdjust(0);
+                        break;
+                    case 8: 
+                        if (isLeftCon) {
+                            PauseLeftHandPosUp();
+                        }
+                        else {
+                            PauseRightHandPosUp(); 
+                        }
+                        UpdateAdjust(0);
+                        break;
+                    default: Debug.Log($"Stick {stickIndex}");break;
+                }
+            }
+        }
+
+        public void PauseToggle() // JoyConなどから呼ぶトグル指示
+        {
+            _toggleServer.isOn = !_toggleServer.isOn; // 反転
+            _joyconToVMTInstance.enableStickMove = _toggleServer.isOn;
+            if ( IsPauseMode == false ) { // オフセット初期化
+                _pauseHandPosOffsetL = Vector3.zero;
+                _pauseHandPosOffsetR = Vector3.zero;
+                UpdateAdjust(0);
+            }
+        }
+        
+        void PauseLeftHandPosUp()    { _pauseHandPosOffsetL.y += _movePos; }
+        void PauseLeftHandPosDown()  { _pauseHandPosOffsetL.y -= _movePos; }
+        void PauseLeftHandPosLeft()  { _pauseHandPosOffsetL.x -= _movePos; }
+        void PauseLeftHandPosRight() { _pauseHandPosOffsetL.x += _movePos; }
+        void PauseRightHandPosUp()    { _pauseHandPosOffsetR.y += _movePos; }
+        void PauseRightHandPosDown()  { _pauseHandPosOffsetR.y -= _movePos; }
+        void PauseRightHandPosLeft()  { _pauseHandPosOffsetR.x -= _movePos; }
+        void PauseRightHandPosRight() { _pauseHandPosOffsetR.x += _movePos; }
+
         // // // // // // // // // // // // // // // // // // 
         // VMT Enable/Disable functions
         public void SendEnable()
