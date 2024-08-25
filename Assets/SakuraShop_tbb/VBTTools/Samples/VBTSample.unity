@@ -21569,7 +21569,7 @@ MonoBehaviour:
   _testUI: {fileID: 769779698}
   _ui1Panel: {fileID: 1700551398795662085}
   _ui2JoyCon: {fileID: 66270191}
-  _joyconToVMT: {fileID: 248331819}
+  _joyconToVMTInstance: {fileID: 248331819}
   _adjustingUI: {fileID: 1724143638}
   _adjustingUISkeL: {fileID: 1031240684}
   _adjustingUISkeR: {fileID: 47513920}
