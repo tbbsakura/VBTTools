@@ -110,7 +110,7 @@ namespace SakuraScript.VBTTool
         Vector3 _pauseHandPosOffsetR = Vector3.zero;
 
         // // // // // // // // // // // // // // // // // // 
-        // Start and initializing functions
+        // Start, Update and initializing functions
         void Start()
         {
             _vbtSkeletalTrack = GetComponent<VBTSkeletalTrack>();
@@ -139,7 +139,8 @@ namespace SakuraScript.VBTTool
 
             _topText = GameObject.Find("TopText").GetComponent<Text>();
 
-            // Read default adjusting values
+            // Read default adjusting values 
+            // v0.0.4以降では default.json があれば優先される
             var sensorTemplateL = GameObject.Find("/origLeftHand/ControllerSensorL");
             var sensorTemplateR = GameObject.Find("/origRightHand/ControllerSensorR");
             _adjSetting.PosL = sensorTemplateL.transform.localPosition;
@@ -162,10 +163,39 @@ namespace SakuraScript.VBTTool
                 Debug.Log($"File not found: {path}");
             }
 
+            // 初期設定値を AdjustingUI のスライダーに反映後、非表示に
             InitSliders();
             _adjustingUI.SetActive(false); 
             _adjustingUISkeL.SetActive(false); 
             _adjustingUISkeR.SetActive(false); 
+        }
+
+        // // // // // // // // // // // // // // // // // // 
+        // Update
+        void Update()
+        {
+            if ( _vbtHandPosTrack ) {
+                UpdateRecvHMD(_vbtHandPosTrack.RxLED);
+            }
+            else {
+                UpdateRecvHMD(0.2f);
+            }
+
+            if (_wristRotate) {
+                if ( _handler == null ) {
+                    //Debug.Log( "_handler is null" );
+                }
+                else {
+                    _handler.GetHumanPose(ref _targetHumanPose);   
+                    // lower arm twist: 43/52,   upper arm twist: 41/50
+                    float newVal = GetNextRotateTwist();
+                    _targetHumanPose.muscles[43] = newVal;
+                    _targetHumanPose.muscles[52] = newVal;
+                    //_targetHumanPose.muscles[41] = newVal; // This would move the wrist position.
+                    //_targetHumanPose.muscles[50] = newVal; // This would move the wrist position. 
+                    _handler.SetHumanPose(ref _targetHumanPose);   
+                }
+            }
         }
 
         // 設定ファイル読み込み後に adjustingUIs のスライダーを再設定する
@@ -201,24 +231,20 @@ namespace SakuraScript.VBTTool
             }
         }
 
+        // VRMファイル読み込み後の処理
         public void OnVRMLoaded(Animator animator)
         {
-            var sensorTemplateL = GameObject.Find("/origLeftHand/ControllerSensorL");
-            var sensorTemplateR = GameObject.Find("/origRightHand/ControllerSensorR");
-
+            // animationtarget, HumanPoseHandler 変数更新
             _animationTarget = animator;
             SetHandler();
 
+            // トラッカー位置を示すオブジェクト(left/rightsensor)を手の子にして、Pos/Rot Adjustを適用
             var leftsensor = new GameObject("LeftSensor");
             leftsensor.transform.parent = animator.GetBoneTransform( HumanBodyBones.LeftHand );
-            leftsensor.transform.localPosition = sensorTemplateL.transform.localPosition;
-            leftsensor.transform.localRotation = sensorTemplateL.transform.localRotation;
             _vbtHandPosTrack._transformVirtualLController = leftsensor.transform;
 
             var rightsensor = new GameObject("RightSensor");
             rightsensor.transform.parent = animator.GetBoneTransform( HumanBodyBones.RightHand );
-            rightsensor.transform.localPosition = sensorTemplateR.transform.localPosition;
-            rightsensor.transform.localRotation = sensorTemplateR.transform.localRotation;
             _vbtHandPosTrack._transformVirtualRController = rightsensor.transform;
 
             UpdateAdjust(0);
@@ -357,34 +383,6 @@ namespace SakuraScript.VBTTool
             Color color =_imgRecvHMD.color;
             color.a = alpha;
             _imgRecvHMD.color = color;
-        }
-
-        // // // // // // // // // // // // // // // // // // 
-        // Update
-        void Update()
-        {
-            if ( _vbtHandPosTrack ) {
-                UpdateRecvHMD(_vbtHandPosTrack.RxLED);
-            }
-            else {
-                UpdateRecvHMD(0.2f);
-            }
-
-            if (_wristRotate) {
-                if ( _handler == null ) {
-                    //Debug.Log( "_handler is null" );
-                }
-                else {
-                    _handler.GetHumanPose(ref _targetHumanPose);   
-                    // lower arm twist: 43/52,   upper arm twist: 41/50
-                    float newVal = GetNextRotateTwist();
-                    _targetHumanPose.muscles[43] = newVal;
-                    _targetHumanPose.muscles[52] = newVal;
-                    //_targetHumanPose.muscles[41] = newVal; // This would move the wrist position.
-                    //_targetHumanPose.muscles[50] = newVal; // This would move the wrist position. 
-                    _handler.SetHumanPose(ref _targetHumanPose);   
-                }
-            }
         }
 
         // // // // // // // // // // // // // // // // // // 
