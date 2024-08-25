@@ -105,9 +105,6 @@ namespace SakuraScript.VBTTool
         public Text _adjustTextWristPosR;
         public Text _adjustTextWristRotR;
 
-        [NonSerialized] public Transform _sphereL;
-        [NonSerialized] public Transform _sphereR;
-
         // 一時停止＆手の一時的位置移動機能
         Vector3 _pauseHandPosOffsetL = Vector3.zero;
         Vector3 _pauseHandPosOffsetR = Vector3.zero;
@@ -204,24 +201,12 @@ namespace SakuraScript.VBTTool
             leftsensor.transform.localPosition = sensorTemplateL.transform.localPosition;
             leftsensor.transform.localRotation = sensorTemplateL.transform.localRotation;
             _vbtHandPosTrack._transformVirtualLController = leftsensor.transform;
-            var sl = GameObject.Find("/origLeftHand/ControllerSensorL/Sphere");
-            if (sl) {
-                sl.transform.parent = leftsensor.transform;
-                sl.transform.localPosition = Vector3.zero;
-                _sphereL = sl.transform;
-            }
 
             var rightsensor = new GameObject("RightSensor");
             rightsensor.transform.parent = animator.GetBoneTransform( HumanBodyBones.RightHand );
             rightsensor.transform.localPosition = sensorTemplateR.transform.localPosition;
             rightsensor.transform.localRotation = sensorTemplateR.transform.localRotation;
             _vbtHandPosTrack._transformVirtualRController = rightsensor.transform;
-            var sr = GameObject.Find("/origLeftHand/ControllerSensorR/Sphere");
-            if (sr) {
-                sr.transform.parent = rightsensor.transform;
-                sr.transform.localPosition = Vector3.zero;
-                _sphereR = sr.transform;
-            }
 
             UpdateAdjust(0);
         }
