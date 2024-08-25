@@ -108,6 +108,9 @@ namespace SakuraScript.VBTTool
         [NonSerialized] public Transform _sphereL;
         [NonSerialized] public Transform _sphereR;
 
+        // 一時停止＆手の一時的位置移動機能
+        Vector3 _pauseHandPosOffsetL = Vector3.zero;
+        Vector3 _pauseHandPosOffsetR = Vector3.zero;
 
         // Start is called before the first frame update
         void Start()
@@ -639,8 +642,8 @@ namespace SakuraScript.VBTTool
                     _vbtHandPosTrack._transformVirtualLController.localRotation =  Quaternion.Euler(_adjSetting.RotEuL);
                     _vbtHandPosTrack._transformVirtualRController.localPosition = _adjSetting.PosR;
                     _vbtHandPosTrack._transformVirtualRController.localRotation =  Quaternion.Euler(_adjSetting.RotEuR);
-                    _vbtHandPosTrack._handPosOffsetL = _adjSetting.HandPosL;
-                    _vbtHandPosTrack._handPosOffsetR = _adjSetting.HandPosR;
+                    _vbtHandPosTrack._handPosOffsetL = _adjSetting.HandPosL + _pauseHandPosOffsetL;
+                    _vbtHandPosTrack._handPosOffsetR = _adjSetting.HandPosR + _pauseHandPosOffsetR;
                 }
 
                 _adjustTextPosL.text = $"Left pos {_adjSetting.PosL}";
