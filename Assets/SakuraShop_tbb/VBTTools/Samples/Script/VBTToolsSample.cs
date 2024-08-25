@@ -763,7 +763,7 @@ namespace SakuraScript.VBTTool
         }
 
         public void OnJoyconButtonDown( bool isLeftCon, Int32 buttonIndex) {
-            //Debug.Log($"Joycon Button {buttonIndex}");
+            //Debug.Log($"Joycon Button Down {buttonIndex}");
             if ( buttonIndex == 2 ) {
                 PauseToggle();
             }

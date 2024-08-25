@@ -31980,11 +31980,19 @@ PrefabInstance:
       value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 7789146573200792434, guid: 6310ed0ca23390d488ebfdfb3e72b4a1, type: 3}
+      propertyPath: onButtonUp.m_PersistentCalls.m_Calls.Array.size
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 7789146573200792434, guid: 6310ed0ca23390d488ebfdfb3e72b4a1, type: 3}
       propertyPath: onButtonDown.m_PersistentCalls.m_Calls.Array.size
       value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 7789146573200792434, guid: 6310ed0ca23390d488ebfdfb3e72b4a1, type: 3}
       propertyPath: onStick.m_PersistentCalls.m_Calls.Array.data[0].m_Target
+      value: 
+      objectReference: {fileID: 1463970926}
+    - target: {fileID: 7789146573200792434, guid: 6310ed0ca23390d488ebfdfb3e72b4a1, type: 3}
+      propertyPath: onButtonUp.m_PersistentCalls.m_Calls.Array.data[0].m_Target
       value: 
       objectReference: {fileID: 1463970926}
     - target: {fileID: 7789146573200792434, guid: 6310ed0ca23390d488ebfdfb3e72b4a1, type: 3}
@@ -32000,6 +32008,14 @@ PrefabInstance:
       value: 
       objectReference: {fileID: 1463970926}
     - target: {fileID: 7789146573200792434, guid: 6310ed0ca23390d488ebfdfb3e72b4a1, type: 3}
+      propertyPath: onButtonUp.m_PersistentCalls.m_Calls.Array.data[0].m_CallState
+      value: 2
+      objectReference: {fileID: 0}
+    - target: {fileID: 7789146573200792434, guid: 6310ed0ca23390d488ebfdfb3e72b4a1, type: 3}
+      propertyPath: onButtonUp.m_PersistentCalls.m_Calls.Array.data[0].m_MethodName
+      value: OnJoyconButtonUp
+      objectReference: {fileID: 0}
+    - target: {fileID: 7789146573200792434, guid: 6310ed0ca23390d488ebfdfb3e72b4a1, type: 3}
       propertyPath: onButtonDown.m_PersistentCalls.m_Calls.Array.data[0].m_CallState
       value: 2
       objectReference: {fileID: 0}
@@ -32012,11 +32028,19 @@ PrefabInstance:
       value: SakuraScript.VBTTool.VBTToolsSample, Assembly-CSharp
       objectReference: {fileID: 0}
     - target: {fileID: 7789146573200792434, guid: 6310ed0ca23390d488ebfdfb3e72b4a1, type: 3}
+      propertyPath: onButtonUp.m_PersistentCalls.m_Calls.Array.data[0].m_TargetAssemblyTypeName
+      value: SakuraScript.VBTTool.VBTToolsSample, Assembly-CSharp
+      objectReference: {fileID: 0}
+    - target: {fileID: 7789146573200792434, guid: 6310ed0ca23390d488ebfdfb3e72b4a1, type: 3}
       propertyPath: onButtonDown.m_PersistentCalls.m_Calls.Array.data[0].m_TargetAssemblyTypeName
       value: SakuraScript.VBTTool.VBTToolsSample, Assembly-CSharp
       objectReference: {fileID: 0}
     - target: {fileID: 7789146573200792434, guid: 6310ed0ca23390d488ebfdfb3e72b4a1, type: 3}
       propertyPath: onStick.m_PersistentCalls.m_Calls.Array.data[0].m_Arguments.m_ObjectArgumentAssemblyTypeName
+      value: UnityEngine.Object, UnityEngine
+      objectReference: {fileID: 0}
+    - target: {fileID: 7789146573200792434, guid: 6310ed0ca23390d488ebfdfb3e72b4a1, type: 3}
+      propertyPath: onButtonUp.m_PersistentCalls.m_Calls.Array.data[0].m_Arguments.m_ObjectArgumentAssemblyTypeName
       value: UnityEngine.Object, UnityEngine
       objectReference: {fileID: 0}
     - target: {fileID: 7789146573200792434, guid: 6310ed0ca23390d488ebfdfb3e72b4a1, type: 3}
