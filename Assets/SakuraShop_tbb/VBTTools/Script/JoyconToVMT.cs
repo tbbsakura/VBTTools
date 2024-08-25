@@ -57,6 +57,9 @@ namespace SakuraScript.VBTTool {
         private Joycon      m_joyconR;
         private uOscClient  m_client;
 
+        // 最後に Event Invoke したのが down なら true
+        private bool [,] m_lastInvokedDown =  new bool[2,13];
+
         // false にすると、一時的にstickをVMTに通知しなくなる(Callbackは処理される)
         public bool enableStickMove = true;
 
@@ -125,11 +128,17 @@ namespace SakuraScript.VBTTool {
 
                 if ( _down ) {  
                     //Debug.Log($"calling onButtonDown.Invoke {button}");
-                    onButtonDown.Invoke( j.isLeft, (int)button );
+                    if ( m_lastInvokedDown[(j.isLeft ? 0:1), (int)button] == false ) {
+                        onButtonDown.Invoke( j.isLeft, (int)button );
+                        m_lastInvokedDown[(j.isLeft ? 0:1), (int)button] = true;
+                    }
                 }
                 else if ( _up ) {
                     //Debug.Log($"calling onButtonUp.Invoke {button}");
-                    onButtonUp.Invoke( j.isLeft, (int)button );
+                    if ( m_lastInvokedDown[(j.isLeft ? 0:1), (int)button] == true ) {
+                        onButtonUp.Invoke( j.isLeft, (int)button );
+                        m_lastInvokedDown[(j.isLeft ? 0:1), (int)button] = false;
+                    }
                 }
                 else if ( !_hold ) {
                     continue;
