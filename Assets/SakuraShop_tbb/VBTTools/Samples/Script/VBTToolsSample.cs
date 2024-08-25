@@ -414,7 +414,7 @@ namespace SakuraScript.VBTTool
             }
         }
 
-        public void UodateRecvHMD( float alpha ) {
+        public void UpdateRecvHMD( float alpha ) {
             Color color =_imgRecvHMD.color;
             color.a = alpha;
             _imgRecvHMD.color = color;
@@ -423,10 +423,10 @@ namespace SakuraScript.VBTTool
         void Update()
         {
             if ( _vbtHandPosTrack ) {
-                UodateRecvHMD(_vbtHandPosTrack.RxLED);
+                UpdateRecvHMD(_vbtHandPosTrack.RxLED);
             }
             else {
-                UodateRecvHMD(0.2f);
+                UpdateRecvHMD(0.2f);
             }
 
             if (_wristRotate) {
