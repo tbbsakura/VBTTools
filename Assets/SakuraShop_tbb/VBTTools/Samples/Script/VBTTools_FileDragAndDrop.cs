@@ -16,7 +16,7 @@ public class VBTTools_FileDragAndDrop : MonoBehaviour
     private Text m_topText;
 
     public EVMC4U.ExternalReceiver m_exrec;
-    private UniHumanoid.HumanPoseTransfer m_target = null; // ロードされたVRMモデルのHumanPoseTransfer
+    RuntimeGltfInstance _lastLoaded = null;
     public VBTToolsSample m_sampleProject;
 
     void OnEnable ()
@@ -30,7 +30,7 @@ public class VBTTools_FileDragAndDrop : MonoBehaviour
             return;
         }
 
-        if ( m_target != null ) m_exrec.Model = m_target.gameObject;
+        if ( _lastLoaded != null ) m_exrec.Model = _lastLoaded.Root;
 
         // must be installed on the main thread to get the right thread id.
         UnityDragAndDropHook.InstallHook();
@@ -62,12 +62,13 @@ public class VBTTools_FileDragAndDrop : MonoBehaviour
     
     void OnLoaded(RuntimeGltfInstance loaded)
     {
-        var root = loaded.gameObject;
-
-        root.transform.SetParent(transform, false);// このcomponentがattachされているオブジェクトを親に設定する
-        root.transform.position.Set(-1,1,3); // 位置調整
+        if ( loaded == null || loaded.Root == null )  return;
+        if ( _lastLoaded != null ) Destroy(_lastLoaded.Root);
+        _lastLoaded = loaded;
+        loaded.Root.transform.SetParent(transform, false);// このcomponentがattachされているオブジェクトを親に設定する
+        loaded.Root.transform.position.Set(-1,1,3); // 位置調整
         m_topText.text = "Showing Meshes...";
-        foreach (var spring in root.GetComponentsInChildren<VRMSpringBone>())
+        foreach (var spring in loaded.Root.GetComponentsInChildren<VRMSpringBone>())
         {
             spring.Setup();
             spring.gameObject.SetActive(false);
@@ -80,16 +81,15 @@ public class VBTTools_FileDragAndDrop : MonoBehaviour
             lah.UpdateType = UpdateType.LateUpdate;
         }
 
-        m_target = root.AddComponent<UniHumanoid.HumanPoseTransfer>();
-        if ( m_target != null ) 
+        UniHumanoid.HumanPoseTransfer _target = loaded.Root.AddComponent<UniHumanoid.HumanPoseTransfer>();
+        if ( _target != null ) 
         {
-            
-            Animator animator = m_target.GetComponent<Animator>();
+            Animator animator = _target.GetComponent<Animator>();
             if (animator != null)
             {
-                if ( m_exrec is not null && m_target is not null && m_target.gameObject is not null ) m_exrec.Model = m_target.gameObject;
+                if ( m_exrec != null && _target != null ) m_exrec.Model = loaded.Root;
 
-                if ( m_sampleProject is not null ) {
+                if ( m_sampleProject != null ) {
                     m_sampleProject.OnVRMLoaded(animator);
                 }
             }
@@ -103,11 +103,6 @@ public class VBTTools_FileDragAndDrop : MonoBehaviour
         if ( ext == ".vrm" ) 
         {
             if ( m_topText != null ) m_topText.text = "Loading VRM...";
-            if (m_target != null) // unload
-            {
-                GameObject.Destroy(m_target.gameObject);
-                m_target = null;
-            }
             using ( var data = new GlbFileParser(path).Parse() ) 
             {
                 var vrm = new VRMData(data);
