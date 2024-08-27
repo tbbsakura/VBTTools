@@ -41,7 +41,7 @@ namespace SakuraScript.VBTTool
 
         // Client UI
         private Toggle _toggleClient;
-        public Image _imgRecvHMD; // as a RX LED
+        [SerializeField] private Image _imgRecvHMD; // as a RX LED
         private InputField _inputFieldIP;
         private InputField _inputFieldDestPort;
         private InputField _inputFieldListenPortVMT;
@@ -51,8 +51,8 @@ namespace SakuraScript.VBTTool
         private bool toggleLeft = false;
         private bool _musmode = true;  
         [SerializeField] private GameObject _testUI;
-        public TransformSliders _leftTransformSliders;
-        public TransformSliders _rightTransformSliders;
+        [SerializeField] private TransformSliders _leftTransformSliders;
+        [SerializeField] private TransformSliders _rightTransformSliders;
 
         // Controller UI panel
         [SerializeField] private GameObject _ui1Panel;
@@ -80,29 +80,29 @@ namespace SakuraScript.VBTTool
             public Vector3 WristRotR;
         }
 
-        public GameObject _adjustingUI;
-        public GameObject _adjustingUISkeL;
-        public GameObject _adjustingUISkeR;
+        [SerializeField] private GameObject _adjustingUI;
+        [SerializeField] private GameObject _adjustingUISkeL;
+        [SerializeField] private GameObject _adjustingUISkeR;
         private bool _wristRotate = false;
         private bool _wristRotateRestartVMCPListen = false;
 
-        public Toggle _wristRotateUI1;
-        public Toggle _wristRotateUI2;
-        public Toggle _wristRotateUI3;
+        [SerializeField] private Toggle _wristRotateUI1;
+        [SerializeField] private Toggle _wristRotateUI2;
+        [SerializeField] private Toggle _wristRotateUI3;
 
         [SerializeField] VBTToolsAdjustSetting _adjSetting;
 
         // Display adjusting values
-        public TransformSliders _tfsADSG1_LeftSlidersA;
-        public TransformSliders _tfsADSG1_RightSlidersA;
-        public TransformSliders _tfsADSG1_LeftSlidersB_HandPos;
-        public TransformSliders _tfsADSG1_RightSlidersB_HandPos;
+        [SerializeField] private TransformSliders _tfsADSG1_LeftSlidersA;
+        [SerializeField] private TransformSliders _tfsADSG1_RightSlidersA;
+        [SerializeField] private TransformSliders _tfsADSG1_LeftSlidersB_HandPos;
+        [SerializeField] private TransformSliders _tfsADSG1_RightSlidersB_HandPos;
 
-        public TransformSliders _tfsADSG2_LeftRoot;
-        public TransformSliders _tfsADSG2_LeftWrist;
+        [SerializeField] private TransformSliders _tfsADSG2_LeftRoot;
+        [SerializeField] private TransformSliders _tfsADSG2_LeftWrist;
 
-        public TransformSliders _tfsADSG3_RightRoot;
-        public TransformSliders _tfsADSG3_RightWrist;
+        [SerializeField] private TransformSliders _tfsADSG3_RightRoot;
+        [SerializeField] private TransformSliders _tfsADSG3_RightWrist;
 
         // PauseHandPosAdjust : 一時停止＆手の一時的位置移動機能関連
         Vector3 _pauseHandPosOffsetL = Vector3.zero;
@@ -528,12 +528,6 @@ namespace SakuraScript.VBTTool
                 }
             }
         }
-        public void OnSliderChangedA6(float val) { }
-        public void OnSliderChangedA7(float val) { }
-        public void OnSliderChangedA8(float val) { }
-        public void OnSliderChangedA9(float val) { }
-        public void OnSliderChangedA10(float val) {}
-        public void OnSliderChangedA11(float val) {}
 
         public void OnToggleChangedThumb(bool val) { toggleFingers[0] = val ;}
         public void OnToggleChangedIndex(bool val) { toggleFingers[1] = val ;}
