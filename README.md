@@ -36,7 +36,7 @@ VMCProtocol(VMCP) を受信できるので、TDPT(ThreeD Pose Tracker)、VSeeFac
 続いて、VBTTools の [Releases](https://github.com/tbbsakura/VBTTools/releases) で公開している VBTTools の zip を解凍し、VBTTools.exe を起動します。
 初回起動時はサーバーとして機能するためWindowsが確認ウィンドウを出すので通信許可をしてください。
 VRMモデル(VRoid Studio Beta 用モデルとしてCC0で公開されている HairSample_Male くん)がロードされると思いますが、いったん終了します。
-（VBTTools.exe と同じフォルダに同じ名前でVRMを置けば違うVRMも使えます。また、.VRMファイルをドラッグ＆ドロップすることで起動後に変更することもできます。）
+VBTTools.exe と同じフォルダに同じ名前でVRM0のファイルを置けば違うVRMも使えます。また、.VRMファイルをドラッグ＆ドロップすることで起動後に変更することもできます。(VRM1は非対応)
 
 #### 1-1-4. 実際に使うアプリを起動、SteamVRトラッカー初期設定
 1. VMCProtocol でポーズを送信できるアプリ(使う場合)。出力ポートは39544としてください（VBTTool側も変えられるので一致していればOK）udpなので、送信側が先に起動していてOKですし、後から起動でもOKです。
