@@ -1,7 +1,7 @@
 # VBTTools
 Virtual Body (VRM Body) Tracking Tools v0.1.0
 
-[![使用例（youtube 動画6秒）]('https://github.com/tbbsakura/VBTTools/blob/main/Assets/SakuraShop_tbb/VBTTools/etc/youtube_tn01_960x540.jpg')](https://www.youtube.com/watch?v=X4_1aNCIf7s)
+[![使用例（youtube 動画6秒）](https://github.com/tbbsakura/VBTTools/blob/main/Assets/SakuraShop_tbb/VBTTools/etc/youtube_tn01_960x540.jpg)](https://www.youtube.com/watch?v=X4_1aNCIf7s)
 
 リアルのボディにトラッカーを付けてトラッキングするのではなく、VRMモデルの姿勢をトラッキングして、[Virtual Motion Tracker(VMT)](https://github.com/gpsnmeajp/VirtualMotionTracker)に情報を渡して、SteamVR の仮想コントローラーとして利用しようとするものです。現状、以下のコントローラー情報(VBTToolsから見ると出力)に対応しています。
 
