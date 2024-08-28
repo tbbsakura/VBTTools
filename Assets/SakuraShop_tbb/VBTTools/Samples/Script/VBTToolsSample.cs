@@ -398,6 +398,7 @@ namespace SakuraScript.VBTTool
         {
             //Debug.Log( $"OnServerToggleChanged: {value}");
             if (_server == null) return;
+            ResetPauseOffset();
             if ( _toggleServer.isOn == false ) {
                 _server.StopServer();
                 _topText.text = "OSC server stopped.";
@@ -418,6 +419,7 @@ namespace SakuraScript.VBTTool
                     _topText.text = "Invalid server port.";
                 }
             }
+            _joyconToVMTInstance.enableStickMove = _toggleServer.isOn;
         }
 
         // // // // // // // // // // // // // // // // // // 
@@ -708,7 +710,8 @@ namespace SakuraScript.VBTTool
         public void OnJoyconButtonDown( bool isLeftCon, Int32 buttonIndex) {
             //Debug.Log($"Joycon Button Down {buttonIndex}");
             if ( buttonIndex == 2 ) {
-                PauseToggle();
+                _toggleServer.isOn = !_toggleServer.isOn; // 反転
+                _joyconToVMTInstance.enableStickMove = _toggleServer.isOn;
             }
         }
 
@@ -756,16 +759,15 @@ namespace SakuraScript.VBTTool
             }
         }
 
-        public void PauseToggle() // JoyConなどから呼ぶトグル指示
+        public void ResetPauseOffset()
         {
-            _toggleServer.isOn = !_toggleServer.isOn; // 反転
-            _joyconToVMTInstance.enableStickMove = _toggleServer.isOn;
-            if ( IsPauseMode == false ) { // オフセット初期化
-                _pauseHandPosOffsetL = Vector3.zero;
-                _pauseHandPosOffsetR = Vector3.zero;
-                UpdateAdjust(0);
-            }
+            _pauseHandPosOffsetL = Vector3.zero;
+            _pauseHandPosOffsetR = Vector3.zero;
+            _leftTransformSliders.SetValue( Vector3.zero, Vector3.zero ); 
+            _rightTransformSliders.SetValue( Vector3.zero, Vector3.zero ); 
+            UpdateAdjust(0);
         }
+
         
         void PauseLeftHandPosUp()    { _pauseHandPosOffsetL.y += _movePos; UpdatePauseHandPosSlidersLeft();}
         void PauseLeftHandPosDown()  { _pauseHandPosOffsetL.y -= _movePos; UpdatePauseHandPosSlidersLeft();}
@@ -780,8 +782,8 @@ namespace SakuraScript.VBTTool
         void UpdatePauseHandPosSlidersLeft() { _leftTransformSliders.SetValue( _pauseHandPosOffsetL, Vector3.zero ); }
         void UpdatePauseHandPosSlidersRight() { _rightTransformSliders.SetValue( _pauseHandPosOffsetR, Vector3.zero ); }
         // TestUI の Slider側で変更
-        public void OnUpdatePauseHandPosSlidersLeft( Vector3 pos, Vector3 rot ) { _pauseHandPosOffsetL = pos; }
-        public void OnUpdatePauseHandPosSlidersRight( Vector3 pos, Vector3 rot ) { _pauseHandPosOffsetR = pos; }
+        public void OnUpdatePauseHandPosSlidersLeft( Vector3 pos, Vector3 rot ) { _pauseHandPosOffsetL = pos; UpdateAdjust(0);}
+        public void OnUpdatePauseHandPosSlidersRight( Vector3 pos, Vector3 rot ) { _pauseHandPosOffsetR = pos; UpdateAdjust(0);}
 
         // // // // // // // // // // // // // // // // // // 
         // VMT Enable/Disable functions
