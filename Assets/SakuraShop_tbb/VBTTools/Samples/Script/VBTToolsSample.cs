@@ -778,7 +778,7 @@ namespace SakuraScript.VBTTool
 
         // JoyCon側で変更→Test UI Slidersに反映
         void UpdatePauseHandPosSlidersLeft() { _leftTransformSliders.SetValue( _pauseHandPosOffsetL, Vector3.zero ); }
-        void UpdatePauseHandPosSlidersRight() { _leftTransformSliders.SetValue( _pauseHandPosOffsetR, Vector3.zero ); }
+        void UpdatePauseHandPosSlidersRight() { _rightTransformSliders.SetValue( _pauseHandPosOffsetR, Vector3.zero ); }
         // TestUI の Slider側で変更
         public void OnUpdatePauseHandPosSlidersLeft( Vector3 pos, Vector3 rot ) { _pauseHandPosOffsetL = pos; }
         public void OnUpdatePauseHandPosSlidersRight( Vector3 pos, Vector3 rot ) { _pauseHandPosOffsetR = pos; }
