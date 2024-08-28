@@ -1,6 +1,8 @@
 # VBTTools
 Virtual Body (VRM Body) Tracking Tools v0.1.0
 
+[![使用例（youtube 動画6秒）]('https://github.com/tbbsakura/VBTTools/blob/main/Assets/SakuraShop_tbb/VBTTools/etc/youtube_tn01_960x540.jpg')](https://www.youtube.com/watch?v=X4_1aNCIf7s)
+
 リアルのボディにトラッカーを付けてトラッキングするのではなく、VRMモデルの姿勢をトラッキングして、[Virtual Motion Tracker(VMT)](https://github.com/gpsnmeajp/VirtualMotionTracker)に情報を渡して、SteamVR の仮想コントローラーとして利用しようとするものです。現状、以下のコントローラー情報(VBTToolsから見ると出力)に対応しています。
 
 - VRMモデルの指の動きを読みとって、Indexコントローラー互換コントローラー(Skeletal Input対応)として使用
@@ -15,7 +17,6 @@ VMCProtocol(VMCP) を受信できるので、TDPT(ThreeD Pose Tracker)、VSeeFac
 
 ## 暫定公開
 まだユーザーが少なく、運用された環境が偏っています。不便だなと思う部分も完全には修正できていません。説明（この文書）もまだ不十分な部分があります。
-また、一部VRChatでのみ発生する解決方法が未確認の問題があります。（おそらく、VRChat、Quest、Virtual Desktop の設定の組み合わせによるものですが、VRChatも絶賛更新途上なので、詳細は未確認）
 
 ## 1. 使用方法
 ### 1-1. セットアップ
@@ -77,9 +78,21 @@ VRMモデルの手をうごかせない状態（webカメラトラッキング�
 手をうごかせる場合は(VMCProtocol送信アプリを使っている場合等) v0.1.0rc1 以降の Release ページで配布している [SteamVRHandTest](https://github.com/tbbsakura/VBTTools/releases/download/v0.1.0/SteamVRHandTest_v0.0.1.zip) を使うと向きの調整もしやすいです。
 これらのアプリはSteam のUIからは起動できないので、SteamVR起動中に .exe ファイルを直接起動してください。
 
-手を動かせる場合は、VRChat や Moondust Knuckles Tech Demos などで動作を確認できます。(ただし、VRChatはいろいろ特殊なので、指が適切に動くかどうかはまず他のアプリで先に確認してください。)
+手を動かせる場合は、VRChat や Moondust Knuckles Tech Demos などで動作を確認できます。
 
-### 2-3. 手の位置と向きの調整
+### 2-3. 指が動かないときの確認事項
+基本的に、VRアプリ側ではコントローラーをIndexコントローラーであると認識するように設定します。
+JoyCon利用時にボタンと動作が異なる場合はここを確認してください。
+SteamVRでのバインディング設定でIndexコントローラーのスケルトンの入力を無効化すると動かないので気を付けてください。
+
+Quest + Virtual Desktop(VD) での利用の場合 VD での設定で Forward Tracking Data to PC はオフにします。
+（オンにすると別の仮想コントローラーが認識されると思いますが、VMTの仮想コントローラーが優先されていればオンでも動作します）
+
+VRChat で利用する場合は、設定画面で"Controls"(日本語だと「コントロール」) の項目の先頭にSteamVR とある部分で、以下の設定をします。
+- **Exclusive Finger Tracking Mode オプションはオフ**（オンでも指は動きますがボタン等が効かなくなります）
+- **Avatars Use Finger Tracking オプションをオン**(オフだと指が動かなくなります)
+
+### 2-4. 手の位置と向きの調整
 手の位置がおかしい場合は調整が必要です。(v0.1.0で、それ以前と設定値が変わっているため再調整が必要です)
 また、この調整内容は、ゲーム中でのVRで選択するためのレイ(光線)ポインターの向きにも影響します。
 Adjust UIのチェック3種類のいずれかを入れてスライダーを動かして調整でき、調整内容はjsonファイルに保存できます。VBTTools.exe と同じフォルダの default.jsonは起動時に読み込まれる設定値になります。
