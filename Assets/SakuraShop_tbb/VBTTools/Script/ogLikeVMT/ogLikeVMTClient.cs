@@ -15,13 +15,21 @@ namespace OgLikeVMT
         // Modified anim need to include all pos/rot info of all 31 bones, so that this script can know all the info from a single source.
         private OgLikeHandAnim _ogLikeHandAnim; 
 
-        public OgLikeHandData _leftHand = new OgLikeHandData(true);
-        public OgLikeHandData _rightHand = new OgLikeHandData(false);
+        private OgLikeHandData _leftHand = new OgLikeHandData(true);
+        public OgLikeHandData LeftHand {
+            get => _leftHand; set => _leftHand = value;
+        }
+        private OgLikeHandData _rightHand = new OgLikeHandData(false);
+        public OgLikeHandData RightHand {
+            get => _rightHand; set => _rightHand = value;
+        }
 
         private uOscClient _client;
 
-        [System.NonSerialized]
-        public HandSkeletonBone _logBoneIndex; // Unknown なら出力しない、 .COUNT の場合は全て
+        HandSkeletonBone _logBoneIndex; // Unknown なら出力しない、 .COUNT の場合は全て
+        public HandSkeletonBone LogBoneIndex {
+            get => _logBoneIndex; set => _logBoneIndex = value;
+        }
 
         private int GetVmtIndex(bool left) { return (left ? 1:2); }
         private int GetVmtEnable(bool left) { return (left ? 5:6); }

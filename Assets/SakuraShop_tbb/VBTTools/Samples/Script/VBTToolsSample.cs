@@ -22,10 +22,15 @@ namespace SakuraScript.VBTTool
         [SerializeField] private uOscServer _serverVMT = null;
 
         private VBTSkeletalTrack _vbtSkeletalTrack;
-        [NonSerialized] public VBTHandPosTrack _vbtHandPosTrack;
+        private VBTHandPosTrack _vbtHandPosTrack;
 
         [Tooltip("VRMアバターを入れます。変更時はStartのチェックをオフにしてください")]
-        public Animator _animationTarget;
+        private Animator _animationTarget;
+        public Animator AnimationTarget { 
+            get => _animationTarget;
+            set => _animationTarget = value;
+        }
+
         private HumanPose _targetHumanPose;
         private HumanPoseHandler _handler;
 
@@ -146,8 +151,8 @@ namespace SakuraScript.VBTTool
             _adjSetting.RotEuL= sensorTemplateL.transform.localRotation.eulerAngles;
             _adjSetting.PosR = sensorTemplateR.transform.localPosition;
             _adjSetting.RotEuR = sensorTemplateR.transform.localRotation.eulerAngles;
-            _adjSetting.HandPosL = _vbtHandPosTrack._handPosOffsetL;
-            _adjSetting.HandPosR = _vbtHandPosTrack._handPosOffsetR;
+            _adjSetting.HandPosL = _vbtHandPosTrack.HandPosOffsetL;
+            _adjSetting.HandPosR = _vbtHandPosTrack.HandPosOffsetR;
 
 #if UNITY_EDITOR
             string path = "Assets\\SakuraShop_tbb\\VBTTools\\etc\\setting";
@@ -220,11 +225,11 @@ namespace SakuraScript.VBTTool
             // トラッカー位置を示すオブジェクト(left/rightsensor)を手の子にして、Pos/Rot Adjustを適用
             var leftsensor = new GameObject("LeftSensor");
             leftsensor.transform.parent = animator.GetBoneTransform( HumanBodyBones.LeftHand );
-            _vbtHandPosTrack._transformVirtualLController = leftsensor.transform;
+            _vbtHandPosTrack.TransformVirtualLController = leftsensor.transform;
 
             var rightsensor = new GameObject("RightSensor");
             rightsensor.transform.parent = animator.GetBoneTransform( HumanBodyBones.RightHand );
-            _vbtHandPosTrack._transformVirtualRController = rightsensor.transform;
+            _vbtHandPosTrack.TransformVirtualRController = rightsensor.transform;
 
             UpdateAdjust(0);
         }
@@ -265,7 +270,7 @@ namespace SakuraScript.VBTTool
         {
             _toggleClient.isOn = false;
             _vbtHandPosTrack.StopTrack();
-            _vbtSkeletalTrack._isOn = false;
+            _vbtSkeletalTrack.IsOn = false;
         }
 
         bool InitClient()
@@ -308,7 +313,7 @@ namespace SakuraScript.VBTTool
                 }
                 _serverVMT.port = vmtListenPort;
                 _serverVMT.StartServer();
-                _vbtHandPosTrack._animationTarget = this._animationTarget;
+                _vbtHandPosTrack.AnimationTarget = this._animationTarget;
                 _vbtHandPosTrack.StartTrack(vmtListenPort);
             }
             else 
@@ -326,9 +331,8 @@ namespace SakuraScript.VBTTool
                 Debug.Log(_topText.text);
                 return false;
             }
-            _vbtSkeletalTrack._animationTarget = this._animationTarget;
-            _vbtSkeletalTrack._isOn = true;
-
+            _vbtSkeletalTrack.AnimationTarget = this._animationTarget;
+            _vbtSkeletalTrack.IsOn = true;
 
             _topText.text = "Client started.";
             Debug.Log(_topText.text);
@@ -352,7 +356,7 @@ namespace SakuraScript.VBTTool
                 SendDisable();
                 _toggleClient.isOn = false;
                 _vbtHandPosTrack.StopTrack();
-                _vbtSkeletalTrack._isOn = false;
+                _vbtSkeletalTrack.IsOn = false;
                 _topText.text = "Client stopped.";
             }
         }
@@ -419,7 +423,7 @@ namespace SakuraScript.VBTTool
                     _topText.text = "Invalid server port.";
                 }
             }
-            _joyconToVMTInstance.enableStickMove = _toggleServer.isOn;
+            _joyconToVMTInstance.EnableStickMove = _toggleServer.isOn;
         }
 
         // // // // // // // // // // // // // // // // // // 
@@ -589,12 +593,12 @@ namespace SakuraScript.VBTTool
         private void UpdateAdjust( int uiNum ) { // if 0 , all 
             if ( uiNum == 0 || uiNum == 1)  {
                 if ( _animationTarget != null ) {
-                    _vbtHandPosTrack._transformVirtualLController.localPosition = _adjSetting.PosL;
-                    _vbtHandPosTrack._transformVirtualLController.localRotation =  Quaternion.Euler(_adjSetting.RotEuL);
-                    _vbtHandPosTrack._transformVirtualRController.localPosition = _adjSetting.PosR;
-                    _vbtHandPosTrack._transformVirtualRController.localRotation =  Quaternion.Euler(_adjSetting.RotEuR);
-                    _vbtHandPosTrack._handPosOffsetL = _adjSetting.HandPosL + _pauseHandPosOffsetL;
-                    _vbtHandPosTrack._handPosOffsetR = _adjSetting.HandPosR + _pauseHandPosOffsetR;
+                    _vbtHandPosTrack.TransformVirtualLController.localPosition = _adjSetting.PosL;
+                    _vbtHandPosTrack.TransformVirtualLController.localRotation =  Quaternion.Euler(_adjSetting.RotEuL);
+                    _vbtHandPosTrack.TransformVirtualRController.localPosition = _adjSetting.PosR;
+                    _vbtHandPosTrack.TransformVirtualRController.localRotation =  Quaternion.Euler(_adjSetting.RotEuR);
+                    _vbtHandPosTrack.HandPosOffsetL = _adjSetting.HandPosL + _pauseHandPosOffsetL;
+                    _vbtHandPosTrack.HandPosOffsetR = _adjSetting.HandPosR + _pauseHandPosOffsetR;
                 }
             }
             if ( uiNum == 0 || uiNum == 2)  {
@@ -711,7 +715,7 @@ namespace SakuraScript.VBTTool
             //Debug.Log($"Joycon Button Down {buttonIndex}");
             if ( buttonIndex == 2 ) {
                 _toggleServer.isOn = !_toggleServer.isOn; // 反転
-                _joyconToVMTInstance.enableStickMove = _toggleServer.isOn;
+                _joyconToVMTInstance.EnableStickMove = _toggleServer.isOn;
             }
         }
 

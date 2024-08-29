@@ -1,4 +1,3 @@
-using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
@@ -15,9 +14,9 @@ public class VBTTools_FileDragAndDrop : MonoBehaviour
     private bool m_loading = false;
     private Text m_topText;
 
-    public EVMC4U.ExternalReceiver m_exrec;
+    [SerializeField] EVMC4U.ExternalReceiver m_exrec;
     RuntimeGltfInstance _lastLoaded = null;
-    public VBTToolsSample m_sampleProject;
+    [SerializeField]  VBTToolsSample m_sampleProject;
 
     void OnEnable ()
     {
@@ -37,7 +36,7 @@ public class VBTTools_FileDragAndDrop : MonoBehaviour
         UnityDragAndDropHook.OnDroppedFiles += OnFiles;
         m_topText = GameObject.Find("TopText").GetComponent<Text>();
 
-        if ( m_sampleProject != null && m_sampleProject._animationTarget == null ) {
+        if ( m_sampleProject != null && m_sampleProject.AnimationTarget == null ) {
 #if UNITY_EDITOR
             const char separatorChar = '/';
             string modelFilepath = "Assets/SakuraShop_tbb/VRM_CC0/HairSample_Male.vrm"; //CC0 model

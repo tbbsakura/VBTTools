@@ -8,29 +8,36 @@ namespace SakuraScript.VBTTool
 {
     public class VBTSkeletalTrack : MonoBehaviour
     {
-        [Tooltip("VMT Client Component")]
-        public OgLikeVMTClient _vmtclient = null; // Inspector指定必須
+        [SerializeField, Tooltip("VMT Client Component")]
+        OgLikeVMTClient _vmtclient = null; // Inspector指定必須
 
-        [Tooltip("Enable sending : 送出オンオフ切り替え")]
-        public bool _isOn = false;
+        [SerializeField, Tooltip("Enable sending : 送出オンオフ切り替え")]
+        bool _isOn = false;
+        public bool IsOn {
+            get => _isOn;
+            set => _isOn = value;
+        }
 
-        [Tooltip("Animator of VRM to be tracked : トラッキングするVRMのAnimator")]
-        public Animator _animationTarget;
+        Animator _animationTarget;
+        public Animator AnimationTarget { 
+            get => _animationTarget;
+            set => _animationTarget = value;
+        }
 
-        [Tooltip("Scalar mode if checked : チェック時は一軸モード")]
-        public bool _scalarModeThumb = true;
-        [Tooltip("Scalar mode if checked : チェック時は一軸モード")]
-        public bool _scalarModeIndex = false;
-        [Tooltip("Scalar mode if checked : チェック時は一軸モード")]
-        public bool _scalarModeMiddle = false;
-        [Tooltip("Scalar mode if checked : チェック時は一軸モード")]
-        public bool _scalarModeRing = false;
-        [Tooltip("Scalar mode if checked : チェック時は一軸モード")]
-        public bool _scalarModePinky = false;
+        [SerializeField, Tooltip("Scalar mode if checked : チェック時は一軸モード")]
+        bool _scalarModeThumb = true;
+        [SerializeField, Tooltip("Scalar mode if checked : チェック時は一軸モード")]
+        bool _scalarModeIndex = false;
+        [SerializeField, Tooltip("Scalar mode if checked : チェック時は一軸モード")]
+        bool _scalarModeMiddle = false;
+        [SerializeField, Tooltip("Scalar mode if checked : チェック時は一軸モード")]
+        bool _scalarModeRing = false;
+        [SerializeField, Tooltip("Scalar mode if checked : チェック時は一軸モード")]
+        bool _scalarModePinky = false;
 
 
-        private HumanPoseHandler _handler;
-        private HumanPose _targetHumanPose;
+        HumanPoseHandler _handler;
+        HumanPose _targetHumanPose;
 
         const int NUM_UNITY_FINGER_JOINT = 3;
 
@@ -66,31 +73,31 @@ namespace SakuraScript.VBTTool
         /////////////////////////////////////////////////
         // Skeletal Curl/Splay setting Functions
         public void SetJointCurl( bool left, float valOg, int fingerIndex, int jointIndex ) { 
-            OgLikeHandData data = (left) ? _vmtclient._leftHand : _vmtclient._rightHand;
+            OgLikeHandData data = (left) ? _vmtclient.LeftHand : _vmtclient.RightHand;
             data.SetJointFlexion((FingerIndex)fingerIndex, jointIndex, valOg );
         }
 
         public void SetSplay( bool left, float valOg, int fingerIndex ) { 
-            OgLikeHandData data = (left) ? _vmtclient._leftHand : _vmtclient._rightHand;
+            OgLikeHandData data = (left) ? _vmtclient.LeftHand : _vmtclient.RightHand;
             data.SetSplay((FingerIndex)fingerIndex, valOg );
         }
 
         public void SetRootWristOffset( bool left, Vector3 rootPos, Vector3 rootRotEuler, Vector3 wristPos, Vector3 wristRotEuler )
         {
-            OgLikeHandData data = (left) ? _vmtclient._leftHand : _vmtclient._rightHand;
-            data._skeletalRootPosOffset = rootPos;
-            data._skeletalRootRotOffset = rootRotEuler;
-            data._skeletalWristPosOffset = wristPos;
-            data._skeletalWristRotOffset = wristRotEuler;
+            OgLikeHandData data = (left) ? _vmtclient.LeftHand : _vmtclient.RightHand;
+            data.SkeletalRootPosOffset = rootPos;
+            data.SkeletalRootRotOffset = rootRotEuler;
+            data.SkeletalWristPosOffset = wristPos;
+            data.SkeletalWristRotOffset = wristRotEuler;
         }
 
         public void GetRootWristOffset( bool left, ref Vector3 rootPos, ref Vector3 rootRotEuler, ref Vector3 wristPos, ref Vector3 wristRotEuler )
         {
-            OgLikeHandData data = (left) ? _vmtclient._leftHand : _vmtclient._rightHand;
-            rootPos = data._skeletalRootPosOffset;
-            rootRotEuler = data._skeletalRootRotOffset;
-            wristPos = data._skeletalWristPosOffset;
-            wristRotEuler = data._skeletalWristRotOffset;
+            OgLikeHandData data = (left) ? _vmtclient.LeftHand : _vmtclient.RightHand;
+            rootPos = data.SkeletalRootPosOffset;
+            rootRotEuler = data.SkeletalRootRotOffset;
+            wristPos = data.SkeletalWristPosOffset;
+            wristRotEuler = data.SkeletalWristRotOffset;
         }
 
         /////////////////////////////////////////////////
@@ -110,7 +117,7 @@ namespace SakuraScript.VBTTool
 
             _handler.GetHumanPose(ref _targetHumanPose);   
             for ( int leftright = 0; leftright < 2; leftright++ ) { // left is zero
-                OgLikeHandData data = (leftright==0) ? _vmtclient._leftHand : _vmtclient._rightHand;
+                OgLikeHandData data = (leftright==0) ? _vmtclient.LeftHand : _vmtclient.RightHand;
                 for ( int iFinger = 0; iFinger  < (int)FingerIndex.COUNT; iFinger++ ) {
                     float sumCurl = 0f;
                     for (int iJoint = 0; iJoint < NUM_UNITY_FINGER_JOINT; iJoint++ ) {

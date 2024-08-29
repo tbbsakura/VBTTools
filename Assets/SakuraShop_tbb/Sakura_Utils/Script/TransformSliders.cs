@@ -10,12 +10,12 @@ namespace SakuraScript.Utils {
 
     public class TransformSliders : MonoBehaviour
     {
-        public Vector3 _position;
-        public Vector3 _eularRotation;
+        [SerializeField] private Vector3 _position;
+        [SerializeField] private Vector3 _eularRotation;
         // 位置スライダーテキストの先頭につける文字列
-        public string _positionHeaderString = "Pos";
+        [SerializeField] private string _positionHeaderString = "Pos";
         // 回転スライダーテキストの先頭につける文字列
-        public string _rotationHeaderString = "Rot";
+        [SerializeField] private string _rotationHeaderString = "Rot";
 
 		[SerializeField]
 		public TransformSlidersUpdateEvent onUpdate = new TransformSlidersUpdateEvent();

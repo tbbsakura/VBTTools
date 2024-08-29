@@ -8427,7 +8427,6 @@ MonoBehaviour:
   _exr: {fileID: 4740143681371091892}
   _client: {fileID: 7915717184814424444}
   _serverVMT: {fileID: 2037739012}
-  _animationTarget: {fileID: 0}
   _imgRecvHMD: {fileID: 799093711}
   _testUI: {fileID: 769779698}
   _leftTransformSliders: {fileID: 2051289327}
@@ -8490,6 +8489,8 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   _server: {fileID: 2037739012}
   _client: {fileID: 7915717184814424444}
+  _transformVirtualLController: {fileID: 0}
+  _transformVirtualRController: {fileID: 0}
   _transformHMD: {fileID: 1302200358}
   _transformLController: {fileID: 834728000}
   _transformRController: {fileID: 1071954359}
@@ -8501,19 +8502,6 @@ MonoBehaviour:
   _VMTEnableLeft: 5
   _VMTIndexRight: 2
   _VMTEnableRight: 6
-  _enableHeadRot: 0
-  _enableHeadPos: 0
-  _enableWaistTrack: 0
-  _enableLeftFootTrack: 0
-  _enableRightFootTrack: 0
-  _VMTIndexLeftElbow: 7
-  _VMTIndexRightElbow: 8
-  _VMTIndexBreast: 9
-  _VMTIndexWaist: 10
-  _VMTIndexLeftKnee: 11
-  _VMTIndexRightKnee: 12
-  _VMTIndexLeftFoot: 13
-  _VMTIndexRightFoot: 14
 --- !u!114 &1463970941
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -8528,7 +8516,6 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   _vmtclient: {fileID: 1463970934}
   _isOn: 1
-  _animationTarget: {fileID: 0}
   _scalarModeThumb: 1
   _scalarModeIndex: 0
   _scalarModeMiddle: 0

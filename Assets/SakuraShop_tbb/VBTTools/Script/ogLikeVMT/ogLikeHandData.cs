@@ -16,11 +16,27 @@ namespace OgLikeVMT
         private OgLikeHandAnim _animCalc;
 
         // Hand-Root offset
-        public Vector3 _skeletalRootPosOffset = Vector3.zero; 
-        public Vector3 _skeletalRootRotOffset = Vector3.zero;
+        [SerializeField] Vector3 _skeletalRootPosOffset = Vector3.zero; 
+        public Vector3 SkeletalRootPosOffset{
+            get => _skeletalRootPosOffset;
+            set => _skeletalRootPosOffset = value;
+        }
+        [SerializeField] Vector3 _skeletalRootRotOffset = Vector3.zero;
+        public Vector3 SkeletalRootRotOffset{
+            get => _skeletalRootRotOffset;
+            set => _skeletalRootRotOffset = value;
+        }
         // Root-Wrist offset
-        public Vector3 _skeletalWristPosOffset = Vector3.zero; 
-        public Vector3 _skeletalWristRotOffset = Vector3.zero; 
+        [SerializeField] Vector3 _skeletalWristPosOffset = Vector3.zero; 
+        public Vector3 SkeletalWristPosOffset{
+            get => _skeletalWristPosOffset;
+            set => _skeletalWristPosOffset = value;
+        }
+        [SerializeField] Vector3 _skeletalWristRotOffset = Vector3.zero; 
+        public Vector3 SkeletalWristRotOffset{
+            get => _skeletalWristRotOffset;
+            set => _skeletalWristRotOffset = value;
+        }
 
         ///////////////////////////////////////////////////////////////////////////////
         // constructor, initializer

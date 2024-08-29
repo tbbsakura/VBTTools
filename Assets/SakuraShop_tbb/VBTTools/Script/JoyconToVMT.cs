@@ -28,17 +28,17 @@ namespace SakuraScript.VBTTool {
     
     [RequireComponent(typeof(uOSC.uOscClient))]
     public class JoyconToVMT : MonoBehaviour {
-        [Tooltip("VMTに渡すパラメーター/左手のindex")]
-        public int _VMTIndexLeft = 1;
-        [Tooltip("VMTに渡すパラメーター/右手のindex")]
-        public int _VMTIndexRight = 2;
+        [SerializeField, Tooltip("VMTに渡すパラメーター/左手のindex")]
+        int _VMTIndexLeft = 1;
+        [SerializeField, Tooltip("VMTに渡すパラメーター/右手のindex")]
+        int _VMTIndexRight = 2;
         
 		[SerializeField, Tooltip("bool は 左手true/右手false, int は Joycon.Button (0~12) ")]
-		public JoyconButtonDownEvent onButtonDown = new JoyconButtonDownEvent();
+		JoyconButtonDownEvent onButtonDown = new JoyconButtonDownEvent();
 		[SerializeField, Tooltip("bool は 左手ならtrue/右手ならfalse, int は Joycon.Button (0~12)")]
-		public JoyconButtonUpEvent onButtonUp = new JoyconButtonUpEvent();
+		JoyconButtonUpEvent onButtonUp = new JoyconButtonUpEvent();
 		[SerializeField, Tooltip("bool は 左手ならtrue/右手ならfalse, int は TenKey Layout (2=down, etc.)")]
-		public JoyconStickEvent onStick = new JoyconStickEvent();
+		JoyconStickEvent onStick = new JoyconStickEvent();
 
 /*      defined in Joycon.cs of JoyConLib
         public enum Button : int
@@ -61,7 +61,11 @@ namespace SakuraScript.VBTTool {
         private bool [,] m_lastInvokedDown =  new bool[2,13];
 
         // false にすると、一時的にstickをVMTに通知しなくなる(Callbackは処理される)
-        public bool enableStickMove = true;
+        [SerializeField] private bool enableStickMove = true;
+        public bool EnableStickMove {
+            get => enableStickMove;
+            set => enableStickMove = value; 
+        }
 
         void Start ()
         {

@@ -10,10 +10,10 @@ namespace SakuraScript.ModifiedVMTSample
 {
     public class VBATools_buttonAndAxis : MonoBehaviour
     {
-        public bool isLeft = true;
-        public int index = 1;
-        public int enable = 5;
-        public bool needEnable = false; 
+        [SerializeField] bool isLeft = true;
+        [SerializeField] int index = 1;
+        [SerializeField] int enable = 5;
+        [SerializeField] bool needEnable = false; 
 
         const float timeoffset = 0f;
 
@@ -23,7 +23,7 @@ namespace SakuraScript.ModifiedVMTSample
         float JoystickX = 0;
         float JoystickY = 0;
 
-        public uOSC.uOscClient client;
+        [SerializeField] uOSC.uOscClient client;
 
         void Start()
         {

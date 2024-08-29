@@ -15,7 +15,7 @@ namespace OgLikeVMT.SimpleSample
         private uOscClient _client = null;
         private OgLikeVMTClient _vmtclient = null; 
 
-        public int _scalarMode = 0;
+        [SerializeField] int _scalarMode = 0;
 
         // Client UI
         private Toggle _toggleClient;
@@ -23,8 +23,8 @@ namespace OgLikeVMT.SimpleSample
         private InputField _inputFieldDestPort;
 
         // test object
-        public bool [] toggleFingers = new bool [5];
-        public bool toggleLeft = false;
+        [SerializeField] bool [] toggleFingers = new bool [5];
+        [SerializeField] bool toggleLeft = false;
 
         void Start()
         {
@@ -114,17 +114,17 @@ namespace OgLikeVMT.SimpleSample
         }
 
         public void OnJointCurlSliderChanged( float val, int fingerIndex, int jointIndex ) { 
-            OgLikeHandData data = (toggleLeft) ? _vmtclient._leftHand : _vmtclient._rightHand;
+            OgLikeHandData data = (toggleLeft) ? _vmtclient.LeftHand : _vmtclient.RightHand;
             data.SetJointFlexion((FingerIndex)fingerIndex, jointIndex, val );
         }
 
         public void OnSplaySliderChanged( float val, int fingerIndex ) { 
-            OgLikeHandData data = (toggleLeft) ? _vmtclient._leftHand : _vmtclient._rightHand;
+            OgLikeHandData data = (toggleLeft) ? _vmtclient.LeftHand : _vmtclient.RightHand;
             data.SetSplay((FingerIndex)fingerIndex, val );
         }
 
         public void OnScalarCurlSliderChanged( float val, int fingerIndex  ) { 
-            OgLikeHandData data = (toggleLeft) ? _vmtclient._leftHand : _vmtclient._rightHand;
+            OgLikeHandData data = (toggleLeft) ? _vmtclient.LeftHand : _vmtclient.RightHand;
             data.SetFingerScalarFlexion((FingerIndex)fingerIndex, val );
         }
 

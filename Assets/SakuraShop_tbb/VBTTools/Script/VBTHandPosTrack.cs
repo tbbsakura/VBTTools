@@ -9,50 +9,65 @@ namespace SakuraScript.VBTTool
     public class VBTHandPosTrack : MonoBehaviour
     {
         
-        [Tooltip("OSCServer Receiving from VMT. VMTからの情報を受け取るOSCサーバー")]
-        public uOscServer _server;
-        [Tooltip("OSCServer Sending to VMT. VMTへ情報を送信するOSCクライアント")]
-        public uOscClient _client;
+        [SerializeField, Tooltip("OSCServer Receiving from VMT. VMTからの情報を受け取るOSCサーバー")]
+        uOscServer _server;
+        [SerializeField, Tooltip("OSCServer Sending to VMT. VMTへ情報を送信するOSCクライアント")]
+        uOscClient _client;
 
-        private bool _isOn = false;
+        bool _isOn = false;
 
-        [Tooltip("Animator of VRM to be tracked : トラッキングするVRMのAnimator")]
-        public Animator _animationTarget;
+        Animator _animationTarget;
+        public Animator AnimationTarget {
+            get => _animationTarget;
+            set => _animationTarget = value;
+        }
 
-        [Tooltip("VRMモデルが持つ左コントローラーオブジェクト")]
-        public Transform _transformVirtualLController;
-        [Tooltip("VRMモデルが持つ右コントローラーオブジェクト")]
-        public Transform _transformVirtualRController;
+        [SerializeField, Tooltip("VRMモデルが持つ左コントローラーオブジェクト")]
+        Transform _transformVirtualLController;
+        public Transform TransformVirtualLController {
+            get => _transformVirtualLController; set => _transformVirtualLController = value;
+        }
+        [SerializeField, Tooltip("VRMモデルが持つ右コントローラーオブジェクト")]
+        Transform _transformVirtualRController;
+        public Transform TransformVirtualRController {
+            get => _transformVirtualRController; set => _transformVirtualRController = value;
+        }
 
-        [Tooltip("VMTから受信したHMDのTransformを設定するオブジェクト")]
-        public Transform _transformHMD;
-        [Tooltip("VMTに送信する左コントローラーのTransformを設定するオブジェクト")]
-        public Transform _transformLController;
-        [Tooltip("VMTに送信する右コントローラーのTransformを設定するオブジェクト")]
-        public Transform _transformRController;
+        [SerializeField, Tooltip("VMTから受信したHMDのTransformを設定するオブジェクト")]
+        Transform _transformHMD;
+        [SerializeField, Tooltip("VMTに送信する左コントローラーのTransformを設定するオブジェクト")]
+        Transform _transformLController;
+        [SerializeField, Tooltip("VMTに送信する右コントローラーのTransformを設定するオブジェクト")]
+        Transform _transformRController;
 
-        [Tooltip("左手の表示位置補正(VRM Local)")]
-        public Vector3 _handPosOffsetL = new Vector3( 0f, 0f, 0f);
-        [Tooltip("右手の表示位置補正(VRM Local)")]
-        public Vector3 _handPosOffsetR = new Vector3( 0f, 0f, 0f);
+        [SerializeField, Tooltip("左手の表示位置補正(VRM Local)")]
+        Vector3 _handPosOffsetL = new Vector3( 0f, 0f, 0f);
+        public Vector3 HandPosOffsetL {
+            get => _handPosOffsetL; set => _handPosOffsetL = value;
+        }
+        [SerializeField, Tooltip("右手の表示位置補正(VRM Local)")]
+        Vector3 _handPosOffsetR = new Vector3( 0f, 0f, 0f);
+        public Vector3 HandPosOffsetR {
+            get => _handPosOffsetR; set => _handPosOffsetR = value;
+        }
 
-        [Tooltip("左手の回転補正(Global) 基本ゼロで")]
-        public Vector3 _handEulerOffsetL = new Vector3( 0, 0, 0 );
-        [Tooltip("右手の回転補正(Global) 基本ゼロで")]
-        public Vector3 _handEulerOffsetR = new Vector3( 0, 0 ,0 );
+        [SerializeField, Tooltip("左手の回転補正(Global) 基本ゼロで")]
+        Vector3 _handEulerOffsetL = new Vector3( 0, 0, 0 );
+        [SerializeField, Tooltip("右手の回転補正(Global) 基本ゼロで")]
+        Vector3 _handEulerOffsetR = new Vector3( 0, 0 ,0 );
 
-        [Tooltip("VMTに渡すパラメーター/左手のindex")]
-        public int _VMTIndexLeft = 1;
-        [Tooltip("VMTに渡すパラメーター/左手のenable")]
-        public int _VMTEnableLeft = 5;
-        [Tooltip("VMTに渡すパラメーター/右手のindex")]
-        public int _VMTIndexRight = 2;
-        [Tooltip("VMTに渡すパラメーター/右手のenable")]
-        public int _VMTEnableRight = 6;
+        [SerializeField, Tooltip("VMTに渡すパラメーター/左手のindex")]
+        int _VMTIndexLeft = 1;
+        [SerializeField, Tooltip("VMTに渡すパラメーター/左手のenable")]
+        int _VMTEnableLeft = 5;
+        [SerializeField, Tooltip("VMTに渡すパラメーター/右手のindex")]
+        int _VMTIndexRight = 2;
+        [SerializeField, Tooltip("VMTに渡すパラメーター/右手のenable")]
+        int _VMTEnableRight = 6;
 
-        private readonly string _serialHMD = "HMD";
-        private float _rxLED = 0.0f;
+        readonly string _serialHMD = "HMD";
 
+        float _rxLED = 0.0f;
         public float RxLED {
             get{ return _rxLED; }
         }
