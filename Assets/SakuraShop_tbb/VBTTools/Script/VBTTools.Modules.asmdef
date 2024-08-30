@@ -1,0 +1,17 @@
+{
+    "name": "VBTTools.Modules",
+    "rootNamespace": "",
+    "references": [
+        "GUID:e8063cf3a345f9c46b7c7c4f14d54285",
+        "GUID:f7886f487020ce44e8227d597cc076cb"
+    ],
+    "includePlatforms": [],
+    "excludePlatforms": [],
+    "allowUnsafeCode": false,
+    "overrideReferences": false,
+    "precompiledReferences": [],
+    "autoReferenced": true,
+    "defineConstraints": [],
+    "versionDefines": [],
+    "noEngineReferences": false
+}
