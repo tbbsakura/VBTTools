@@ -1,10 +1,8 @@
 {
-    "name": "VBTTools.Modules",
+    "name": "VBTOpenTrackUDP",
     "rootNamespace": "",
     "references": [
-        "GUID:e8063cf3a345f9c46b7c7c4f14d54285",
-        "GUID:f7886f487020ce44e8227d597cc076cb",
-        "GUID:796eac42043f3f84eaccdc39995c4836"
+        "GUID:e8063cf3a345f9c46b7c7c4f14d54285"
     ],
     "includePlatforms": [],
     "excludePlatforms": [],
