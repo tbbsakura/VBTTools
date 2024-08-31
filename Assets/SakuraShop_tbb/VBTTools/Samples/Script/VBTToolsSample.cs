@@ -18,6 +18,7 @@ namespace SakuraScript.VBTTool
         private uOscServer _server = null;
         [SerializeField] private uOscClient _client = null;
         [SerializeField] private uOscServer _serverVMT = null;
+        [SerializeField] private VBTOpenTrackUDPClient _clientOpentrack;
 
         private VBTSkeletalTrack _vbtSkeletalTrack;
         private VBTHandPosTrack _vbtHandPosTrack;
@@ -40,14 +41,15 @@ namespace SakuraScript.VBTTool
         private Toggle _toggleServerCutEye;
         private InputField _inputFieldListenPort;
 
-        private const int _portListen = 39544;
-
         // Client UI
         private Toggle _toggleClient;
         [SerializeField] private Image _imgRecvHMD; // as a RX LED
         private InputField _inputFieldIP;
         private InputField _inputFieldDestPort;
         private InputField _inputFieldListenPortVMT;
+
+        private InputField _inputFieldIPOpentrack;
+        private InputField _inputFieldDestPortOpentrack;
 
         // test object
         private bool [] toggleFingers = new bool [5];
@@ -75,6 +77,7 @@ namespace SakuraScript.VBTTool
 
 //        [SerializeField] VBTToolsAdjustSetting _adjSetting;
         [SerializeField] VBTToolsSetting _setting;
+        [SerializeField] VBTToolsAdjustSetting _adjSetting;
 
         // Display adjusting values
         [SerializeField] private TransformSliders _tfsADSG1_LeftSlidersA;
@@ -92,65 +95,175 @@ namespace SakuraScript.VBTTool
         Vector3 _pauseHandPosOffsetL = Vector3.zero;
         Vector3 _pauseHandPosOffsetR = Vector3.zero;
 
+        // Network setting UI panel
+        [SerializeField] GameObject _networkSetting;
+        Text _text_NWSetError;
+
+        // // // // // // // // // // // // // // // // // // 
+        // Network setting UI panel
+        void ApplyNetworkSetting()
+        {
+            _server.port = _setting._networkSetting._vmcpListenPort;
+            _client.address = _setting._networkSetting._vmtSendAddress;
+            _client.port = _setting._networkSetting._vmtSendPort;
+            _serverVMT.port = _setting._networkSetting._vmtListenPort;
+            _clientOpentrack.address = _setting._networkSetting._opentrackSendAddress;
+            _clientOpentrack.port = _setting._networkSetting._opentrackSendPort;
+        }
+
+        public void NWSettingOpen()
+        {
+            // Set to input field
+            _inputFieldListenPort.text = _setting._networkSetting._vmcpListenPort.ToString();
+            _inputFieldIP.text =  _setting._networkSetting._vmtSendAddress; 
+            _inputFieldDestPort.text = _setting._networkSetting._vmtSendPort.ToString();
+            _inputFieldListenPortVMT.text = _setting._networkSetting._vmtListenPort.ToString();
+            _inputFieldIPOpentrack.text = _setting._networkSetting._opentrackSendAddress;
+            _inputFieldDestPortOpentrack.text = _setting._networkSetting._opentrackSendPort.ToString();
+            _text_NWSetError.text = "";
+            _networkSetting.SetActive(true);
+        }
+
+        public void OnCancel_NWSetting()
+        {
+            _networkSetting.SetActive(false);
+        }
+
+        public void OnOK_NWSetting()
+        {
+            if ( IsValidIpAddr(_inputFieldIP.text) == false ) {
+                _text_NWSetError.text = "Error: VMT IP Address を適切に設定してください。";
+                return;                
+            } 
+            if (IsValidIpAddr(_inputFieldIPOpentrack.text ) == false) {
+                _text_NWSetError.text = "Error: Opentrack IP Address を適切に設定してください。";
+                return;                
+            }
+
+            int vmcpListenPort = GetValidPortFromStr(_inputFieldListenPort.text);
+            int vmtSendPort = GetValidPortFromStr(_inputFieldDestPort.text);
+            int vmtListenPort = GetValidPortFromStr(_inputFieldListenPortVMT.text);
+            int opentrackSendPort = GetValidPortFromStr(_inputFieldDestPortOpentrack.text);
+            if ( vmcpListenPort == -1 || vmtSendPort == -1 || vmtListenPort == -1 || opentrackSendPort == -1 ) {
+                _text_NWSetError.text = "Error: ポート番号は 0-65535 の範囲で設定してください。";
+                return;                
+            }
+
+            // _setting と server/client に即時適用
+            _setting._networkSetting._vmtSendAddress = _inputFieldIP.text; 
+            _setting._networkSetting._opentrackSendAddress = _inputFieldIPOpentrack.text;
+
+            if ( vmcpListenPort != _setting._networkSetting._vmcpListenPort ) {
+                _setting._networkSetting._vmcpListenPort = vmcpListenPort;
+            }
+            if ( vmtSendPort != _setting._networkSetting._vmtSendPort ) {
+                _setting._networkSetting._vmtSendPort = vmtSendPort;
+            }
+            if ( vmtListenPort != _setting._networkSetting._vmtListenPort ) {
+                _setting._networkSetting._vmtListenPort = vmtListenPort;
+            }
+            if ( opentrackSendPort != _setting._networkSetting._opentrackSendPort ) {
+                _setting._networkSetting._opentrackSendPort = opentrackSendPort;
+            }
+
+            ApplyNetworkSetting();
+            _networkSetting.SetActive(false);
+        }
+
+        string GetJsonDirectory()
+        {
+#if UNITY_EDITOR
+            string path = "Assets\\SakuraShop_tbb\\VBTTools\\etc\\setting";
+#else
+            string path = AppDomain.CurrentDomain.BaseDirectory.TrimEnd('\\');//EXEを実行したカレントディレクトリ (ショートカット等でカレントディレクトリが変わるのでこの方式で)
+#endif
+            return path;
+        }
+
+        string GetMainSettingFilePath()
+        {
+            string path = GetJsonDirectory();
+            return  path + "\\VBTTools.setting.json";
+        }
+
+        string GetDefaultAdjSettingFilePath()
+        {
+            string path = GetJsonDirectory();
+            return path + "\\default.json";
+        }
+
         // // // // // // // // // // // // // // // // // // 
         // Start, Update and initializing functions
         void Start()
         {
+            // Setting befor loading setting file
             _vbtSkeletalTrack = GetComponent<VBTSkeletalTrack>();
             _vbtHandPosTrack = GetComponent<VBTHandPosTrack>();
-
+            _setting._exrecSetting.CopyFromExReceiver( _exr );
             _server =  _exr.GetComponent<uOscServer>();
-            _server.port = _portListen;
+
+            _networkSetting.SetActive(true);
             _inputFieldListenPort = GameObject.Find("InputField_ListenPort").GetComponent<InputField>();
-            _inputFieldListenPort.text = _portListen.ToString();
-            
-            _inputFieldIP = GameObject.Find("InputField_IP").GetComponent<InputField>();
-            _inputFieldIP.text =  _client.address.ToString(); // _ipAddress;
-            _inputFieldDestPort = GameObject.Find("InputField_Port").GetComponent<InputField>();
-            _inputFieldDestPort.text = _client.port.ToString();
+            _inputFieldIP = GameObject.Find("InputField_VMT_IP").GetComponent<InputField>();
+            _inputFieldDestPort = GameObject.Find("InputField_VMT_Port").GetComponent<InputField>();
             _inputFieldListenPortVMT = GameObject.Find("InputField_ListenPortVMT").GetComponent<InputField>();
-            _inputFieldListenPortVMT.text = _serverVMT.port.ToString();
+            _inputFieldIPOpentrack = GameObject.Find("InputField_IP(OT)").GetComponent<InputField>();
+            _inputFieldDestPortOpentrack = GameObject.Find("InputField_Port(OT)").GetComponent<InputField>();
+            _text_NWSetError = GameObject.Find("Text_NWSetError").GetComponent<Text>();
+            _networkSetting.SetActive(false);
 
             _toggleServer = GameObject.Find("ToggleServer").GetComponent<Toggle>();
-            _toggleServer.isOn = true; // ExternalReceiverが Start してしまうので
-
             _toggleServerCutEye = GameObject.Find("ToggleServerCutEye").GetComponent<Toggle>();
-            _toggleServerCutEye.isOn = true; 
-
             _toggleClient = GameObject.Find("ToggleVMTClient").GetComponent<Toggle>();
-            _toggleClient.isOn = false; 
-
             _topText = GameObject.Find("TopText").GetComponent<Text>();
 
             // Read default adjusting values 
             // v0.0.4以降では default.json があれば優先される
             var sensorTemplateL = GameObject.Find("/origLeftHand/ControllerSensorL");
             var sensorTemplateR = GameObject.Find("/origRightHand/ControllerSensorR");
-            _setting._adjSetting.PosL = sensorTemplateL.transform.localPosition;
-            _setting._adjSetting.RotEuL= sensorTemplateL.transform.localRotation.eulerAngles;
-            _setting._adjSetting.PosR = sensorTemplateR.transform.localPosition;
-            _setting._adjSetting.RotEuR = sensorTemplateR.transform.localRotation.eulerAngles;
-            _setting._adjSetting.HandPosL = _vbtHandPosTrack.HandPosOffsetL;
-            _setting._adjSetting.HandPosR = _vbtHandPosTrack.HandPosOffsetR;
+            _adjSetting.PosL = sensorTemplateL.transform.localPosition;
+            _adjSetting.RotEuL= sensorTemplateL.transform.localRotation.eulerAngles;
+            _adjSetting.PosR = sensorTemplateR.transform.localPosition;
+            _adjSetting.RotEuR = sensorTemplateR.transform.localRotation.eulerAngles;
+            _adjSetting.HandPosL = _vbtHandPosTrack.HandPosOffsetL;
+            _adjSetting.HandPosR = _vbtHandPosTrack.HandPosOffsetR;
 
-#if UNITY_EDITOR
-            string path = "Assets\\SakuraShop_tbb\\VBTTools\\etc\\setting";
-#else
-            string path = AppDomain.CurrentDomain.BaseDirectory.TrimEnd('\\');//EXEを実行したカレントディレクトリ (ショートカット等でカレントディレクトリが変わるのでこの方式で)
-#endif
-            path += "\\default.json";
-            if (System.IO.File.Exists(path) ) {
-                _setting = VBTToolsSetting.LoadFromFile(path) ?? _setting;
+            // loading setting file
+            string adjpath = GetDefaultAdjSettingFilePath();
+            if (System.IO.File.Exists(adjpath) ) {
+                VBTSetting<VBTToolsAdjustSetting> loader = new VBTSetting<VBTToolsAdjustSetting>();
+                if ( loader.LoadFromFile(adjpath) ) _adjSetting = loader.Data;
             }
             else {
-                Debug.Log($"File not found: {path}");
+                Debug.Log($"File not found: {adjpath}");
             }
+            string pathSetting = GetMainSettingFilePath();
+            if (System.IO.File.Exists(pathSetting) ) {
+                VBTMainSetting loader = new VBTMainSetting();
+                if ( loader.LoadFromFile(pathSetting) ) _setting = loader.Data;
+            }
+            else {
+                _setting.SetVersionAsCurrent();
+            }
+
+            // Setting after loaded setting file
+            ApplyNetworkSetting();
+
+            _toggleServer.isOn = true; // ExternalReceiverが Start してしまうので
+            _toggleServerCutEye.isOn = true; 
+            _toggleClient.isOn = false; 
 
             // 初期設定値を AdjustingUI のスライダーに反映後、非表示に
             InitSliders();
             _adjustingUI.SetActive(false); 
             _adjustingUISkeL.SetActive(false); 
             _adjustingUISkeR.SetActive(false); 
+        }
+
+        private void OnDestroy() {
+            VBTMainSetting saver = new VBTMainSetting();
+            saver.Data = _setting;
+            saver.SaveToFile(GetMainSettingFilePath());
         }
 
         // // // // // // // // // // // // // // // // // // 
@@ -184,14 +297,14 @@ namespace SakuraScript.VBTTool
         // 設定ファイル読み込み後に adjustingUIs のスライダーを再設定する
         private void InitSliders()
         {
-            _tfsADSG1_LeftSlidersA.SetValue( _setting._adjSetting.PosL, _setting._adjSetting.RotEuL );
-            _tfsADSG1_RightSlidersA.SetValue( _setting._adjSetting.PosR, _setting._adjSetting.RotEuR );
-            _tfsADSG1_LeftSlidersB_HandPos.SetValue( _setting._adjSetting.HandPosL, Vector3.zero );
-            _tfsADSG1_RightSlidersB_HandPos.SetValue( _setting._adjSetting.HandPosR, Vector3.zero );
-            _tfsADSG2_LeftRoot.SetValue( _setting._adjSetting.RootPosL, _setting._adjSetting.RootRotL );
-            _tfsADSG2_LeftWrist.SetValue( _setting._adjSetting.WristPosL, _setting._adjSetting.WristRotL );
-            _tfsADSG3_RightRoot.SetValue( _setting._adjSetting.RootPosR, _setting._adjSetting.RootRotR );
-            _tfsADSG3_RightWrist.SetValue( _setting._adjSetting.WristPosR, _setting._adjSetting.WristRotR );
+            _tfsADSG1_LeftSlidersA.SetValue( _adjSetting.PosL, _adjSetting.RotEuL );
+            _tfsADSG1_RightSlidersA.SetValue( _adjSetting.PosR, _adjSetting.RotEuR );
+            _tfsADSG1_LeftSlidersB_HandPos.SetValue( _adjSetting.HandPosL, Vector3.zero );
+            _tfsADSG1_RightSlidersB_HandPos.SetValue( _adjSetting.HandPosR, Vector3.zero );
+            _tfsADSG2_LeftRoot.SetValue( _adjSetting.RootPosL, _adjSetting.RootRotL );
+            _tfsADSG2_LeftWrist.SetValue( _adjSetting.WristPosL, _adjSetting.WristRotL );
+            _tfsADSG3_RightRoot.SetValue( _adjSetting.RootPosR, _adjSetting.RootRotR );
+            _tfsADSG3_RightWrist.SetValue( _adjSetting.WristPosR, _adjSetting.WristRotR );
         }
 
         // VRMファイル読み込み後の処理
@@ -272,48 +385,14 @@ namespace SakuraScript.VBTTool
                 }
             }
 
-            int destport = GetValidPortFromStr(_inputFieldDestPort.text);
-            if (destport != -1 ) 
-            {
-                _client.port = destport;
-            }
-            else 
-            {
-                _topText.text = "Invalid Dest Port.";
-                Debug.Log(_topText.text);
-                return false;
-            }
+            _serverVMT.StartServer();
+            _vbtHandPosTrack.AnimationTarget = this._animationTarget;
+            _vbtHandPosTrack.StartTrack(_setting._networkSetting._vmtListenPort);
 
-            int vmtListenPort = GetValidPortFromStr(_inputFieldListenPortVMT.text);
-            if (vmtListenPort != -1 ) 
-            {
-                if ( _serverVMT.isRunning ) {
-                    _serverVMT.StopServer();
-                }
-                _serverVMT.port = vmtListenPort;
-                _serverVMT.StartServer();
-                _vbtHandPosTrack.AnimationTarget = this._animationTarget;
-                _vbtHandPosTrack.StartTrack(vmtListenPort);
-            }
-            else 
-            {
-                _topText.text = "Invalid VMT listening Port.";
-                Debug.Log(_topText.text);
-                return false;
-            }
-
-            if ( IsValidIpAddr(_inputFieldIP.text)) {
-                _client.address = _inputFieldIP.text;
-            }
-            else {
-                _topText.text = "Invalid IP Address";
-                Debug.Log(_topText.text);
-                return false;
-            }
             _vbtSkeletalTrack.AnimationTarget = this._animationTarget;
             _vbtSkeletalTrack.IsOn = true;
 
-            _topText.text = "Client started.";
+            _topText.text = "Client for VMT started.";
             Debug.Log(_topText.text);
             if ( _handler == null ) Debug.Log( "_handler is null" );
             return true;
@@ -347,60 +426,49 @@ namespace SakuraScript.VBTTool
             _imgRecvHMD.color = color;
         }
 
+        public void OnClientOpentrackToggleChanged (bool value) {
+            _vbtHandPosTrack.EnableHeadTrack(value);
+        }
+
         // // // // // // // // // // // // // // // // // // 
         // Server UI functions
         public void OnServerCutEyeToggleChanged(bool value) 
         {
             if ( _exr == null ) return;
-
-            _exr.CutBoneNeck = false;
-            _exr.CutBoneHead = false;
-            _exr.CutBoneLeftEye = true;
-            _exr.CutBoneRightEye = true;
-            _exr.CutBoneJaw = false;
-
-            _exr.CutBoneHips = false;
-            _exr.CutBoneSpine = false;
-            _exr.CutBoneChest = false;
-            _exr.CutBoneUpperChest = false;
-
-            _exr.CutBoneLeftUpperLeg = false;
-            _exr.CutBoneLeftLowerLeg = false;
-            _exr.CutBoneLeftFoot = false;
-            _exr.CutBoneLeftToes = false;
-
-            _exr.CutBoneRightUpperLeg = false;
-            _exr.CutBoneRightLowerLeg = false;
-            _exr.CutBoneRightFoot = false;
-            _exr.CutBoneRightToes = false;
-
-            _exr.CutBonesEnable = value;                
+            _setting._exrecSetting.SetCutBonesIsOn(true);
+            _setting._exrecSetting.SetCutEyeIsOn(value);
+            _setting._exrecSetting.CopyToExReceiver(_exr);
         }
+
+        public void OnServerFBTModeChanged(bool value) 
+        {
+            if ( _exr == null ) return;
+            _setting._exrecSetting.SetCutBonesIsOn(true);
+            _setting._exrecSetting.SetCutTorsoIsOn(!value); 
+            _setting._exrecSetting.SetCutLegFootIsOn(!value);
+            _setting._exrecSetting.SetRootSyncIsOn(value); 
+            _setting._exrecSetting.CopyToExReceiver(_exr);
+        }
+
+        // always no-cut
+        //_setting._exrecSetting.SetCutHeadNeckIsOn(false);
+        //_setting._exrecSetting.SetCutArmHandIsOn(false);
+        //_setting._exrecSetting.SetCutSkeletalIsOn(false);
 
         public void OnServerToggleChanged(bool value) 
         {
-            //Debug.Log( $"OnServerToggleChanged: {value}");
             if (_server == null) return;
             ResetPauseOffset();
             if ( _toggleServer.isOn == false ) {
                 _server.StopServer();
-                _topText.text = "OSC server stopped.";
+                _topText.text = "OSC (VMCP) server stopped. Test UI available.";
                 _testUI.SetActive(true);
             }
             else 
             {
-                int port = GetValidPortFromStr(_inputFieldListenPort.text);
-                if ( port > 0 ) 
-                {            
-                    _server.port = port;
-                    _server.StartServer();
-                    if ( _topText != null ) _topText.text = "OSC Server started.";
-                    _testUI.SetActive(false);
-                }
-                else {
-                    _toggleServer.isOn = false;
-                    _topText.text = "Invalid server port.";
-                }
+                _server.StartServer();
+                if ( _topText != null ) _topText.text = "OSC (VMCP) Server started.";
+                _testUI.SetActive(false);
             }
             _joyconToVMTInstance.EnableStickMove = _toggleServer.isOn;
         }
@@ -531,62 +599,60 @@ namespace SakuraScript.VBTTool
 
         // Adjusting UI1 Left : on-Slider-changed Callback
         public void OnADSG1LeftSlidersAChanged(Vector3 pos, Vector3 rot){
-            _setting._adjSetting.PosL = pos;
-            _setting._adjSetting.RotEuL = rot;
+            _adjSetting.PosL = pos;
+            _adjSetting.RotEuL = rot;
             UpdateAdjust(1);
         }
         public void OnADSG1RightSlidersAChanged(Vector3 pos, Vector3 rot){
-            _setting._adjSetting.PosR = pos;
-            _setting._adjSetting.RotEuR = rot;
+            _adjSetting.PosR = pos;
+            _adjSetting.RotEuR = rot;
             UpdateAdjust(1);
         }
         public void OnADSG1LeftSlidersBChanged(Vector3 pos, Vector3 rot){
-            _setting._adjSetting.HandPosL = pos;
+            _adjSetting.HandPosL = pos;
             UpdateAdjust(1);
         }
         public void OnADSG1RightSlidersBChanged(Vector3 pos, Vector3 rot){
-            _setting._adjSetting.HandPosR = pos;
+            _adjSetting.HandPosR = pos;
             UpdateAdjust(1);
         }
         public void OnADSG2RootSlidersChanged(Vector3 pos, Vector3 rot){
-            _setting._adjSetting.RootPosL = pos;
-            _setting._adjSetting.RootRotL = rot;
+            _adjSetting.RootPosL = pos;
+            _adjSetting.RootRotL = rot;
             UpdateAdjust(2);
         }
         public void OnADSG2WristSlidersChanged(Vector3 pos, Vector3 rot){
-            _setting._adjSetting.WristPosL = pos;
-            _setting._adjSetting.WristRotL = rot;
+            _adjSetting.WristPosL = pos;
+            _adjSetting.WristRotL = rot;
             UpdateAdjust(2);
         }
         public void OnADSG3RootSlidersChanged(Vector3 pos, Vector3 rot){
-            _setting._adjSetting.RootPosR = pos;
-            _setting._adjSetting.RootRotR = rot;
+            _adjSetting.RootPosR = pos;
+            _adjSetting.RootRotR = rot;
             UpdateAdjust(3);
         }
         public void OnADSG3WristSlidersChanged(Vector3 pos, Vector3 rot){
-            _setting._adjSetting.WristPosR = pos;
-            _setting._adjSetting.WristRotR = rot;
+            _adjSetting.WristPosR = pos;
+            _adjSetting.WristRotR = rot;
             UpdateAdjust(3);
         }
 
         private void UpdateAdjust( int uiNum ) { // if 0 , all 
             if ( uiNum == 0 || uiNum == 1)  {
                 if ( _animationTarget != null ) {
-                    _vbtHandPosTrack.TransformVirtualLController.localPosition = _setting._adjSetting.PosL;
-                    _vbtHandPosTrack.TransformVirtualLController.localRotation =  Quaternion.Euler(_setting._adjSetting.RotEuL);
-                    _vbtHandPosTrack.TransformVirtualRController.localPosition = _setting._adjSetting.PosR;
-                    _vbtHandPosTrack.TransformVirtualRController.localRotation =  Quaternion.Euler(_setting._adjSetting.RotEuR);
-                    _vbtHandPosTrack.HandPosOffsetL = _setting._adjSetting.HandPosL + _pauseHandPosOffsetL;
-                    _vbtHandPosTrack.HandPosOffsetR = _setting._adjSetting.HandPosR + _pauseHandPosOffsetR;
+                    _vbtHandPosTrack.TransformVirtualLController.localPosition = _adjSetting.PosL;
+                    _vbtHandPosTrack.TransformVirtualLController.localRotation =  Quaternion.Euler(_adjSetting.RotEuL);
+                    _vbtHandPosTrack.TransformVirtualRController.localPosition = _adjSetting.PosR;
+                    _vbtHandPosTrack.TransformVirtualRController.localRotation =  Quaternion.Euler(_adjSetting.RotEuR);
+                    _vbtHandPosTrack.HandPosOffsetL = _adjSetting.HandPosL + _pauseHandPosOffsetL;
+                    _vbtHandPosTrack.HandPosOffsetR = _adjSetting.HandPosR + _pauseHandPosOffsetR;
                 }
             }
             if ( uiNum == 0 || uiNum == 2)  {
-                _vbtSkeletalTrack.SetRootWristOffset( true, 
-                    _setting._adjSetting.RootPosL, _setting._adjSetting.RootRotL, _setting._adjSetting.WristPosL, _setting._adjSetting.WristRotL );
+                _vbtSkeletalTrack.SetRootWristOffset( true, _adjSetting.RootPosL, _adjSetting.RootRotL, _adjSetting.WristPosL, _adjSetting.WristRotL );
             }
             if ( uiNum == 0 || uiNum == 3)  {
-                _vbtSkeletalTrack.SetRootWristOffset( false, 
-                    _setting._adjSetting.RootPosR, _setting._adjSetting.RootRotR, _setting._adjSetting.WristPosR, _setting._adjSetting.WristRotR );
+                _vbtSkeletalTrack.SetRootWristOffset( false, _adjSetting.RootPosR, _adjSetting.RootRotR, _adjSetting.WristPosR, _adjSetting.WristRotR );
             }
         }
 
@@ -637,13 +703,18 @@ namespace SakuraScript.VBTTool
         // Adjusting UI - Setting File Save/Load
         public void OnSaveButton()
         {
-            VBTToolsSetting.SaveToFile(_setting);
+            VBTSetting<VBTToolsAdjustSetting> saver = new VBTSetting<VBTToolsAdjustSetting>();
+            saver.Data = _adjSetting;
+            saver.SaveToFile();
         }
 
         public void OnLoadButton()
         {
-            _setting = VBTToolsSetting.LoadFromFile() ?? _setting;;
-            InitSliders();
+            VBTSetting<VBTToolsAdjustSetting> loader = new VBTSetting<VBTToolsAdjustSetting>();
+            if (loader.LoadFromFile()) {
+                _adjSetting = loader.Data;
+                InitSliders();
+            }
         }
         
         // // // // // // // // // // // // // // // // // // 

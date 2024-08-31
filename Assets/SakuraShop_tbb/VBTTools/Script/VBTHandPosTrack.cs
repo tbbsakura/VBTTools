@@ -1,4 +1,4 @@
-﻿// Copyright (c) 2024 Sakura(さくら) / tbbsakura
+// Copyright (c) 2024 Sakura(さくら) / tbbsakura
 // MIT License. See "LICENSE" file.
 
 using UnityEngine;
@@ -8,7 +8,6 @@ namespace SakuraScript.VBTTool
 {
     public class VBTHandPosTrack : MonoBehaviour
     {
-        
         [SerializeField, Tooltip("OSCServer Receiving from VMT. VMTからの情報を受け取るOSCサーバー")]
         uOscServer _server;
         [SerializeField, Tooltip("OSCServer Sending to VMT. VMTへ情報を送信するOSCクライアント")]
@@ -22,17 +21,16 @@ namespace SakuraScript.VBTTool
             set => _animationTarget = value;
         }
 
-        [SerializeField, Tooltip("VRMモデルが持つ左コントローラーオブジェクト")]
         Transform _transformVirtualLController;
         public Transform TransformVirtualLController {
             get => _transformVirtualLController; set => _transformVirtualLController = value;
         }
-        [SerializeField, Tooltip("VRMモデルが持つ右コントローラーオブジェクト")]
         Transform _transformVirtualRController;
         public Transform TransformVirtualRController {
             get => _transformVirtualRController; set => _transformVirtualRController = value;
         }
 
+        [Space]
         [SerializeField, Tooltip("VMTから受信したHMDのTransformを設定するオブジェクト")]
         Transform _transformHMD;
         [SerializeField, Tooltip("VMTに送信する左コントローラーのTransformを設定するオブジェクト")]
@@ -40,6 +38,7 @@ namespace SakuraScript.VBTTool
         [SerializeField, Tooltip("VMTに送信する右コントローラーのTransformを設定するオブジェクト")]
         Transform _transformRController;
 
+        [Space]
         [SerializeField, Tooltip("左手の表示位置補正(VRM Local)")]
         Vector3 _handPosOffsetL = new Vector3( 0f, 0f, 0f);
         public Vector3 HandPosOffsetL {
@@ -56,6 +55,7 @@ namespace SakuraScript.VBTTool
         [SerializeField, Tooltip("右手の回転補正(Global) 基本ゼロで")]
         Vector3 _handEulerOffsetR = new Vector3( 0, 0 ,0 );
 
+        [Space]
         [SerializeField, Tooltip("VMTに渡すパラメーター/左手のindex")]
         int _VMTIndexLeft = 1;
         [SerializeField, Tooltip("VMTに渡すパラメーター/左手のenable")]
@@ -65,17 +65,54 @@ namespace SakuraScript.VBTTool
         [SerializeField, Tooltip("VMTに渡すパラメーター/右手のenable")]
         int _VMTEnableRight = 6;
 
-        readonly string _serialHMD = "HMD";
+        const int _VMTEnableCompatibleTracker = 7; // vive tracker 互換
+        [Space]
+        [SerializeField] bool _enableHead = false;
 
-        float _rxLED = 0.0f;
-        public float RxLED {
-            get{ return _rxLED; }
-        }
+#if VMT_HMD_OVERRIDE
+        private Vector3 _baseHMDPos; // VMTオーバーライド開始時のHMD位置
+        private Quaternion _baseHMDRot; // VMTオーバーライド開始時のHMD回転
+#endif
 
+        [SerializeField] bool _enableLeftHand = true;
+        [SerializeField] bool _enableRightHand = true;
+
+        [SerializeField] bool _enableWaistTrack = false;
+        [SerializeField] bool _enableLeftFootTrack = false;
+        [SerializeField] bool _enableRightFootTrack = false;
+
+        [Header("Test : FBT VMT indices and enables")]
+        [SerializeField, Tooltip("VMTに渡すパラメーター/左肘のindex")]
+        int _VMTIndexLeftElbow = 7;
+        [SerializeField, Tooltip("VMTに渡すパラメーター/右肘のindex")]
+        int _VMTIndexRightElbow = 8;
+        [SerializeField, Tooltip("VMTに渡すパラメーター/胸のindex")]
+        int _VMTIndexBreast = 9;
+        [SerializeField, Tooltip("VMTに渡すパラメーター/腰のindex")]
+        int _VMTIndexWaist = 10;
+        [SerializeField, Tooltip("VMTに渡すパラメーター/左膝のindex")]
+        int _VMTIndexLeftKnee = 11;
+        [SerializeField, Tooltip("VMTに渡すパラメーター/右膝のindex")]
+        int _VMTIndexRightKnee = 12;
+        [SerializeField, Tooltip("VMTに渡すパラメーター/左足のindex")]
+        int _VMTIndexLeftFoot = 13;
+        [SerializeField, Tooltip("VMTに渡すパラメーター/右足のindex")]
+        int _VMTIndexRightFoot = 14;
+
+        const int _VMTIndexHMD = 0;
+        private readonly string _serialHMD = "HMD";
+
+        private float _rxLED = 0.0f;
+        public float RxLED => _rxLED;
+
+
+        private VBTOpenTrackUDPClient _opentrackClient;
+        
         // Start is called before the first frame update
         void Start()
         {
             _server.onDataReceived.AddListener(OnDataReceived);
+            _opentrackClient = GetComponent<VBTOpenTrackUDPClient >();
         }
 
         void OnDisable()
@@ -96,6 +133,11 @@ namespace SakuraScript.VBTTool
         {
             if (_client != null) _client.Send("/VMT/Unsubscribe/Device", _serialHMD);
             _isOn = false;
+        }
+
+        public void EnableHeadTrack(bool isOn)
+        {
+            _enableHead = isOn;
         }
 
         public void OnDataReceived(uOSC.Message message)
@@ -128,39 +170,88 @@ namespace SakuraScript.VBTTool
             }
         }
 
-
         void Update()
         {
-
             _rxLED -= 0.01f; 
             if (_rxLED < 0.2f ) _rxLED = 0.2f;
 
             if ( !_isOn ) return;
             if ( _animationTarget == null ) return;
 
-
+            // this position may be overriden by VMT_0? or not?: tbc
+            Vector3 hmdPos = _animationTarget.GetBoneTransform(HumanBodyBones.Head).position;
             float hmdYaw = _transformHMD.eulerAngles.y; 
             Quaternion qRotHMDYaw = Quaternion.AngleAxis( hmdYaw, Vector3.up );
             Quaternion qRotOffsetL = Quaternion.Euler( _handEulerOffsetL );
             Quaternion qRotOffsetR = Quaternion.Euler( _handEulerOffsetR );
 
             // left hand
-            Transform lsrc = _transformVirtualLController;
-            Vector3 pos = lsrc.position 
-                            - _animationTarget.GetBoneTransform(HumanBodyBones.Head).position
-                            + _handPosOffsetL;
-            _transformLController.position = qRotHMDYaw * pos + _transformHMD.position;
-            _transformLController.rotation = qRotHMDYaw * lsrc.rotation * qRotOffsetL;
-            SendControllerTransform(true); // L
+            if (_enableLeftHand) {
+                Transform lsrc = _transformVirtualLController;
+                Vector3 posBeforYawAdjust = lsrc.position - hmdPos + _handPosOffsetL;
+                _transformLController.position = qRotHMDYaw * posBeforYawAdjust + _transformHMD.position;
+                _transformLController.rotation = qRotHMDYaw * lsrc.rotation * qRotOffsetL;
+                SendControllerTransform(true); // L
+            }
 
             // right hand
-            Transform rsrc = _transformVirtualRController;
-            pos = rsrc.position 
-                        - _animationTarget.GetBoneTransform(HumanBodyBones.Head).position
-                        + _handPosOffsetR;
-            _transformRController.position = qRotHMDYaw * pos + _transformHMD.position;
-            _transformRController.rotation = qRotHMDYaw * rsrc.rotation * qRotOffsetR;
-            SendControllerTransform(false); // R
+            if (_enableRightHand) {
+                Transform rsrc = _transformVirtualRController;
+                Vector3 posBeforYawAdjust = rsrc.position - hmdPos + _handPosOffsetR;
+                _transformRController.position = qRotHMDYaw * posBeforYawAdjust + _transformHMD.position;
+                _transformRController.rotation = qRotHMDYaw * rsrc.rotation * qRotOffsetR;
+                SendControllerTransform(false); // R
+            }
+
+            if (_enableHead) {
+                SendHeadTransformToOpenTrack();
+            }
+            if (_enableWaistTrack) {
+                Transform t = _animationTarget.GetBoneTransform(HumanBodyBones.Spine);// Hips? Chest? 要件等
+                SendTrackerTransform(_VMTIndexWaist, t, hmdPos, qRotHMDYaw);
+            }
+            if (_enableLeftFootTrack) {
+                Transform t = _animationTarget.GetBoneTransform(HumanBodyBones.LeftFoot);
+                SendTrackerTransform(_VMTIndexLeftFoot, t, hmdPos, qRotHMDYaw);
+            }
+            if (_enableRightFootTrack) {
+                Transform t = _animationTarget.GetBoneTransform(HumanBodyBones.RightFoot);
+                SendTrackerTransform(_VMTIndexRightFoot, t, hmdPos, qRotHMDYaw);
+            }
+        }
+
+#if VMT_HMD_OVERRIDE
+        public void StartHMDOverride( bool isOn )
+        {
+            if ( _enableHead == false && isOn ) { // 完全オフからのオン
+                _baseHMDPos = _transformHMD.position;
+                _baseHMDRot = _transformHMD.rotation;
+            }
+            _enableHead = isOn;
+        }
+#endif
+        void SendHeadTransformToOpenTrack()
+        {
+            Transform t = _animationTarget.GetBoneTransform(HumanBodyBones.Head);
+            _opentrackClient.Add(t);
+        }
+
+        void SendTrackerTransform( int vmtIndex, Transform t, Vector3 hmdPos, Quaternion qRotHMDYaw )
+        {
+            Vector3 posBeforYawAdjust = t.position - hmdPos; // 暫定offset なし
+            Vector3 posAfterYawAdjust = qRotHMDYaw * posBeforYawAdjust + _transformHMD.position;
+            Quaternion qRot = qRotHMDYaw * t.rotation;
+            SendTrackerTransform(vmtIndex, posAfterYawAdjust, qRot);
+        }
+
+        void SendTrackerTransform(int vmtIndex, Vector3 pos, Quaternion q ) {
+            _client.Send("/VMT/Room/Unity", 
+                vmtIndex, _VMTEnableCompatibleTracker, (float)0,
+                (float)pos.x, (float)pos.y, (float)pos.z, (float)q.x, (float)q.y, (float)q.z, (float)q.w );
+        }
+        void SendTrackerTransform(int vmtIndex, Vector3 pos, Vector3 rot ) {
+            Quaternion q = Quaternion.Euler(rot);
+            SendTrackerTransform(vmtIndex, pos, q);
         }
 
         void SendControllerTransform(bool isLeft) {
