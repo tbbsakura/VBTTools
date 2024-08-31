@@ -704,7 +704,7 @@ namespace SakuraScript.VBTTool
         
         // // // // // // // // // // // // // // // // // // 
         // PauseHandPosAdjust related functions
-        private const  float _movePos = 0.01f; // 1cm ずつ
+        private const  float _movePos = 0.005f; // 5mm ずつ
 
         // 初期導入では、pause = ServerOff : 将来は変更する可能性あり
         public bool IsPauseMode {
