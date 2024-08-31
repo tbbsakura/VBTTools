@@ -11,7 +11,7 @@ using SakuraScript.Utils;
 namespace SakuraScript.VBTTool
 {
     [RequireComponent(typeof(VBTSkeletalTrack))]
-    [RequireComponent(typeof(VBTHandPosTrack))]
+    [RequireComponent(typeof(VBTBodyTrack))]
     public class VBTToolsSample : MonoBehaviour
     {
         [SerializeField] private EVMC4U.ExternalReceiver _exr = null;
@@ -21,7 +21,7 @@ namespace SakuraScript.VBTTool
         [SerializeField] private VBTOpenTrackUDPClient _clientOpentrack;
 
         private VBTSkeletalTrack _vbtSkeletalTrack;
-        private VBTHandPosTrack _vbtHandPosTrack;
+        private VBTBodyTrack _vbtBodyTrack;
 
         [Tooltip("VRMアバターを入れます。変更時はStartのチェックをオフにしてください")]
         private Animator _animationTarget;
@@ -198,7 +198,7 @@ namespace SakuraScript.VBTTool
         {
             // Setting befor loading setting file
             _vbtSkeletalTrack = GetComponent<VBTSkeletalTrack>();
-            _vbtHandPosTrack = GetComponent<VBTHandPosTrack>();
+            _vbtBodyTrack = GetComponent<VBTBodyTrack>();
             _setting._exrecSetting.CopyFromExReceiver( _exr );
             _server =  _exr.GetComponent<uOscServer>();
 
@@ -225,8 +225,8 @@ namespace SakuraScript.VBTTool
             _adjSetting.RotEuL= sensorTemplateL.transform.localRotation.eulerAngles;
             _adjSetting.PosR = sensorTemplateR.transform.localPosition;
             _adjSetting.RotEuR = sensorTemplateR.transform.localRotation.eulerAngles;
-            _adjSetting.HandPosL = _vbtHandPosTrack.HandPosOffsetL;
-            _adjSetting.HandPosR = _vbtHandPosTrack.HandPosOffsetR;
+            _adjSetting.HandPosL = _vbtBodyTrack.HandPosOffsetL;
+            _adjSetting.HandPosR = _vbtBodyTrack.HandPosOffsetR;
 
             // loading setting file
             string adjpath = GetDefaultAdjSettingFilePath();
@@ -270,8 +270,8 @@ namespace SakuraScript.VBTTool
         // Update
         void Update()
         {
-            if ( _vbtHandPosTrack ) {
-                UpdateRecvHMD(_vbtHandPosTrack.RxLED);
+            if ( _vbtBodyTrack ) {
+                UpdateRecvHMD(_vbtBodyTrack.RxLED);
             }
             else {
                 UpdateRecvHMD(0.2f);
@@ -317,11 +317,11 @@ namespace SakuraScript.VBTTool
             // トラッカー位置を示すオブジェクト(left/rightsensor)を手の子にして、Pos/Rot Adjustを適用
             var leftsensor = new GameObject("LeftSensor");
             leftsensor.transform.parent = animator.GetBoneTransform( HumanBodyBones.LeftHand );
-            _vbtHandPosTrack.TransformVirtualLController = leftsensor.transform;
+            _vbtBodyTrack.TransformVirtualLController = leftsensor.transform;
 
             var rightsensor = new GameObject("RightSensor");
             rightsensor.transform.parent = animator.GetBoneTransform( HumanBodyBones.RightHand );
-            _vbtHandPosTrack.TransformVirtualRController = rightsensor.transform;
+            _vbtBodyTrack.TransformVirtualRController = rightsensor.transform;
 
             UpdateAdjust(0);
         }
@@ -361,7 +361,7 @@ namespace SakuraScript.VBTTool
         public void SetClientTogglesOff()
         {
             _toggleClient.isOn = false;
-            _vbtHandPosTrack.StopTrack();
+            _vbtBodyTrack.StopTrack();
             _vbtSkeletalTrack.IsOn = false;
         }
 
@@ -386,8 +386,8 @@ namespace SakuraScript.VBTTool
             }
 
             _serverVMT.StartServer();
-            _vbtHandPosTrack.AnimationTarget = this._animationTarget;
-            _vbtHandPosTrack.StartTrack(_setting._networkSetting._vmtListenPort);
+            _vbtBodyTrack.AnimationTarget = this._animationTarget;
+            _vbtBodyTrack.StartTrack(_setting._networkSetting._vmtListenPort);
 
             _vbtSkeletalTrack.AnimationTarget = this._animationTarget;
             _vbtSkeletalTrack.IsOn = true;
@@ -413,7 +413,7 @@ namespace SakuraScript.VBTTool
                 // VMT の controller enable (種類)を 0: disable にする
                 SendDisable();
                 _toggleClient.isOn = false;
-                _vbtHandPosTrack.StopTrack();
+                _vbtBodyTrack.StopTrack();
                 _vbtSkeletalTrack.IsOn = false;
                 _topText.text = "Client stopped.";
             }
@@ -427,7 +427,7 @@ namespace SakuraScript.VBTTool
         }
 
         public void OnClientOpentrackToggleChanged (bool value) {
-            _vbtHandPosTrack.EnableHeadTrack(value);
+            _vbtBodyTrack.EnableHeadTrack(value);
         }
 
         // // // // // // // // // // // // // // // // // // 
@@ -640,12 +640,12 @@ namespace SakuraScript.VBTTool
         private void UpdateAdjust( int uiNum ) { // if 0 , all 
             if ( uiNum == 0 || uiNum == 1)  {
                 if ( _animationTarget != null ) {
-                    _vbtHandPosTrack.TransformVirtualLController.localPosition = _adjSetting.PosL;
-                    _vbtHandPosTrack.TransformVirtualLController.localRotation =  Quaternion.Euler(_adjSetting.RotEuL);
-                    _vbtHandPosTrack.TransformVirtualRController.localPosition = _adjSetting.PosR;
-                    _vbtHandPosTrack.TransformVirtualRController.localRotation =  Quaternion.Euler(_adjSetting.RotEuR);
-                    _vbtHandPosTrack.HandPosOffsetL = _adjSetting.HandPosL + _pauseHandPosOffsetL;
-                    _vbtHandPosTrack.HandPosOffsetR = _adjSetting.HandPosR + _pauseHandPosOffsetR;
+                    _vbtBodyTrack.TransformVirtualLController.localPosition = _adjSetting.PosL;
+                    _vbtBodyTrack.TransformVirtualLController.localRotation =  Quaternion.Euler(_adjSetting.RotEuL);
+                    _vbtBodyTrack.TransformVirtualRController.localPosition = _adjSetting.PosR;
+                    _vbtBodyTrack.TransformVirtualRController.localRotation =  Quaternion.Euler(_adjSetting.RotEuR);
+                    _vbtBodyTrack.HandPosOffsetL = _adjSetting.HandPosL + _pauseHandPosOffsetL;
+                    _vbtBodyTrack.HandPosOffsetR = _adjSetting.HandPosR + _pauseHandPosOffsetR;
                 }
             }
             if ( uiNum == 0 || uiNum == 2)  {

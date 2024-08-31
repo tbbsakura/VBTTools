@@ -6,7 +6,7 @@ using uOSC;
 
 namespace SakuraScript.VBTTool
 {
-    public class VBTHandPosTrack : MonoBehaviour
+    public class VBTBodyTrack : MonoBehaviour
     {
         [SerializeField, Tooltip("OSCServer Receiving from VMT. VMTからの情報を受け取るOSCサーバー")]
         uOscServer _server;
