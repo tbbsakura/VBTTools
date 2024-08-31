@@ -5,9 +5,7 @@ using System.Net;
 using UnityEngine;
 using UnityEngine.UI;
 using uOSC;
-using System.IO;
 using System;
-using SFB;
 using SakuraScript.Utils;
 
 namespace SakuraScript.VBTTool
@@ -65,26 +63,6 @@ namespace SakuraScript.VBTTool
         [SerializeField] private JoyconToVMT _joyconToVMTInstance;
 
         // Adjust setting UI
-        [System.Serializable]
-        private class VBTToolsAdjustSetting
-        {
-            public Vector3 PosL;
-            public Vector3 RotEuL;
-            public Vector3 PosR;
-            public Vector3 RotEuR;
-            public Vector3 HandPosL;
-            public Vector3 HandPosR;
-
-            public Vector3 RootPosL;
-            public Vector3 RootRotL;
-            public Vector3 WristPosL;
-            public Vector3 WristRotL;
-            public Vector3 RootPosR;
-            public Vector3 RootRotR;
-            public Vector3 WristPosR;
-            public Vector3 WristRotR;
-        }
-
         [SerializeField] private GameObject _adjustingUI;
         [SerializeField] private GameObject _adjustingUISkeL;
         [SerializeField] private GameObject _adjustingUISkeR;
@@ -95,7 +73,8 @@ namespace SakuraScript.VBTTool
         [SerializeField] private Toggle _wristRotateUI2;
         [SerializeField] private Toggle _wristRotateUI3;
 
-        [SerializeField] VBTToolsAdjustSetting _adjSetting;
+//        [SerializeField] VBTToolsAdjustSetting _adjSetting;
+        [SerializeField] VBTToolsSetting _setting;
 
         // Display adjusting values
         [SerializeField] private TransformSliders _tfsADSG1_LeftSlidersA;
@@ -147,12 +126,12 @@ namespace SakuraScript.VBTTool
             // v0.0.4以降では default.json があれば優先される
             var sensorTemplateL = GameObject.Find("/origLeftHand/ControllerSensorL");
             var sensorTemplateR = GameObject.Find("/origRightHand/ControllerSensorR");
-            _adjSetting.PosL = sensorTemplateL.transform.localPosition;
-            _adjSetting.RotEuL= sensorTemplateL.transform.localRotation.eulerAngles;
-            _adjSetting.PosR = sensorTemplateR.transform.localPosition;
-            _adjSetting.RotEuR = sensorTemplateR.transform.localRotation.eulerAngles;
-            _adjSetting.HandPosL = _vbtHandPosTrack.HandPosOffsetL;
-            _adjSetting.HandPosR = _vbtHandPosTrack.HandPosOffsetR;
+            _setting._adjSetting.PosL = sensorTemplateL.transform.localPosition;
+            _setting._adjSetting.RotEuL= sensorTemplateL.transform.localRotation.eulerAngles;
+            _setting._adjSetting.PosR = sensorTemplateR.transform.localPosition;
+            _setting._adjSetting.RotEuR = sensorTemplateR.transform.localRotation.eulerAngles;
+            _setting._adjSetting.HandPosL = _vbtHandPosTrack.HandPosOffsetL;
+            _setting._adjSetting.HandPosR = _vbtHandPosTrack.HandPosOffsetR;
 
 #if UNITY_EDITOR
             string path = "Assets\\SakuraShop_tbb\\VBTTools\\etc\\setting";
@@ -161,7 +140,7 @@ namespace SakuraScript.VBTTool
 #endif
             path += "\\default.json";
             if (System.IO.File.Exists(path) ) {
-                LoadSettingFile(path);
+                _setting = VBTToolsSetting.LoadFromFile(path) ?? _setting;
             }
             else {
                 Debug.Log($"File not found: {path}");
@@ -205,14 +184,14 @@ namespace SakuraScript.VBTTool
         // 設定ファイル読み込み後に adjustingUIs のスライダーを再設定する
         private void InitSliders()
         {
-            _tfsADSG1_LeftSlidersA.SetValue( _adjSetting.PosL, _adjSetting.RotEuL );
-            _tfsADSG1_RightSlidersA.SetValue( _adjSetting.PosR, _adjSetting.RotEuR );
-            _tfsADSG1_LeftSlidersB_HandPos.SetValue( _adjSetting.HandPosL, Vector3.zero );
-            _tfsADSG1_RightSlidersB_HandPos.SetValue( _adjSetting.HandPosR, Vector3.zero );
-            _tfsADSG2_LeftRoot.SetValue( _adjSetting.RootPosL, _adjSetting.RootRotL );
-            _tfsADSG2_LeftWrist.SetValue( _adjSetting.WristPosL, _adjSetting.WristRotL );
-            _tfsADSG3_RightRoot.SetValue( _adjSetting.RootPosR, _adjSetting.RootRotR );
-            _tfsADSG3_RightWrist.SetValue( _adjSetting.WristPosR, _adjSetting.WristRotR );
+            _tfsADSG1_LeftSlidersA.SetValue( _setting._adjSetting.PosL, _setting._adjSetting.RotEuL );
+            _tfsADSG1_RightSlidersA.SetValue( _setting._adjSetting.PosR, _setting._adjSetting.RotEuR );
+            _tfsADSG1_LeftSlidersB_HandPos.SetValue( _setting._adjSetting.HandPosL, Vector3.zero );
+            _tfsADSG1_RightSlidersB_HandPos.SetValue( _setting._adjSetting.HandPosR, Vector3.zero );
+            _tfsADSG2_LeftRoot.SetValue( _setting._adjSetting.RootPosL, _setting._adjSetting.RootRotL );
+            _tfsADSG2_LeftWrist.SetValue( _setting._adjSetting.WristPosL, _setting._adjSetting.WristRotL );
+            _tfsADSG3_RightRoot.SetValue( _setting._adjSetting.RootPosR, _setting._adjSetting.RootRotR );
+            _tfsADSG3_RightWrist.SetValue( _setting._adjSetting.WristPosR, _setting._adjSetting.WristRotR );
         }
 
         // VRMファイル読み込み後の処理
@@ -552,60 +531,62 @@ namespace SakuraScript.VBTTool
 
         // Adjusting UI1 Left : on-Slider-changed Callback
         public void OnADSG1LeftSlidersAChanged(Vector3 pos, Vector3 rot){
-            _adjSetting.PosL = pos;
-            _adjSetting.RotEuL = rot;
+            _setting._adjSetting.PosL = pos;
+            _setting._adjSetting.RotEuL = rot;
             UpdateAdjust(1);
         }
         public void OnADSG1RightSlidersAChanged(Vector3 pos, Vector3 rot){
-            _adjSetting.PosR = pos;
-            _adjSetting.RotEuR = rot;
+            _setting._adjSetting.PosR = pos;
+            _setting._adjSetting.RotEuR = rot;
             UpdateAdjust(1);
         }
         public void OnADSG1LeftSlidersBChanged(Vector3 pos, Vector3 rot){
-            _adjSetting.HandPosL = pos;
+            _setting._adjSetting.HandPosL = pos;
             UpdateAdjust(1);
         }
         public void OnADSG1RightSlidersBChanged(Vector3 pos, Vector3 rot){
-            _adjSetting.HandPosR = pos;
+            _setting._adjSetting.HandPosR = pos;
             UpdateAdjust(1);
         }
         public void OnADSG2RootSlidersChanged(Vector3 pos, Vector3 rot){
-            _adjSetting.RootPosL = pos;
-            _adjSetting.RootRotL = rot;
+            _setting._adjSetting.RootPosL = pos;
+            _setting._adjSetting.RootRotL = rot;
             UpdateAdjust(2);
         }
         public void OnADSG2WristSlidersChanged(Vector3 pos, Vector3 rot){
-            _adjSetting.WristPosL = pos;
-            _adjSetting.WristRotL = rot;
+            _setting._adjSetting.WristPosL = pos;
+            _setting._adjSetting.WristRotL = rot;
             UpdateAdjust(2);
         }
         public void OnADSG3RootSlidersChanged(Vector3 pos, Vector3 rot){
-            _adjSetting.RootPosR = pos;
-            _adjSetting.RootRotR = rot;
+            _setting._adjSetting.RootPosR = pos;
+            _setting._adjSetting.RootRotR = rot;
             UpdateAdjust(3);
         }
         public void OnADSG3WristSlidersChanged(Vector3 pos, Vector3 rot){
-            _adjSetting.WristPosR = pos;
-            _adjSetting.WristRotR = rot;
+            _setting._adjSetting.WristPosR = pos;
+            _setting._adjSetting.WristRotR = rot;
             UpdateAdjust(3);
         }
 
         private void UpdateAdjust( int uiNum ) { // if 0 , all 
             if ( uiNum == 0 || uiNum == 1)  {
                 if ( _animationTarget != null ) {
-                    _vbtHandPosTrack.TransformVirtualLController.localPosition = _adjSetting.PosL;
-                    _vbtHandPosTrack.TransformVirtualLController.localRotation =  Quaternion.Euler(_adjSetting.RotEuL);
-                    _vbtHandPosTrack.TransformVirtualRController.localPosition = _adjSetting.PosR;
-                    _vbtHandPosTrack.TransformVirtualRController.localRotation =  Quaternion.Euler(_adjSetting.RotEuR);
-                    _vbtHandPosTrack.HandPosOffsetL = _adjSetting.HandPosL + _pauseHandPosOffsetL;
-                    _vbtHandPosTrack.HandPosOffsetR = _adjSetting.HandPosR + _pauseHandPosOffsetR;
+                    _vbtHandPosTrack.TransformVirtualLController.localPosition = _setting._adjSetting.PosL;
+                    _vbtHandPosTrack.TransformVirtualLController.localRotation =  Quaternion.Euler(_setting._adjSetting.RotEuL);
+                    _vbtHandPosTrack.TransformVirtualRController.localPosition = _setting._adjSetting.PosR;
+                    _vbtHandPosTrack.TransformVirtualRController.localRotation =  Quaternion.Euler(_setting._adjSetting.RotEuR);
+                    _vbtHandPosTrack.HandPosOffsetL = _setting._adjSetting.HandPosL + _pauseHandPosOffsetL;
+                    _vbtHandPosTrack.HandPosOffsetR = _setting._adjSetting.HandPosR + _pauseHandPosOffsetR;
                 }
             }
             if ( uiNum == 0 || uiNum == 2)  {
-                _vbtSkeletalTrack.SetRootWristOffset( true, _adjSetting.RootPosL, _adjSetting.RootRotL, _adjSetting.WristPosL, _adjSetting.WristRotL );
+                _vbtSkeletalTrack.SetRootWristOffset( true, 
+                    _setting._adjSetting.RootPosL, _setting._adjSetting.RootRotL, _setting._adjSetting.WristPosL, _setting._adjSetting.WristRotL );
             }
             if ( uiNum == 0 || uiNum == 3)  {
-                _vbtSkeletalTrack.SetRootWristOffset( false, _adjSetting.RootPosR, _adjSetting.RootRotR, _adjSetting.WristPosR, _adjSetting.WristRotR );
+                _vbtSkeletalTrack.SetRootWristOffset( false, 
+                    _setting._adjSetting.RootPosR, _setting._adjSetting.RootRotR, _setting._adjSetting.WristPosR, _setting._adjSetting.WristRotR );
             }
         }
 
@@ -656,50 +637,13 @@ namespace SakuraScript.VBTTool
         // Adjusting UI - Setting File Save/Load
         public void OnSaveButton()
         {
-            var extensions = new[] {
-                new ExtensionFilter("Json Files", "json" ),
-            };
-
-            var path = StandaloneFileBrowser.SaveFilePanel("Save File", "", "default.json", extensions);
-
-            if (path.Length > 0)
-            {
-                var json = JsonUtility.ToJson(_adjSetting, true);
-                //Debug.Log( $"Saving to file {path} : " + json);
-
-                StreamWriter sw = new StreamWriter(path,false); 
-                sw.Write(json);
-                sw.Flush();
-                sw.Close();
-            }
+            VBTToolsSetting.SaveToFile(_setting);
         }
 
         public void OnLoadButton()
         {
-            var extensions = new[] {
-                new ExtensionFilter("Json Files", "json" ),
-            };
-
-            var paths = StandaloneFileBrowser.OpenFilePanel("Open File", "", extensions, false);
-            if (paths.Length > 0 && paths[0].Length > 0)
-            {
-                //Debug.Log( $"Opening file {paths[0]}");
-                LoadSettingFile(paths[0]);
-            }
-        }
-
-        private void LoadSettingFile(string path)
-        {
-            Debug.Log( $"LoadSettingFile: {path}" ); 
-            StreamReader sr = new StreamReader(path, false);
-            string json = "";
-            while(!sr.EndOfStream) {
-                json += sr.ReadLine ();
-            }
-            sr.Close();
-            var obj = JsonUtility.FromJson<VBTToolsAdjustSetting>(json);
-            _adjSetting = obj;
-            InitSliders(); 
+            _setting = VBTToolsSetting.LoadFromFile() ?? _setting;;
+            InitSliders();
         }
         
         // // // // // // // // // // // // // // // // // // 
