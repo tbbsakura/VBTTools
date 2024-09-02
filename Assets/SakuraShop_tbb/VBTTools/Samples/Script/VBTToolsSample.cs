@@ -7,6 +7,7 @@ using UnityEngine.UI;
 using uOSC;
 using System;
 using SakuraScript.Utils;
+using SFB;
 
 namespace SakuraScript.VBTTool
 {
@@ -305,6 +306,34 @@ namespace SakuraScript.VBTTool
             _tfsADSG2_LeftWrist.SetValue( _adjSetting.WristPosL, _adjSetting.WristRotL );
             _tfsADSG3_RightRoot.SetValue( _adjSetting.RootPosR, _adjSetting.RootRotR );
             _tfsADSG3_RightWrist.SetValue( _adjSetting.WristPosR, _adjSetting.WristRotR );
+        }
+
+        // Buttonによるload
+        public void OnVRMLoadButton()
+        {
+            var extensions = new[] { new ExtensionFilter("VRM Files", "vrm" ), };
+            var paths = StandaloneFileBrowser.OpenFilePanel("Open File", "", extensions, false);
+            if (paths.Length > 0 && paths[0].Length > 0) {
+                VBTTools_FileDragAndDrop loader = GetComponent<VBTTools_FileDragAndDrop>();
+                loader.OpenVRM(paths[0]);
+            }
+        }
+
+        //
+        public string DefaultVRMPath {
+            get {
+                if (_setting._defaultVRM.Length > 0 && System.IO.File.Exists(_setting._defaultVRM)){
+                    return _setting._defaultVRM;
+                }
+#if UNITY_EDITOR
+                const char separatorChar = '/';
+                string modelFilepath = "Assets/SakuraShop_tbb/VRM_CC0/HairSample_Male.vrm"; //CC0 model
+                modelFilepath = modelFilepath.Replace( separatorChar, System.IO.Path.DirectorySeparatorChar );
+#else
+                string modelFilepath = "HairSample_Male.vrm"; //CC0 model
+#endif
+                return modelFilepath;
+            }
         }
 
         // VRMファイル読み込み後の処理

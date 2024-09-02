@@ -14,6 +14,9 @@ public class VBTTools_FileDragAndDrop : MonoBehaviour
     private bool m_loading = false;
     private Text m_topText;
 
+    private string m_lastLoadedFile;
+    public string LastLoadedFile => m_lastLoadedFile;
+
     [SerializeField] EVMC4U.ExternalReceiver m_exrec;
     RuntimeGltfInstance _lastLoaded = null;
     [SerializeField]  VBTToolsSample m_sampleProject;
@@ -37,20 +40,19 @@ public class VBTTools_FileDragAndDrop : MonoBehaviour
         m_topText = GameObject.Find("TopText").GetComponent<Text>();
 
         if ( m_sampleProject != null && m_sampleProject.AnimationTarget == null ) {
-#if UNITY_EDITOR
-            const char separatorChar = '/';
-            string modelFilepath = "Assets/SakuraShop_tbb/VRM_CC0/HairSample_Male.vrm"; //CC0 model
-            modelFilepath = modelFilepath.Replace( separatorChar, System.IO.Path.DirectorySeparatorChar );
-            //modelFilepath = "Z:\\VR\\_VRM\\fumifumi\\3c6.0_noshoe_.vrm";
-#else
-            string modelFilepath = "HairSample_Male.vrm"; //CC0 model
-#endif
+            string modelFilepath = m_sampleProject.DefaultVRMPath;
             LoadModel(modelFilepath);
         }
     }
     void OnDisable()
     {
         UnityDragAndDropHook.UninstallHook();
+    }
+
+    public void OpenVRM(string path)
+    {
+        if ( m_loading ) return; // ignore
+        LoadModel(path);
     }
 
     void OnFiles(List<string> aFiles, POINT aPos)
@@ -151,6 +153,7 @@ public class VBTTools_FileDragAndDrop : MonoBehaviour
                             return;
                         }
                     }
+                    m_lastLoadedFile = path;
                     OnLoaded(loaded);
                 }
             }
