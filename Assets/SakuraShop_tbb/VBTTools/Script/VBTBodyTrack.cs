@@ -197,9 +197,15 @@ namespace SakuraScript.VBTTool
                 SendControllerTransform(false); // R
             }
 
-            if (_enableHead) {
-                SendHeadTransformToOpenTrack();
+            bool opentracEn = _opentrackClient.gameObject.activeInHierarchy;
+            if (_enableHead && !opentracEn) {
+                if (_opentrackClient.HeadObject == null ) _opentrackClient.HeadObject = _animationTarget.GetBoneTransform(HumanBodyBones.Head);
+                _opentrackClient.gameObject.SetActive(true);
             }
+            else if ( !_enableHand && opentracEn ) {
+                _opentrackClient.gameObject.SetActive(false);
+            }
+
             if (_enableWaistTrack) {
                 Transform t = _animationTarget.GetBoneTransform(HumanBodyBones.Spine);// Hips? Chest? 要件等
                 SendTrackerTransform(_VMTIndexWaist, t, hmdPos, qRotHMDYaw);
@@ -224,11 +230,6 @@ namespace SakuraScript.VBTTool
             _enableHead = isOn;
         }
 #endif
-        void SendHeadTransformToOpenTrack()
-        {
-            Transform t = _animationTarget.GetBoneTransform(HumanBodyBones.Head);
-            _opentrackClient.Add(t);
-        }
 
         void SendTrackerTransform( int vmtIndex, Transform t, Vector3 hmdPos, Quaternion qRotHMDYaw )
         {

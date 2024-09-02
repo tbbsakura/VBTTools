@@ -9,6 +9,7 @@ using System.Collections.Generic;
 using System.Diagnostics;
 
 using uOSC;
+using Unity.VisualScripting.YamlDotNet.Core.Tokens;
 
 namespace SakuraScript.VBTTool
 {
@@ -16,6 +17,10 @@ namespace SakuraScript.VBTTool
     {
         [SerializeField]
         Transform _headObject;
+        public Transform HeadObject {
+            get => _headObject; 
+            set => _headObject = value;
+        }
 
         [SerializeField]
         public string address = "127.0.0.1";
