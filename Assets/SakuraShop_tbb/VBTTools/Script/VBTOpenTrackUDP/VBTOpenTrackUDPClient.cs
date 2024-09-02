@@ -18,7 +18,7 @@ namespace SakuraScript.VBTTool
         public string address = "127.0.0.1";
 
         [SerializeField]
-        public int port = 3333;
+        public int port = 4242;
 
         [SerializeField]
         public int maxQueueSize = 100;
