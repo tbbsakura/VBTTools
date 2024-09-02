@@ -13,9 +13,6 @@ namespace SakuraScript.VBTTool
         [SerializeField, Tooltip("OSCServer Sending to VMT. VMTへ情報を送信するOSCクライアント")]
         uOscClient _client;
 
-        [SerializeField] bool _enableHead = false;
-        [SerializeField] bool _enableHand = false;
-
         Animator _animationTarget;
         public Animator AnimationTarget {
             get => _animationTarget;
@@ -74,8 +71,8 @@ namespace SakuraScript.VBTTool
         private Quaternion _baseHMDRot; // VMTオーバーライド開始時のHMD回転
 #endif
 
-        [SerializeField] bool _enableLeftHand = true;
-        [SerializeField] bool _enableRightHand = true;
+        [SerializeField] bool _enableHead = false;
+        [SerializeField] bool _enableHand = false;
 
         [SerializeField] bool _enableWaistTrack = false;
         [SerializeField] bool _enableLeftFootTrack = false;
@@ -186,22 +183,18 @@ namespace SakuraScript.VBTTool
 
             if (_enableHand) {
                 // left hand
-                if (_enableLeftHand) {
-                    Transform lsrc = _transformVirtualLController;
-                    Vector3 posBeforYawAdjust = lsrc.position - hmdPos + _handPosOffsetL;
-                    _transformLController.position = qRotHMDYaw * posBeforYawAdjust + _transformHMD.position;
-                    _transformLController.rotation = qRotHMDYaw * lsrc.rotation * qRotOffsetL;
-                    SendControllerTransform(true); // L
-                }
+                Transform lsrc = _transformVirtualLController;
+                Vector3 posBeforYawAdjust = lsrc.position - hmdPos + _handPosOffsetL;
+                _transformLController.position = qRotHMDYaw * posBeforYawAdjust + _transformHMD.position;
+                _transformLController.rotation = qRotHMDYaw * lsrc.rotation * qRotOffsetL;
+                SendControllerTransform(true); // L
 
                 // right hand
-                if (_enableRightHand) {
-                    Transform rsrc = _transformVirtualRController;
-                    Vector3 posBeforYawAdjust = rsrc.position - hmdPos + _handPosOffsetR;
-                    _transformRController.position = qRotHMDYaw * posBeforYawAdjust + _transformHMD.position;
-                    _transformRController.rotation = qRotHMDYaw * rsrc.rotation * qRotOffsetR;
-                    SendControllerTransform(false); // R
-                }
+                Transform rsrc = _transformVirtualRController;
+                posBeforYawAdjust = rsrc.position - hmdPos + _handPosOffsetR;
+                _transformRController.position = qRotHMDYaw * posBeforYawAdjust + _transformHMD.position;
+                _transformRController.rotation = qRotHMDYaw * rsrc.rotation * qRotOffsetR;
+                SendControllerTransform(false); // R
             }
 
             if (_enableHead) {
