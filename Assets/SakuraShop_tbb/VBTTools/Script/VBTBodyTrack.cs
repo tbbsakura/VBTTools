@@ -198,7 +198,6 @@ namespace SakuraScript.VBTTool
             }
 
             if ( _enableHead ) {
-                Debug.Log(".");
                 _opentrackClient.enabled = true;
                 _opentrackClient.HeadObject = _animationTarget.GetBoneTransform(HumanBodyBones.Head);
             }
