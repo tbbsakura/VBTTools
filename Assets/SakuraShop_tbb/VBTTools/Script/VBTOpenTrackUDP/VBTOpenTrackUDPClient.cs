@@ -15,6 +15,9 @@ namespace SakuraScript.VBTTool
     public class VBTOpenTrackUDPClient : MonoBehaviour
     {
         [SerializeField]
+        Transform _headObject;
+
+        [SerializeField]
         public string address = "127.0.0.1";
 
         [SerializeField]
@@ -81,6 +84,7 @@ namespace SakuraScript.VBTTool
         void Update()
         {
             UpdateChangePortAndAddress();
+            if (_headObject != null) Add(_headObject);
         }
 
         void UpdateChangePortAndAddress()
