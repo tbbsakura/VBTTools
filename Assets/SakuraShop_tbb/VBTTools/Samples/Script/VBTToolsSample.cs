@@ -27,7 +27,11 @@ namespace SakuraScript.VBTTool
         private Animator _animationTarget;
         public Animator AnimationTarget { 
             get => _animationTarget;
-            set => _animationTarget = value;
+            set {
+                _animationTarget = value;
+                _vbtBodyTrack.AnimationTarget = _animationTarget;
+                _vbtSkeletalTrack.AnimationTarget = _animationTarget;
+            }
         }
 
         private HumanPose _targetHumanPose;
@@ -311,7 +315,7 @@ namespace SakuraScript.VBTTool
         public void OnVRMLoaded(Animator animator)
         {
             // animationtarget, HumanPoseHandler 変数更新
-            _animationTarget = animator;
+            AnimationTarget = animator;
             SetHandler();
 
             // トラッカー位置を示すオブジェクト(left/rightsensor)を手の子にして、Pos/Rot Adjustを適用
@@ -386,10 +390,8 @@ namespace SakuraScript.VBTTool
             }
 
             _serverVMT.StartServer();
-            _vbtBodyTrack.AnimationTarget = this._animationTarget;
             _vbtBodyTrack.StartHandTrack(_setting._networkSetting._vmtListenPort);
 
-            _vbtSkeletalTrack.AnimationTarget = this._animationTarget;
             _vbtSkeletalTrack.IsOn = true;
 
             _topText.text = "Client for VMT started.";

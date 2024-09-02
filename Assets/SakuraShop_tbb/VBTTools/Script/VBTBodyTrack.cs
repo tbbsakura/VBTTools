@@ -109,7 +109,7 @@ namespace SakuraScript.VBTTool
         void Start()
         {
             _server.onDataReceived.AddListener(OnDataReceived);
-            _opentrackClient = GetComponent<VBTOpenTrackUDPClient >();
+            _opentrackClient = GetComponent<VBTOpenTrackUDPClient>();
         }
 
         void OnDisable()
@@ -197,13 +197,13 @@ namespace SakuraScript.VBTTool
                 SendControllerTransform(false); // R
             }
 
-            bool opentracEn = _opentrackClient.gameObject.activeInHierarchy;
-            if (_enableHead && !opentracEn) {
-                if (_opentrackClient.HeadObject == null ) _opentrackClient.HeadObject = _animationTarget.GetBoneTransform(HumanBodyBones.Head);
-                _opentrackClient.gameObject.SetActive(true);
+            if ( _enableHead ) {
+                Debug.Log(".");
+                _opentrackClient.enabled = true;
+                _opentrackClient.HeadObject = _animationTarget.GetBoneTransform(HumanBodyBones.Head);
             }
-            else if ( !_enableHead && opentracEn ) {
-                _opentrackClient.gameObject.SetActive(false);
+            else if ( !_enableHead  ) {
+                _opentrackClient.enabled = false;
             }
 
             if (_enableWaistTrack) {
