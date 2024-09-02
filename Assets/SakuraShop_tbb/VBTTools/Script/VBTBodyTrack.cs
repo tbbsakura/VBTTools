@@ -13,7 +13,8 @@ namespace SakuraScript.VBTTool
         [SerializeField, Tooltip("OSCServer Sending to VMT. VMTへ情報を送信するOSCクライアント")]
         uOscClient _client;
 
-        bool _isOn = false;
+        [SerializeField] bool _enableHead = false;
+        [SerializeField] bool _enableHand = false;
 
         Animator _animationTarget;
         public Animator AnimationTarget {
@@ -67,7 +68,6 @@ namespace SakuraScript.VBTTool
 
         const int _VMTEnableCompatibleTracker = 7; // vive tracker 互換
         [Space]
-        [SerializeField] bool _enableHead = false;
 
 #if VMT_HMD_OVERRIDE
         private Vector3 _baseHMDPos; // VMTオーバーライド開始時のHMD位置
@@ -117,22 +117,22 @@ namespace SakuraScript.VBTTool
 
         void OnDisable()
         {
-            if (_client != null && _isOn) StopTrack();
+            if (_client != null && _enableHand) StopHandTrack();
         }
 
-        public void StartTrack(int vmtListenPort)
+        public void StartHandTrack(int vmtListenPort)
         {
             if (_client != null) {
                 _client.Send("/VMT/Set/Destination", "127.0.0.1", vmtListenPort );
                 _client.Send("/VMT/Subscribe/Device", _serialHMD);
-                _isOn = true;
+                _enableHand = true;
             }
         }
 
-        public void StopTrack()
+        public void StopHandTrack()
         {
             if (_client != null) _client.Send("/VMT/Unsubscribe/Device", _serialHMD);
-            _isOn = false;
+            _enableHand = false;
         }
 
         public void EnableHeadTrack(bool isOn)
@@ -175,7 +175,6 @@ namespace SakuraScript.VBTTool
             _rxLED -= 0.01f; 
             if (_rxLED < 0.2f ) _rxLED = 0.2f;
 
-            if ( !_isOn ) return;
             if ( _animationTarget == null ) return;
 
             // this position may be overriden by VMT_0? or not?: tbc
@@ -185,22 +184,24 @@ namespace SakuraScript.VBTTool
             Quaternion qRotOffsetL = Quaternion.Euler( _handEulerOffsetL );
             Quaternion qRotOffsetR = Quaternion.Euler( _handEulerOffsetR );
 
-            // left hand
-            if (_enableLeftHand) {
-                Transform lsrc = _transformVirtualLController;
-                Vector3 posBeforYawAdjust = lsrc.position - hmdPos + _handPosOffsetL;
-                _transformLController.position = qRotHMDYaw * posBeforYawAdjust + _transformHMD.position;
-                _transformLController.rotation = qRotHMDYaw * lsrc.rotation * qRotOffsetL;
-                SendControllerTransform(true); // L
-            }
+            if (_enableHand) {
+                // left hand
+                if (_enableLeftHand) {
+                    Transform lsrc = _transformVirtualLController;
+                    Vector3 posBeforYawAdjust = lsrc.position - hmdPos + _handPosOffsetL;
+                    _transformLController.position = qRotHMDYaw * posBeforYawAdjust + _transformHMD.position;
+                    _transformLController.rotation = qRotHMDYaw * lsrc.rotation * qRotOffsetL;
+                    SendControllerTransform(true); // L
+                }
 
-            // right hand
-            if (_enableRightHand) {
-                Transform rsrc = _transformVirtualRController;
-                Vector3 posBeforYawAdjust = rsrc.position - hmdPos + _handPosOffsetR;
-                _transformRController.position = qRotHMDYaw * posBeforYawAdjust + _transformHMD.position;
-                _transformRController.rotation = qRotHMDYaw * rsrc.rotation * qRotOffsetR;
-                SendControllerTransform(false); // R
+                // right hand
+                if (_enableRightHand) {
+                    Transform rsrc = _transformVirtualRController;
+                    Vector3 posBeforYawAdjust = rsrc.position - hmdPos + _handPosOffsetR;
+                    _transformRController.position = qRotHMDYaw * posBeforYawAdjust + _transformHMD.position;
+                    _transformRController.rotation = qRotHMDYaw * rsrc.rotation * qRotOffsetR;
+                    SendControllerTransform(false); // R
+                }
             }
 
             if (_enableHead) {

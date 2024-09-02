@@ -361,7 +361,7 @@ namespace SakuraScript.VBTTool
         public void SetClientTogglesOff()
         {
             _toggleClient.isOn = false;
-            _vbtBodyTrack.StopTrack();
+            _vbtBodyTrack.StopHandTrack();
             _vbtSkeletalTrack.IsOn = false;
         }
 
@@ -387,7 +387,7 @@ namespace SakuraScript.VBTTool
 
             _serverVMT.StartServer();
             _vbtBodyTrack.AnimationTarget = this._animationTarget;
-            _vbtBodyTrack.StartTrack(_setting._networkSetting._vmtListenPort);
+            _vbtBodyTrack.StartHandTrack(_setting._networkSetting._vmtListenPort);
 
             _vbtSkeletalTrack.AnimationTarget = this._animationTarget;
             _vbtSkeletalTrack.IsOn = true;
@@ -413,7 +413,7 @@ namespace SakuraScript.VBTTool
                 // VMT の controller enable (種類)を 0: disable にする
                 SendDisable();
                 _toggleClient.isOn = false;
-                _vbtBodyTrack.StopTrack();
+                _vbtBodyTrack.StopHandTrack();
                 _vbtSkeletalTrack.IsOn = false;
                 _topText.text = "Client stopped.";
             }
