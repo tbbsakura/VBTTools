@@ -23,12 +23,10 @@
 
 using UnityEngine;
 using System;
-using System.IO;
 using System.Collections.Generic;
 using System.Diagnostics;
 
 using uOSC;
-using Unity.VisualScripting.YamlDotNet.Core.Tokens;
 
 namespace SakuraScript.VBTTool
 {
