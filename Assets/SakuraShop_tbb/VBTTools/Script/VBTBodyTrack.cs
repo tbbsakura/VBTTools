@@ -31,6 +31,8 @@ namespace SakuraScript.VBTTool
         [Space]
         [SerializeField, Tooltip("VMTから受信したHMDのTransformを設定するオブジェクト")]
         Transform _transformHMD;
+        public Transform TransformHMD => _transformHMD;
+
         [SerializeField, Tooltip("VMTに送信する左コントローラーのTransformを設定するオブジェクト")]
         Transform _transformLController;
         [SerializeField, Tooltip("VMTに送信する右コントローラーのTransformを設定するオブジェクト")]
@@ -50,8 +52,15 @@ namespace SakuraScript.VBTTool
 
         [SerializeField, Tooltip("左手の回転補正(Global) 基本ゼロで")]
         Vector3 _handEulerOffsetL = new Vector3( 0, 0, 0 );
+        public Vector3 HandEulerOffsetL {
+            get => _handEulerOffsetL; set => _handEulerOffsetL = value;
+        }
+
         [SerializeField, Tooltip("右手の回転補正(Global) 基本ゼロで")]
         Vector3 _handEulerOffsetR = new Vector3( 0, 0 ,0 );
+        public Vector3 HandEulerOffsetR {
+            get => _handEulerOffsetR; set => _handEulerOffsetR = value;
+        }
 
         [Space]
         [SerializeField, Tooltip("VMTに渡すパラメーター/左手のindex")]

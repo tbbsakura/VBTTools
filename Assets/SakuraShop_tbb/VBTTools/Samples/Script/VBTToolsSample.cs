@@ -98,6 +98,8 @@ namespace SakuraScript.VBTTool
         // PauseHandPosAdjust : 一時停止＆手の一時的位置移動機能関連
         Vector3 _pauseHandPosOffsetL = Vector3.zero;
         Vector3 _pauseHandPosOffsetR = Vector3.zero;
+        Vector3 _pauseHandRotOffsetL = Vector3.zero;
+        Vector3 _pauseHandRotOffsetR = Vector3.zero;
 
         // Network setting UI panel
         [SerializeField] GameObject _networkSetting;
@@ -648,6 +650,8 @@ namespace SakuraScript.VBTTool
                     _vbtBodyTrack.TransformVirtualRController.localRotation =  Quaternion.Euler(_adjSetting.RotEuR);
                     _vbtBodyTrack.HandPosOffsetL = _adjSetting.HandPosL + _pauseHandPosOffsetL;
                     _vbtBodyTrack.HandPosOffsetR = _adjSetting.HandPosR + _pauseHandPosOffsetR;
+                    _vbtBodyTrack.HandEulerOffsetL = _pauseHandRotOffsetL;
+                    _vbtBodyTrack.HandEulerOffsetR = _pauseHandRotOffsetR;
                 }
             }
             if ( uiNum == 0 || uiNum == 2)  {
@@ -721,9 +725,8 @@ namespace SakuraScript.VBTTool
         
         // // // // // // // // // // // // // // // // // // 
         // PauseHandPosAdjust related functions
-        private const  float _movePos = 0.005f; // 5mm ずつ
+        private const  float _movePos = 0.003f; // 3mm ずつ
 
-        // 初期導入では、pause = ServerOff : 将来は変更する可能性あり
         public bool IsPauseMode {
             get  { return !_toggleServer.isOn; }
         }
@@ -733,6 +736,12 @@ namespace SakuraScript.VBTTool
             if ( buttonIndex == 2 ) {
                 _toggleServer.isOn = !_toggleServer.isOn; // 反転
                 _joyconToVMTInstance.EnableStickMove = _toggleServer.isOn;
+            }
+            if ( buttonIndex == 1) {
+                _toggleServer.isOn = false; // 停止確定
+                _joyconToVMTInstance.EnableStickMove = _toggleServer.isOn;
+                SetMenuPauseOffset();
+                UpdateAdjust(0);
             }
         }
 
@@ -780,10 +789,31 @@ namespace SakuraScript.VBTTool
             }
         }
 
+         // Menu操作しやすい手の位置、Headとの相対位置
+        Vector3 RightMenuPos = new Vector3(-1.05639941e-11f,0.0339747667f,0.0025523901f); // new Vector3(0.234467059f,-0.156040668f,0.15293619f);
+        Vector3 RightMenuRot = new Vector3(357.278076f,280.557037f,93.1913147f);
+        Vector3 LeftMenuPos = new Vector3(-0.229998678f,-0.0037421513f,0.37446329f);
+        Vector3 LeftMenuRot = new Vector3(287.08432f,121.202736f,232.910187f);
+
+        void SetMenuPauseOffset()
+        {
+            Vector3 hmdPos = _vbtBodyTrack.TransformHMD.position; //  _animationTarget.GetBoneTransform(HumanBodyBones.Head).position;
+            Quaternion hmdRot = _vbtBodyTrack.TransformHMD.rotation; // _animationTarget.GetBoneTransform(HumanBodyBones.Head).rotation;
+            float hmdYaw = _vbtBodyTrack.TransformHMD.eulerAngles.y; 
+            _pauseHandPosOffsetL = hmdPos + LeftMenuPos - _vbtBodyTrack.TransformVirtualLController.position;
+            _pauseHandPosOffsetR = hmdPos + RightMenuPos - _vbtBodyTrack.TransformVirtualRController.position;
+            Quaternion goalLeft = Quaternion.Euler(LeftMenuRot) * hmdRot; // なるべき姿勢
+            _pauseHandRotOffsetL = (Quaternion.Inverse(_vbtBodyTrack.TransformVirtualLController.rotation) * goalLeft).eulerAngles;
+            Quaternion goalRight = Quaternion.Euler(RightMenuRot) * hmdRot; // なるべき姿勢
+            _pauseHandRotOffsetR = (Quaternion.Inverse(_vbtBodyTrack.TransformVirtualRController.rotation) * goalRight).eulerAngles;
+        }
+
         public void ResetPauseOffset()
         {
             _pauseHandPosOffsetL = Vector3.zero;
             _pauseHandPosOffsetR = Vector3.zero;
+            _pauseHandRotOffsetL = Vector3.zero;
+            _pauseHandRotOffsetR = Vector3.zero;
             _leftTransformSliders.SetValue( Vector3.zero, Vector3.zero ); 
             _rightTransformSliders.SetValue( Vector3.zero, Vector3.zero ); 
             UpdateAdjust(0);
