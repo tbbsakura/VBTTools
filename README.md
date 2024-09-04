@@ -1,5 +1,5 @@
 # VBTTools
-Virtual Body (VRM Body) Tracking Tools v0.2.0 に向けてのドラフト
+Virtual Body (VRM Body) Tracking Tools v0.2.0 に向けてのドラフト<br>
 (最新のソースを利用する場合の説明は、[ReadMeUpdateブランチのReadme](https://github.com/tbbsakura/VBTTools/blob/ReadMeUpdate/README.md)を参照してください)
 
 [![使用例（youtube 動画6秒）](https://github.com/tbbsakura/VBTTools/blob/main/Assets/SakuraShop_tbb/VBTTools/etc/youtube_tn01_960x540.jpg)](https://www.youtube.com/watch?v=X4_1aNCIf7s)
@@ -73,7 +73,7 @@ OpenTrackを有効にして SteamVRを起動すると、左右2つの映像が�
 [XREAL AirをWindows PCでSteamVRのHMDとして使う](https://note.com/domtaro/n/nbdf732223dfc)
 **２－３．アドオンの設定 にある設定ファイルの説明のうち windowX, windowY（超重要）** のところを参照してください。
 
-（**要更新：HeadView Window の設定、仮想モニタ等**）
+（**要更新：HeadView Window の設定、仮想モニタ等。仮想モニタが使えない場合、完全に使わない人が居るので、VMTラインとOpenTrackラインは説明を完全に別立てにしたほうが良いか**）
 
 
 #### 1-1-4. VBTTools の起動テスト
@@ -170,11 +170,13 @@ Cube の向きと挙動を調整すると、手の向きが真逆になったり
 
 - 1-1-3. のとおりに設定できているか
 - OpenTrackの受信を禁止設定していないか
-- 
+- SteamVRのアドオンでOpenTrackが無効になっていないか
 
 ## 4. JoyCon の利用、ButtonPanelの利用
 ### 4-1. ButtonPanelの利用
 JoyConが無い場合は下方の Use Button Panelを押すと画面でボタン等操作できます。(JoyConがうまく動かない場合もこちらを使ってください)
+
+(**要確認：バグってないか。使い方も記載充実が必要**)
 
 ### 4-2. JoyCon の利用
 JoyConを使う場合は、あらかじめPCとBluetooth接続させてください。ペアリング済みではなく、**接続済み** になる必要があります。毎回一度削除して接続しなおさないと接続済みにならないようです。
@@ -184,14 +186,24 @@ JoyConを使う場合は Use Joy Con (LR) にチェックを入れます。VBTTo
 基本的に、VRアプリ側ではコントローラーをIndexコントローラーであると認識するように設定します。
 JoyCon利用時にボタンと動作が異なる場合はここを確認してください。
 
-JoyCon利用時は、通常のSteamVRのコントローラーとしての機能に加えて、**Y/左ボタンでトラッキング(VMCP受信)の一時停止とスティックでの手の位置移動機能**が使えます。一時停止を解除すると位置補正もなくなり通常の手の位置に戻ります。こちらの機能の概要は、[このXに投稿した動画](https://x.com/tbbsakura1/status/1827616092560486466) を参考にしてください。（2024/8/29以降のgithub最新版では、ListenToVMCPをオフにすると出てくるTestUIのスライダーでも位置調整できます）
-
 ### 4-2. JoyCon の一時停止機能
+JoyCon利用時は、通常のSteamVRのコントローラーとしての機能に加えて、**Y/左ボタンでトラッキング(VMCP受信)の一時停止とスティックでの手の位置移動機能**が使えます。
+また**A/右のボタンはトラッキングの停止と同時に、VRChatでのメニューが操作しやすい場所に手が移動します**。メニューの呼び出しは、Y/左で一時停止した後に呼び出すこともできます。
+
+一時停止中は、TestUIが表示されており、スライダーでも手の位置を変更できます。
+一時停止はY/左ボタンで解除できます。解除すると位置補正もなくなり通常の手の位置に戻ります。(A/右は後からメニューを呼び出せる機能があるため、一時停止解除には使えません)
 
 ## 5. その他の機能
 ### 5-1. OpenVRM ボタン
-### 5-2. Setting ボタン
+画面下方の OpenVRMボタンで異なるVRMモデルを読むことができます。（現状、VRM1は対応していないのでVRM0限定です）
+次回起動時は最後に読んだVRMが起動時に読み込まれますが、前回のファイルがなくなっている場合などはデフォルトモデルを読み込みます。
 
+### 5-2. Setting ボタン
+ネットワークの設定(UDP送信先アドレスや、送受信に使うポート番号)を設定できます。
+左上と右上どちらから開いても同じです。
+OKを押すと、それまでの通信と設定が変わっている部分は反映されます。Cancelの場合は変更はなかったことになります。
+
+前回起動時の設定を保存するので、一時的変更をした場合はこの画面で戻す必要があります。
 
 ## 6. Build方法(開発者向け)
 Unity 2022.3.22f1 で開発しています。
