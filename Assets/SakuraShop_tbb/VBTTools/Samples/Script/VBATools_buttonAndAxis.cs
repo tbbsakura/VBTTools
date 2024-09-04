@@ -104,7 +104,7 @@ namespace SakuraScript.ModifiedVMTSample
             if ( ButtonDn ) JoystickY = -1f;
             if ( ButtonL ) JoystickX = -1f;
             if ( ButtonR ) JoystickX = 1f;
-            client.Send("/VMT/Input/Joystick", index, 0, timeoffset, JoystickX, JoystickY);
+            client.Send("/VMT/Input/Joystick", index, 1, timeoffset, JoystickX, JoystickY);
 
             bool JoystickTouch = GUI.RepeatButton(new Rect(guiX+guiWidth*0.25f,guiY + GetGuiY(guiYNum++, guiHeight)+4f, guiWidth*0.5f, guiHeight), "Touch");
             client.Send("/VMT/Input/Joystick/Touch", index, 0, timeoffset, JoystickTouch ? 1 : 0);
