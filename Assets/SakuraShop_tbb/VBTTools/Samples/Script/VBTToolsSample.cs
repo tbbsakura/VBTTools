@@ -31,6 +31,7 @@ namespace SakuraScript.VBTTool
             get => _animationTarget;
             set {
                 _animationTarget = value;
+                if ( !SetHandler() ) Debug.Log("SetHandler failed");
                 _vbtBodyTrack.AnimationTarget = _animationTarget;
                 _vbtSkeletalTrack.AnimationTarget = _animationTarget;
             }
@@ -356,7 +357,6 @@ namespace SakuraScript.VBTTool
         {
             // animationtarget, HumanPoseHandler 変数更新
             AnimationTarget = animator;
-            SetHandler();
             _setting._defaultVRM = _loader.LastLoadedFile; // 最後に読めたファイルを次回読むファイルにする
 
             // トラッカー位置を示すオブジェクト(left/rightsensor)を手の子にして、Pos/Rot Adjustを適用
@@ -418,12 +418,18 @@ namespace SakuraScript.VBTTool
                 return false;
             }
 
-            if ( _animationTarget == null || _handler == null ) {
-                _topText.text = "Cannot init client, no VRM loaded or invalid HumanPoseHandler.";
+            if ( _animationTarget == null ) {
+                _topText.text = "Cannot init client, no VRM loaded.";
                 Debug.Log(_topText.text);
                 return false;
             }
 
+            SetHandler();
+            if ( _handler == null ) {
+                _topText.text = "Cannot init client, invalid HumanPoseHandler.";
+                Debug.Log(_topText.text);
+                return false;
+            }
             _serverVMT.StartServer();
             _vbtBodyTrack.StartHandTrack(_setting._networkSetting._vmtListenPort);
 

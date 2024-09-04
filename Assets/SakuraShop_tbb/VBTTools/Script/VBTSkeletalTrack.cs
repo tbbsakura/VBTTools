@@ -21,7 +21,10 @@ namespace SakuraScript.VBTTool
         Animator _animationTarget;
         public Animator AnimationTarget { 
             get => _animationTarget;
-            set => _animationTarget = value;
+            set {
+                _handler = new HumanPoseHandler( value.avatar, value.transform );
+                _animationTarget = value;
+            } 
         }
 
         [SerializeField, Tooltip("Scalar mode if checked : チェック時は一軸モード")]
@@ -34,7 +37,6 @@ namespace SakuraScript.VBTTool
         bool _scalarModeRing = false;
         [SerializeField, Tooltip("Scalar mode if checked : チェック時は一軸モード")]
         bool _scalarModePinky = false;
-
 
         HumanPoseHandler _handler;
         HumanPose _targetHumanPose;
