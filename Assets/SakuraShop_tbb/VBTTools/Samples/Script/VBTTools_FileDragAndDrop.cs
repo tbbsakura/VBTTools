@@ -38,12 +38,8 @@ public class VBTTools_FileDragAndDrop : MonoBehaviour
         UnityDragAndDropHook.InstallHook();
         UnityDragAndDropHook.OnDroppedFiles += OnFiles;
         m_topText = GameObject.Find("TopText").GetComponent<Text>();
-
-        if ( m_sampleProject != null && m_sampleProject.AnimationTarget == null ) {
-            string modelFilepath = m_sampleProject.DefaultVRMPath;
-            LoadModel(modelFilepath);
-        }
     }
+
     void OnDisable()
     {
         UnityDragAndDropHook.UninstallHook();
@@ -61,7 +57,7 @@ public class VBTTools_FileDragAndDrop : MonoBehaviour
         LoadModel(aFiles[0].ToString()); // load only 1st file
     }
     
-    void OnLoaded(RuntimeGltfInstance loaded)
+    void OnLoaded(RuntimeGltfInstance loaded, string path)
     {
         if ( loaded == null || loaded.Root == null )  return;
         if ( _lastLoaded != null ) Destroy(_lastLoaded.Root);
@@ -82,17 +78,15 @@ public class VBTTools_FileDragAndDrop : MonoBehaviour
             lah.UpdateType = UpdateType.LateUpdate;
         }
 
-        UniHumanoid.HumanPoseTransfer _target = loaded.Root.AddComponent<UniHumanoid.HumanPoseTransfer>();
-        if ( _target != null ) 
+        UniHumanoid.HumanPoseTransfer target = loaded.Root.AddComponent<UniHumanoid.HumanPoseTransfer>();
+        if ( target != null ) 
         {
-            Animator animator = _target.GetComponent<Animator>();
+            Animator animator = target.GetComponent<Animator>();
             if (animator != null)
             {
-                if ( m_exrec != null && _target != null ) m_exrec.Model = loaded.Root;
-
-                if ( m_sampleProject != null ) {
-                    m_sampleProject.OnVRMLoaded(animator);
-                }
+                if ( m_exrec != null && target != null ) m_exrec.Model = loaded.Root;
+                m_lastLoadedFile = path; // load と show が成功してから更新する
+                m_sampleProject?.OnVRMLoaded(animator);
             }
         }
         if (m_topText != null) m_topText.text = "VRM loaded";
@@ -153,13 +147,12 @@ public class VBTTools_FileDragAndDrop : MonoBehaviour
                             return;
                         }
                     }
-                    m_lastLoadedFile = path;
-                    OnLoaded(loaded);
+                    OnLoaded(loaded, path);
                 }
             }
         }
         else {
-            if (m_topText != null) m_topText.text = "Dropped is not .vrm file.";
+            if (m_topText != null) m_topText.text = "Please open .vrm file.";
         }
         m_loading = false;
     }

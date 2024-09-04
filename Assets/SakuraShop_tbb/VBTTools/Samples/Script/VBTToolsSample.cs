@@ -23,6 +23,7 @@ namespace SakuraScript.VBTTool
 
         private VBTSkeletalTrack _vbtSkeletalTrack;
         private VBTBodyTrack _vbtBodyTrack;
+        VBTTools_FileDragAndDrop _loader; 
 
         [Tooltip("VRMアバターを入れます。変更時はStartのチェックをオフにしてください")]
         private Animator _animationTarget;
@@ -200,6 +201,7 @@ namespace SakuraScript.VBTTool
             // Setting befor loading setting file
             _vbtSkeletalTrack = GetComponent<VBTSkeletalTrack>();
             _vbtBodyTrack = GetComponent<VBTBodyTrack>();
+            _loader = GetComponent<VBTTools_FileDragAndDrop>();
             _setting._exrecSetting.CopyFromExReceiver( _exr );
             _server =  _exr.GetComponent<uOscServer>();
 
@@ -259,6 +261,9 @@ namespace SakuraScript.VBTTool
             _adjustingUI.SetActive(false); 
             _adjustingUISkeL.SetActive(false); 
             _adjustingUISkeR.SetActive(false); 
+
+            // デフォルトモデルのロード
+            _loader.OpenVRM(DefaultVRMPath);
         }
 
         private void OnDestroy() {
@@ -308,19 +313,22 @@ namespace SakuraScript.VBTTool
             _tfsADSG3_RightWrist.SetValue( _adjSetting.WristPosR, _adjSetting.WristRotR );
         }
 
+        // // // // // // // // // // // // // //
+        // VRM Loading 関連
         // Buttonによるload
         public void OnVRMLoadButton()
         {
             var extensions = new[] { new ExtensionFilter("VRM Files", "vrm" ), };
             var paths = StandaloneFileBrowser.OpenFilePanel("Open File", "", extensions, false);
             if (paths.Length > 0 && paths[0].Length > 0) {
-                VBTTools_FileDragAndDrop loader = GetComponent<VBTTools_FileDragAndDrop>();
-                loader.OpenVRM(paths[0]);
+                _loader.OpenVRM(paths[0]);
             }
         }
 
-        //
-        public string DefaultVRMPath {
+        // デフォルトロードファイルのパスを返す。_setting のファイルがなければ HairSample_Male.vrm 
+        // Unity Project 上から Play すると、 exe の場所 = unity の exe の場所になるので
+        // ファイルが実際にはそこに無いこともあるため、確認して無い場合は "" を返す。
+        private string DefaultVRMPath {
             get {
                 if (_setting._defaultVRM.Length > 0 && System.IO.File.Exists(_setting._defaultVRM)){
                     return _setting._defaultVRM;
@@ -332,7 +340,8 @@ namespace SakuraScript.VBTTool
 #else
                 string modelFilepath = "HairSample_Male.vrm"; //CC0 model
 #endif
-                return modelFilepath;
+                if ( System.IO.File.Exists(modelFilepath) ) return modelFilepath;
+                return "";
             }
         }
 
@@ -342,6 +351,7 @@ namespace SakuraScript.VBTTool
             // animationtarget, HumanPoseHandler 変数更新
             _animationTarget = animator;
             SetHandler();
+            _setting._defaultVRM = _loader.LastLoadedFile; // 最後に読めたファイルを次回読むファイルにする
 
             // トラッカー位置を示すオブジェクト(left/rightsensor)を手の子にして、Pos/Rot Adjustを適用
             var leftsensor = new GameObject("LeftSensor");
@@ -402,16 +412,10 @@ namespace SakuraScript.VBTTool
                 return false;
             }
 
-            if ( _animationTarget == null ) {
-                _topText.text = "Cannot init client, no VRM loaded.";
+            if ( _animationTarget == null || _handler == null ) {
+                _topText.text = "Cannot init client, no VRM loaded or invalid HumanPoseHandler.";
                 Debug.Log(_topText.text);
                 return false;
-            }
-            if ( _animationTarget != null  ) { // When VRM model loaded, prepare handler
-                if (!SetHandler()) {
-                    _topText.text = "Failed in initializing HumanPoseHandler.";
-                    return false;
-                }
             }
 
             _serverVMT.StartServer();
@@ -422,8 +426,6 @@ namespace SakuraScript.VBTTool
             _vbtSkeletalTrack.IsOn = true;
 
             _topText.text = "Client for VMT started.";
-            Debug.Log(_topText.text);
-            if ( _handler == null ) Debug.Log( "_handler is null" );
             return true;
         }
    
