@@ -57,7 +57,7 @@ namespace SakuraScript.ModifiedVMTSample
             styleWhite.normal.textColor = Color.white; // GUI.skin.label.normal.textColor;
             styleWhite.fontSize = (int)(16* r.localScale.x);
             GUIStyle styleLR = new GUIStyle(); // gskin.label;
-            styleLR.normal.textColor = Color.white; // GUI.skin.label.normal.textColor;
+            styleLR.normal.textColor = Color.black; // GUI.skin.label.normal.textColor;
             styleLR.fontSize = (int)(20 * r.localScale.x);
             styleLR.fontStyle = FontStyle.Bold;
 
