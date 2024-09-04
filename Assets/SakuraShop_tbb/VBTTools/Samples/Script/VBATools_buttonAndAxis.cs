@@ -3,9 +3,7 @@
 // 右手左手両方を同時に同じ画面に置けるようにしてある
 // 他のスクリプト等で初期化する場合は needEnable を　falseにすることで、最初の送信を省略できる
 
-using System;
 using UnityEngine;
-using UnityEngine.UIElements;
 
 namespace SakuraScript.ModifiedVMTSample
 {
@@ -16,6 +14,7 @@ namespace SakuraScript.ModifiedVMTSample
         [SerializeField] int enable = 5;
         [SerializeField] bool needEnable = false; 
 
+        [SerializeField] Canvas parentCanvas;
         [SerializeField] uOSC.uOscClient client;
 
         const float timeoffset = 0f;
@@ -41,24 +40,25 @@ namespace SakuraScript.ModifiedVMTSample
 
         private void OnGUI()
         {
-        	GUIUtility.ScaleAroundPivot(
-                    new Vector2(Screen.width / scrX, Screen.height / scrY), 
-                    Vector2.zero);
-
-            const float guiWidth = 150;
-            const float guiHeight = 23;
-            const float guiXOffset = 50; // 左はX0からの距離
-            float guiX = isLeft ? guiXOffset : scrX - guiXOffset-guiWidth; // 右は右端から逆算
-            const float guiY = 330; // guiYNum == 0 の位置
+            RectTransform r =  (RectTransform)parentCanvas.transform;
+            Transform pTransform = transform.parent;
+            transform.position = Vector3.zero;
+            float guiWidth = 150 * r.localScale.x;
+            float guiHeight = 23 * r.localScale.y;
+            float guiXOffset = 50 * r.localScale.x; // 左はX0からの距離
+            float guiX = isLeft ? guiXOffset : (scrX * r.localScale.x - (guiXOffset+guiWidth) ); // 右は右端から逆算
+            guiX = pTransform.position.x - guiWidth / 2f;
+            float guiY = 330; // guiYNum == 0 の位置
+            guiY = pTransform.position.y + 165* r.localScale.y;
             const float guiYGrp1Offset =5f; // 微調整用
             int guiYNum = 3; // 増える都度下に
 
             GUIStyle styleWhite = new GUIStyle(); // gskin.label;
             styleWhite.normal.textColor = Color.white; // GUI.skin.label.normal.textColor;
-            styleWhite.fontSize = 16;
+            styleWhite.fontSize = (int)(16* r.localScale.x);
             GUIStyle styleLR = new GUIStyle(); // gskin.label;
             styleLR.normal.textColor = Color.white; // GUI.skin.label.normal.textColor;
-            styleLR.fontSize = 20;
+            styleLR.fontSize = (int)(20 * r.localScale.x);
             styleLR.fontStyle = FontStyle.Bold;
 
             // Header
