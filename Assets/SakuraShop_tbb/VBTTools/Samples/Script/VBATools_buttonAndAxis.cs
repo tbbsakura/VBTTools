@@ -33,8 +33,6 @@ namespace SakuraScript.ModifiedVMTSample
         // OnGUI
         float Trigger0 = 0;
         float Trigger1 = 0;
-        const int scrX = 1280;// OnGUIで基準とする解像度X
-        const int scrY = 720; // OnGUIで基準とする解像度Y
         const float guiYSpace = 2f;
         float GetGuiY(int num, float height){ return (height+guiYSpace) * num; }
 
@@ -45,17 +43,14 @@ namespace SakuraScript.ModifiedVMTSample
             transform.position = Vector3.zero;
             float guiWidth = 150 * r.localScale.x;
             float guiHeight = 23 * r.localScale.y;
-            float guiXOffset = 50 * r.localScale.x; // 左はX0からの距離
-            float guiX = isLeft ? guiXOffset : (scrX * r.localScale.x - (guiXOffset+guiWidth) ); // 右は右端から逆算
-            guiX = pTransform.position.x - guiWidth / 2f;
-            float guiY = 330; // guiYNum == 0 の位置
-            guiY = pTransform.position.y + 165* r.localScale.y;
-            const float guiYGrp1Offset =5f; // 微調整用
+            float guiX = pTransform.position.x - guiWidth / 2f;
+            float guiY = pTransform.position.y + 165 * r.localScale.y;
+            const float guiYGrp1Offset = 5f; // 微調整用
             int guiYNum = 3; // 増える都度下に
 
             GUIStyle styleWhite = new GUIStyle(); // gskin.label;
             styleWhite.normal.textColor = Color.white; // GUI.skin.label.normal.textColor;
-            styleWhite.fontSize = (int)(16* r.localScale.x);
+            styleWhite.fontSize = (int)(16 * r.localScale.x);
             GUIStyle styleLR = new GUIStyle(); // gskin.label;
             styleLR.normal.textColor = Color.black; // GUI.skin.label.normal.textColor;
             styleLR.fontSize = (int)(20 * r.localScale.x);
