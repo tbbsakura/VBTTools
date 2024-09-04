@@ -82,7 +82,6 @@ namespace SakuraScript.VBTTool
         [SerializeField] private Toggle _wristRotateUI2;
         [SerializeField] private Toggle _wristRotateUI3;
 
-//        [SerializeField] VBTToolsAdjustSetting _adjSetting;
         [SerializeField] VBTToolsSetting _setting;
         [SerializeField] VBTToolsAdjustSetting _adjSetting;
 
