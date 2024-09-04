@@ -10758,7 +10758,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 6681642873166750161, guid: f60b24b1b52085c4992fa391999b1a96, type: 3}
       propertyPath: m_Name
-      value: StickButton
+      value: BottomPanel
       objectReference: {fileID: 0}
     - target: {fileID: 8012031413173018114, guid: f60b24b1b52085c4992fa391999b1a96, type: 3}
       propertyPath: m_SizeDelta.x
