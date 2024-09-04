@@ -63,7 +63,7 @@ MonoBehaviour:
   _testUI: {fileID: 1994584630556845170}
   _leftTransformSliders: {fileID: 3548061149405605372}
   _rightTransformSliders: {fileID: 1299871017847714813}
-  _ui1Panel: {fileID: 8510167400574462391}
+  _ui1Panel: {fileID: 3965960867904593940}
   _ui2JoyCon: {fileID: 8593876837469894272}
   _joyconToVMTInstance: {fileID: 2379263666700675230}
   _adjustingUI: {fileID: 9024336132596862214}
@@ -140,6 +140,7 @@ MonoBehaviour:
       _vmtListenPort: 39571
       _opentrackSendAddress: 127.0.0.1
       _opentrackSendPort: 4242
+    _defaultVRM: 
   _adjSetting:
     PosL: {x: 0, y: 0, z: 0}
     RotEuL: {x: 0, y: 0, z: 0}
@@ -281,6 +282,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 92580a43aab71f744944794a0ded8ae9, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  _headObject: {fileID: 0}
   address: 127.0.0.1
   port: 65535
   maxQueueSize: 100
@@ -343,6 +345,10 @@ PrefabInstance:
       propertyPath: onUpdate.m_PersistentCalls.m_Calls.Array.data[0].m_Target
       value: 
       objectReference: {fileID: 8428708412390459304}
+    - target: {fileID: 1800375344352055396, guid: c796a20d39c0cc74ba20c0c47b22e0d8, type: 3}
+      propertyPath: client
+      value: 
+      objectReference: {fileID: 7231815818208167183}
     - target: {fileID: 1841177373187788252, guid: c796a20d39c0cc74ba20c0c47b22e0d8, type: 3}
       propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.data[0].m_Target
       value: 
@@ -371,10 +377,18 @@ PrefabInstance:
       propertyPath: onUpdate.m_PersistentCalls.m_Calls.Array.data[0].m_Target
       value: 
       objectReference: {fileID: 8428708412390459304}
+    - target: {fileID: 2623976770047308948, guid: c796a20d39c0cc74ba20c0c47b22e0d8, type: 3}
+      propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.data[0].m_Target
+      value: 
+      objectReference: {fileID: 8428708412390459304}
     - target: {fileID: 2835538878821562781, guid: c796a20d39c0cc74ba20c0c47b22e0d8, type: 3}
       propertyPath: onUpdate.m_PersistentCalls.m_Calls.Array.data[0].m_Target
       value: 
       objectReference: {fileID: 8428708412390459304}
+    - target: {fileID: 2961532648587190690, guid: c796a20d39c0cc74ba20c0c47b22e0d8, type: 3}
+      propertyPath: client
+      value: 
+      objectReference: {fileID: 7231815818208167183}
     - target: {fileID: 3004254505078723505, guid: c796a20d39c0cc74ba20c0c47b22e0d8, type: 3}
       propertyPath: m_OnValueChanged.m_PersistentCalls.m_Calls.Array.data[0].m_Target
       value: 
@@ -760,6 +774,11 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: c7770b31c12f0354e8d8392a31676f85, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+--- !u!1 &3965960867904593940 stripped
+GameObject:
+  m_CorrespondingSourceObject: {fileID: 1431367534876587491, guid: c796a20d39c0cc74ba20c0c47b22e0d8, type: 3}
+  m_PrefabInstance: {fileID: 2653976247320040951}
+  m_PrefabAsset: {fileID: 0}
 --- !u!114 &5035145873675731039 stripped
 MonoBehaviour:
   m_CorrespondingSourceObject: {fileID: 7004433513204323752, guid: c796a20d39c0cc74ba20c0c47b22e0d8, type: 3}
@@ -834,11 +853,6 @@ MonoBehaviour:
 --- !u!1 &6393139158552911804 stripped
 GameObject:
   m_CorrespondingSourceObject: {fileID: 8965593067532470859, guid: c796a20d39c0cc74ba20c0c47b22e0d8, type: 3}
-  m_PrefabInstance: {fileID: 2653976247320040951}
-  m_PrefabAsset: {fileID: 0}
---- !u!1 &8510167400574462391 stripped
-GameObject:
-  m_CorrespondingSourceObject: {fileID: 5966954481647909952, guid: c796a20d39c0cc74ba20c0c47b22e0d8, type: 3}
   m_PrefabInstance: {fileID: 2653976247320040951}
   m_PrefabAsset: {fileID: 0}
 --- !u!114 &8645297893457068197 stripped
