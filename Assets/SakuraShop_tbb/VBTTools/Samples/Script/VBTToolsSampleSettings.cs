@@ -143,6 +143,7 @@ namespace SakuraScript.VBTTool
 
         public ExRecSetting _exrecSetting;
         public VBTToolsNetworkSetting _networkSetting;
+        public string _defaultVRM = "";
 
         public string Version => _version;
         public string CurrentVersion => _currentVersion;
