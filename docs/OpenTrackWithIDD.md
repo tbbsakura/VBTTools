@@ -12,10 +12,10 @@ UDPを受信する場合があるので、初回起動時または機能有効�
 
 ### 1-3. OpenTrack の入力と出力の設定、動作テスト
 OpenTrack.exe の画面<br>
-<img "width=50%" src="https://github.com/tbbsakura/VBTTools/blob/opentrack-doc/docs/img_opentrack_idd/opentrack.exe.1.png">
+<img width="50%" src="https://github.com/tbbsakura/VBTTools/blob/opentrack-doc/docs/img_opentrack_idd/opentrack.exe.1.png" /><br>
 
 OpenTrack.exe の Input 選択肢<br>
-<img "width=50%" src="https://github.com/tbbsakura/VBTTools/blob/opentrack-doc/docs/img_opentrack_idd/opentrack.exe.2_input.png">
+<img width="50%" src="https://github.com/tbbsakura/VBTTools/blob/opentrack-doc/docs/img_opentrack_idd/opentrack.exe.2_input.png" />
 
 
 様々な入力に対応しており、検索するとマーカーを作る必要があるタイプで説明されていたりしますが、2024年8月時点ではWebcamがあればInputを neuralnet trackerにしてすぐトラッキングできます。ためしに、Outputは適当にfreetrackなどにしておいて使ってみましょう。
