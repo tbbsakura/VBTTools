@@ -75,10 +75,8 @@ HeadViewの配置を変更したい場合は OpenVR-OpenTrack の設定ファイ
 2. **ドライバを入れる前**に、C:\IddSampleDriver\option.txt を置きます（重要、だそうです）<br>C:\の直下にzipを展開すると IddSampleDriver フォルダが出来て、中に options.txt が入っているのでちょうど良いと思います。
 
 3. 次にドライバ署名確認をクリアするため、コマンドプロンプトを管理者権限で起動します。(起動の仕方がわからないときは Windowsキー押した後に半角で cmd とタイプしてみてください)
-<br>
-<img width="50%" src="https://github.com/tbbsakura/VBTTools/blob/opentrack-doc/docs/img_opentrack_idd/cmd_prompt_idd.png" />
-<br>
-画像のうち、黄色い部分が入力した内容です。最初はC以外のドライブに展開した場合はそのドライブに移動してます。展開先がZドライブだったで `Z: [Enter]`で移動しています。<br>
+<br><img width="50%" src="https://github.com/tbbsakura/VBTTools/blob/opentrack-doc/docs/img_opentrack_idd/cmd_prompt_idd.png" /><br>
+画像のうち、黄色い部分が入力した内容です。最初はC以外のドライブに展開した場合はそのドライブに移動してます。展開先がZドライブだったで `z: [Enter]` で移動しています。(Windowsのパスは大文字小文字を区別しません)<br>
 さらに展開したディレクトリに`cd`コマンドで移動します。<br>移動先ディレクトリ名は Exlporerの上部でコピーし、コマンドプロンプトを右クリックすれば貼り付けできます。<br>
 移動できたら `installCert.bat[enter]`と押せば証明書の設定が完了します。<br>コマンドを全部打つのがだるい場合 `ins[tab][enter]`でいけると思います。(`in[tab]連打`でもそのうち出てきます)
 
