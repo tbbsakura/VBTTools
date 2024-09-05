@@ -23,14 +23,13 @@ VMCProtocol(VMCP) を受信できるので、VRigUnity、TDPT(ThreeD Pose Tracke
 - 手のトラッキングを一時停止して、スティック操作で手を動かす機能
 - 手のトラッキング一時停止中に、メニューを操作しやすい位置に手を動かす機能
 
-## 暫定公開
-まだユーザーが少なく、運用された環境が偏っています。不便だなと思う部分も完全には修正できていません。説明（この文書）もまだ不十分な部分があります。
+まだユーザーが少なく、運用された環境が偏っています。不便だなと思う部分も完全には修正できていません。
 
 ## 1. 使用方法
 ### 1-1. セットアップ
 事前に VMT (Virtual Motion Tracker)と、使う場合はOpenTrackとOpenVR-OpenTrack を入れておきます。
 - VMTは Skeletal Input対応仮想コントローラー処理のために必要
-- OpenTrack は仮想HMD処理のために必要(マルチモニタが必要です)(**要確認：仮想モニタでできるかどうか**)
+- OpenTrack は仮想HMD処理のために必要
 
 VBTTools、VMT、OpenTrack それぞれ UDPでの通信を受信するため、初回起動時にットワーク受信を許可するかどうか質問されますので、許可するよう設定します。
 
@@ -78,9 +77,14 @@ VRMモデル(VRoid Studio Beta 用モデルとしてCC0で公開されている 
 6. VBTTools.exe を起動します。起動すると VMCProtocol の受信は即座に始まります(左上のチェックボックスがオンになっています。)受信待機状態なので送信側の準備が未了でもOKです。一方、送信側（右上）のチェックは起動直後はオフになっていますが、。VMTのチェックはVMT側の準備ができている状態でチェックをいれてください。先にチェックを入れてしまった場合、いったんオフにして入れなおせばOKです。OpenTrackへの送信は先に開始していてもOKです（無駄なパケットが飛びますが）
 7. 初回起動時はVMTの送信にチェックを入れた後、SteamVRの設定で VMT_1, VMT_2 のトラッカーをハンドヘルドの左手/右手に割り当てる必要があります。(手首に設定した場合は後述の位置関係の調整が必要になります)
 
-![Image 1](https://github.com/tbbsakura/VBTTools/blob/main/Assets/SakuraShop_tbb/VBTTools/etc/tracker_setting.png)
-![Image 2](https://github.com/tbbsakura/VBTTools/blob/main/Assets/SakuraShop_tbb/VBTTools/etc/vmt1_setting.png)
-![Image 3](https://github.com/tbbsakura/VBTTools/blob/main/Assets/SakuraShop_tbb/VBTTools/etc/vmt2_setting.png)
+<table>
+<tr>
+<td><img width="100%" src="Assets/SakuraShop_tbb/VBTTools/etc/tracker_setting.png" />
+</td>
+<td>→</td>
+<td><img width="100%" src="Assets/SakuraShop_tbb/VBTTools/etc/vmt1_setting.png" /></td>
+<td><img width="100%" src="Assets/SakuraShop_tbb/VBTTools/etc/vmt2_setting.png" /></td>
+</tr></table>
 
 
 1でVMCProtocolのソフトを起動していれば、手の位置等がVBTToolsのVBMモデルに反映されるはずです。VMCProtocolのソフトを入れてない場合は、左上のListen To VMCPのチェックを外すと、手のボーンを動かすためのTest UIが表示されます。
