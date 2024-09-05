@@ -46,11 +46,16 @@ namespace SakuraScript.VBTTool
         // Server UI
         private Toggle _toggleServer;
         private Toggle _toggleServerCutEye;
-        private InputField _inputFieldListenPort;
 
         // Client UI
-        private Toggle _toggleClient;
+        private Toggle _toggleVMTClient;
         [SerializeField] private Image _imgRecvHMD; // as a RX LED
+
+        private Toggle _toggleOpentrackClient; 
+
+        // Network Setting UI
+        private InputField _inputFieldListenPort;
+
         private InputField _inputFieldIP;
         private InputField _inputFieldDestPort;
         private InputField _inputFieldListenPortVMT;
@@ -223,9 +228,9 @@ namespace SakuraScript.VBTTool
 
             _toggleServer = GameObject.Find("ToggleServer").GetComponent<Toggle>();
             _toggleServerCutEye = GameObject.Find("ToggleServerCutEye").GetComponent<Toggle>();
-            _toggleClient = GameObject.Find("ToggleVMTClient").GetComponent<Toggle>();
+            _toggleVMTClient = GameObject.Find("ToggleVMTClient").GetComponent<Toggle>();
+            _toggleOpentrackClient = GameObject.Find("ToggleOpenTrackClient").GetComponent<Toggle>();
             _topText = GameObject.Find("TopText").GetComponent<Text>();
-
             // Read default adjusting values 
             // v0.0.4以降では default.json があれば優先される
             var sensorTemplateL = GameObject.Find("/origLeftHand/ControllerSensorL");
@@ -260,7 +265,7 @@ namespace SakuraScript.VBTTool
 
             _toggleServer.isOn = true; // ExternalReceiverが Start してしまうので
             _toggleServerCutEye.isOn = true; 
-            _toggleClient.isOn = false; 
+            _toggleVMTClient.isOn = false; 
 
             // 初期設定値を AdjustingUI のスライダーに反映後、非表示に
             InitSliders();
@@ -404,7 +409,7 @@ namespace SakuraScript.VBTTool
         // client toggle on をキャンセルする場合等に呼ぶ
         public void SetClientTogglesOff()
         {
-            _toggleClient.isOn = false;
+            _toggleVMTClient.isOn = false;
             _vbtBodyTrack.StopHandTrack();
             _vbtSkeletalTrack.IsOn = false;
         }
@@ -452,7 +457,7 @@ namespace SakuraScript.VBTTool
             else {
                 // VMT の controller enable (種類)を 0: disable にする
                 SendDisable();
-                _toggleClient.isOn = false;
+                _toggleVMTClient.isOn = false;
                 _vbtBodyTrack.StopHandTrack();
                 _vbtSkeletalTrack.IsOn = false;
                 _topText.text = "Client stopped.";
@@ -769,15 +774,18 @@ namespace SakuraScript.VBTTool
 
         public void OnJoyconButtonDown( bool isLeftCon, Int32 buttonIndex) {
             //Debug.Log($"Joycon Button Down {buttonIndex}");
-            if ( buttonIndex == 2 ) {
+            if ( buttonIndex == (int)Joycon.Button.DPAD_LEFT ) {
                 _toggleServer.isOn = !_toggleServer.isOn; // 反転
                 _joyconToVMTInstance.EnableStickMove = _toggleServer.isOn;
             }
-            if ( buttonIndex == 1) {
+            if ( buttonIndex == (int)Joycon.Button.DPAD_RIGHT) {
                 _toggleServer.isOn = false; // 停止確定
                 _joyconToVMTInstance.EnableStickMove = _toggleServer.isOn;
                 SetMenuPauseOffset();
                 UpdateAdjust(0);
+            }
+            if ( isLeftCon && buttonIndex == (int)Joycon.Button.SR ) {
+                _toggleOpentrackClient.isOn = !_toggleOpentrackClient.isOn;
             }
         }
 
