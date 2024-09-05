@@ -17,9 +17,12 @@ OpenTrack.exe の画面<br>
 OpenTrack.exe の Input 選択肢<br>
 <img width="50%" src="https://github.com/tbbsakura/VBTTools/blob/opentrack-doc/docs/img_opentrack_idd/opentrack.exe.2_input.png" />
 
-
 様々な入力に対応しており、検索するとマーカーを作る必要があるタイプで説明されていたりしますが、2024年8月時点ではWebcamがあればInputを neuralnet trackerにしてすぐトラッキングできます。ためしに、Outputは適当にfreetrackなどにしておいて使ってみましょう。
-Input を neuralnet trackerにして、Inputの設定画面を開いて、Trackerタブでカメラと解像度を選択してOKを押し、メイン画面右下のOKボタンを押せば、トラッキングが開始してタコの絵が頭にあわせて動くと思います。回転の向きが逆になってしまう場合は、設定画面の Outputタブで、pitch,roll,yawそれぞれについて、Invertにチェックを入れることで反転させられます。位置x/y/zも反転させられるので、設定によってミラーにもできると思います。
+Input を neuralnet trackerにして、Inputの設定画面を開いて、Trackerタブでカメラと解像度を選択してOKを押し、メイン画面右下のOKボタンを押せば、トラッキングが開始してタコの絵が頭にあわせて動くと思います。<br>
+回転の向きが逆になってしまう場合は、設定画面の Outputタブで、pitch,roll,yawそれぞれについて、Invertにチェックを入れることで反転させられます。位置x/y/zも反転させられるので、設定によってミラーにもできると思います。<br>
+<img width="50%" src="https://github.com/tbbsakura/VBTTools/blob/opentrack-doc/docs/img_opentrack_idd/opentrack.exe.3_outputsetting.png" />
+<br>
+
 Mappingをカスタマイズできるようですが特に必要性を感じなかったです。Filterは Accelaというデフォルトのをいじらずそのままでも問題なかったです。
 
 OpenTrack.exeは出力先も複数対応しています(JoyStick やマウスの代わりにもできるっぽい？)が、SteamVRで仮想HMDとして使うには、2のOpenVR-OpenTrackを入れる必要があります。
