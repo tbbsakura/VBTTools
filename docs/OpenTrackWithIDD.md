@@ -12,13 +12,18 @@ UDPを受信する場合があるので、初回起動時または機能有効�
 
 ### 1-3. OpenTrack の入力と出力の設定、動作テスト
 OpenTrack.exe の画面と Input選択肢<br>
-<img width="40%" src="img_opentrack_idd/opentrack.exe.1.png" /> <img width="40%" src="img_opentrack_idd/opentrack.exe.2_input.png" /><br>
+<p>
+<img width="40%" src="img_opentrack_idd/opentrack.exe.1.png" /> 
+<img width="34%" src="img_opentrack_idd/opentrack.exe.2_input.png" />
+</p>
 
 様々な入力に対応しており、検索するとマーカーを作る必要があるタイプで説明されていたりしますが、2024年8月時点ではWebcamがあればInputを neuralnet trackerにしてすぐトラッキングできます。Droidcamのようなスマホをカメラ化するツールでも使えます。<br>
 ためしに、Outputは適当にfreetrackなどにしておいて使ってみましょう。Input を neuralnet trackerにして、Inputの設定画面を開いて、Trackerタブでカメラと解像度を選択してOKを押し、メイン画面右下のOKボタンを押せば、トラッキングが開始してタコの絵が頭にあわせて動くと思います。<br>
-<img width="50%" src="img_opentrack_idd/opentrack.exe.4_TrackSetting.png" /><br>
-回転の向きが逆になってしまう場合は、設定画面の Outputタブで、pitch,roll,yawそれぞれについて、Invertにチェックを入れることで反転させられます。位置x/y/zも反転させられるので、設定によってミラーにもできると思います。<br>
-<img width="50%" src="img_opentrack_idd/opentrack.exe.3_outputsetting.png" />
+設定画面のTrackerタブ<br>
+<img width="40%" src="img_opentrack_idd/opentrack.exe.4_TrackSetting.png" /><br><br>
+回転の向きが逆になってしまう場合は、設定画面の Outputタブで、pitch,roll,yawそれぞれについて、Invertにチェックを入れることで反転させられます。位置x/y/zも反転させられるので、設定によってミラーにもできると思います。<br><br>
+設定画面のOutputタブ<br>
+<img width="40%" src="img_opentrack_idd/opentrack.exe.3_outputsetting.png" />
 <br>
 
 Mappingをカスタマイズできるようですが特に必要性を感じなかったです。Filterは Accelaというデフォルトのをいじらずそのままでも問題なかったです。
