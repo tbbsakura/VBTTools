@@ -12,15 +12,15 @@ UDPを受信する場合があるので、初回起動時または機能有効�
 
 ### 1-3. OpenTrack の入力と出力の設定、動作テスト
 OpenTrack.exe の画面<br>
-<img width="50%" src="https://github.com/tbbsakura/VBTTools/blob/opentrack-doc/docs/img_opentrack_idd/opentrack.exe.1.png" /><br>
+<img width="50%" src="img_opentrack_idd/opentrack.exe.1.png" /><br>
 
 OpenTrack.exe の Input 選択肢<br>
-<img width="50%" src="https://github.com/tbbsakura/VBTTools/blob/opentrack-doc/docs/img_opentrack_idd/opentrack.exe.2_input.png" />
+<img width="50%" src="img_opentrack_idd/opentrack.exe.2_input.png" />
 
 様々な入力に対応しており、検索するとマーカーを作る必要があるタイプで説明されていたりしますが、2024年8月時点ではWebcamがあればInputを neuralnet trackerにしてすぐトラッキングできます。ためしに、Outputは適当にfreetrackなどにしておいて使ってみましょう。
 Input を neuralnet trackerにして、Inputの設定画面を開いて、Trackerタブでカメラと解像度を選択してOKを押し、メイン画面右下のOKボタンを押せば、トラッキングが開始してタコの絵が頭にあわせて動くと思います。<br>
 回転の向きが逆になってしまう場合は、設定画面の Outputタブで、pitch,roll,yawそれぞれについて、Invertにチェックを入れることで反転させられます。位置x/y/zも反転させられるので、設定によってミラーにもできると思います。<br>
-<img width="50%" src="https://github.com/tbbsakura/VBTTools/blob/opentrack-doc/docs/img_opentrack_idd/opentrack.exe.3_outputsetting.png" />
+<img width="50%" src="img_opentrack_idd/opentrack.exe.3_outputsetting.png" />
 <br>
 
 Mappingをカスタマイズできるようですが特に必要性を感じなかったです。Filterは Accelaというデフォルトのをいじらずそのままでも問題なかったです。
@@ -75,16 +75,17 @@ HeadViewの配置を変更したい場合は OpenVR-OpenTrack の設定ファイ
 2. **ドライバを入れる前**に、C:\IddSampleDriver\option.txt を置きます（重要、だそうです）<br>C:\の直下にzipを展開すると IddSampleDriver フォルダが出来て、中に options.txt が入っているのでちょうど良いと思います。
 
 3. 次にドライバ署名確認をクリアするため、コマンドプロンプトを管理者権限で起動します。(起動の仕方がわからないときは Windowsキー押した後に半角で cmd とタイプしてみてください)
-<br><img width="50%" src="https://github.com/tbbsakura/VBTTools/blob/opentrack-doc/docs/img_opentrack_idd/cmd_prompt_idd.png" /><br>
+<br><img width="50%" src="img_opentrack_idd/cmd_prompt_idd.png" /><br>
 画像のうち、黄色い部分が入力した内容です。最初はC以外のドライブに展開した場合はそのドライブに移動してます。展開先がZドライブだったで `z: [Enter]` で移動しています。(Windowsのパスは大文字小文字を区別しません)<br>
 さらに展開したディレクトリに`cd`コマンドで移動します。<br>移動先ディレクトリ名は Exlporerの上部でコピーし、コマンドプロンプトを右クリックすれば貼り付けできます。<br>
-移動できたら `installCert.bat[enter]`と押せば証明書の設定が完了します。<br>コマンドを全部打つのがだるい場合 `ins[tab][enter]`でいけると思います。(`in[tab]連打`でもそのうち出てきます)
+移動できたら `installCert.bat[enter]`と押せば証明書の設定が完了します。<br>コマンドを全部打つのがだるい場合 `ins[tab][enter]`でいけると思います。(`in[tab]連打`でもそのうち出てきます)<br>
+終わったら×ボタンもしくは `exit[enter]` で終了します。
 
-4. (infを触ったりせずに)デバイスマネージャーからドライバをインストールします。まずデバイスマネージャーを開き、どれか1つデバイスを選んでから、メニューから<br>
-操作(A)、レガシ ハードウェアの追加、を選び、<br>
-次へを押して、さらに「一覧から選択したハードウェアをインストールする」を選び次へ<br>
-すべてのデバイスを表示、をダブルクリックし、ディスク使用をクリックし、参照、で
-１で展開したフォルダに行き、iddsampledriver.inf を選んで「開く」「OK」「次へ」「次へ」「完了」<br>
+4. (infを触ったりせずに)デバイスマネージャーからドライバをインストールします。まずWindowsタスクバーのWindowsアイコン右クリックメニュー等からデバイスマネージャーを開き、どれか1つデバイスを選んで（どれでもOK）から、<br>
+メニューから操作(A)、レガシ ハードウェアの追加、を選びます。<br>
+次へを押して、さらに「一覧から選択したハードウェアをインストールする」を選び次へ。<br>
+すべてのデバイスを表示、をダブルクリックし、ディスク使用をクリックし、参照を押します。<br>
+ファイル選択になるので、1で展開したフォルダに行き、iddsampledriver.inf を選んで前向きな回答を続けて完了させます(筆者環境では「開く」「OK」「次へ」「次へ」「完了」)<br>
 (Windows10などで、デバイスの種類を選択する場合があるようで、その場合はディスプレイアダプターを選択します)
 
 5. 再起動を求められたら再起動します。
