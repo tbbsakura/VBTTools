@@ -11,11 +11,8 @@ SteamVRで仮想HMDを使いたい方向けの説明です(VBTToolsを使わな�
 UDPを受信する場合があるので、初回起動時または機能有効化時に、ネットワーク受信を有効にするかどうかの確認画面が出る場合があります。出た場合は許可する設定にしてください。
 
 ### 1-3. OpenTrack の入力と出力の設定、動作テスト
-OpenTrack.exe の画面<br>
-<img width="40%" src="img_opentrack_idd/opentrack.exe.1.png" /><br>
-
-OpenTrack.exe の Input 選択肢<br>
-<img width="40%" src="img_opentrack_idd/opentrack.exe.2_input.png" />
+OpenTrack.exe の画面と Input選択肢<br>
+<img width="40%" src="img_opentrack_idd/opentrack.exe.1.png" /> <img width="40%" src="img_opentrack_idd/opentrack.exe.2_input.png" /><br>
 
 様々な入力に対応しており、検索するとマーカーを作る必要があるタイプで説明されていたりしますが、2024年8月時点ではWebcamがあればInputを neuralnet trackerにしてすぐトラッキングできます。Droidcamのようなスマホをカメラ化するツールでも使えます。<br>
 ためしに、Outputは適当にfreetrackなどにしておいて使ってみましょう。Input を neuralnet trackerにして、Inputの設定画面を開いて、Trackerタブでカメラと解像度を選択してOKを押し、メイン画面右下のOKボタンを押せば、トラッキングが開始してタコの絵が頭にあわせて動くと思います。<br>
