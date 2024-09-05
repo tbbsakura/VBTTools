@@ -96,7 +96,7 @@ HeadViewの配置を変更したい場合は OpenVR-OpenTrack の設定ファイ
 ## 4. モニタ配置とOpenVR-OpenTrackの設定ファイルの修正
 以下の説明は、仮想モニタでもリアルモニタでも同じですので、リアルモニタが複数ある場合はいったんリアルモニタで試すとわかりやすいかもしれません。
 
-## 4-1.モニタの配置例：
+### 4-1.モニタの配置例：
 <img width="50%" src="img_opentrack_idd/idd_right_to_primary.png" />
 
 2がプライマリモニタで、1は現実のサブモニタ（説明には使わないので無視してください）、3が仮想モニタです。右があいてない場合もあるかと思いますが、設定が簡単になる条件は
@@ -107,14 +107,14 @@ HeadViewの配置を変更したい場合は OpenVR-OpenTrack の設定ファイ
 
 また数値例として、プライマリモニタの解像度を 1920 x 1080、仮想モニタを 640 x 480 であるとして記載しますので、違う解像度のモニタの場合は書き換えてください。
 
-## 4-2. 設定ファイルの場所
+### 4-2. 設定ファイルの場所
 モニタの位置関係やサイズに応じて、OpenVR-OpenTrackの設定ファイルをメモ帳などで編集します。
 OpenVR-OpenTrackの設定ファイルは2-3で手動で入れた時の drivers フォルダから見て `drivers\opentrack\resources\settings\default.vrsettings`
 にあります。<br>
 C:\Program Files (x86) に入っている場合は、<br>
 `C:\Program Files (x86)\Steam\steamapps\common\SteamVR\drivers\opentrack\resources\settings\default.vrsettings` です。
 
-## 4-3. 設定内容
+### 4-3. 設定内容
 編集する項目は4つあります。うち2つ、`windowHeight`と`windowWidth`は仮想モニタのサイズにあわせます。比率は気にしなくてOKです。
 ```json
       "windowHeight" : 480,
