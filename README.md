@@ -55,8 +55,14 @@ OpenTrack は仮想HMDを利用する場合に必要です。逆に言えば、�
 - 実際のHMDを一時停止してSteamVRのVRビューで画面を見る場合
 - VMT付属の Null HMD Driver (頭が動かせない仮想HMD)などの他の仮想HMDを利用する場合
 
-使う場合はマルチモニタが必要です（仮想モニタでも使えます）
-OpenTrackを使用する場合の設定方法は、仮想モニタの設定方法を含め、(**要更新：OpenTrack記述へのリンク**)を参照してください。
+使う場合はマルチモニタが必要です。（仮想モニタでも使えます）
+OpenTrackを使用する場合の設定方法は、まず仮想モニタの設定方法を含め、[こちら](docs/OpenTrackWithIDD.md) を参照して設定してください。
+
+さらに、VBTTools のための設定ですが、リンク先のインストールでOpenVR-OpenTrackを入れる際、2種類どちらを入れたかで設定は変わってきます。
+
+1. FreeTrack版の場合は、OpenTrack.exe で「InputをUDP over network、OutputをFreeTrack」にする
+2. UDP版にした場合は、OpenTrack.exe を起動しない(起動する場合、InputはUDP over netork以外にする)
+
 
 #### 1-1-4. VBTTools の起動テスト
 続いて、VBTTools の [Releases](https://github.com/tbbsakura/VBTTools/releases) で公開している VBTTools の zip を解凍し、VBTTools.exe を起動します。
