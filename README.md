@@ -54,26 +54,14 @@ OpenTrack は仮想HMDを利用する場合に必要です。逆に言えば、�
 - 実際のHMDを使う場合
 - 実際のHMDを一時停止してSteamVRのVRビューで画面を見る場合
 - VMT付属の Null HMD Driver (頭が動かせない仮想HMD)などの他の仮想HMDを利用する場合
-また、マルチモニタでないと利用が難しいです。(**要確認：仮想モニタで使えるかどうか**)
 
-OpenTrackを使用する場合の設定方法は、2種類あります。
+使う場合はマルチモニタが必要です。（仮想モニタでも使えます）
+OpenTrackを使用する場合の設定方法は、まず仮想モニタの設定方法を含め、[こちら](docs/OpenTrackWithIDD.md) を参照して設定してください。
 
-1. OpenVR Driver を UDP版にして、OpenTrackを使わない
-2. OpenVR Driver を FreeTrack版にして、OpenTrackを「InputをUDP、OutputをFreeTrack」にする
+さらに、VBTTools のための設定ですが、リンク先のインストールでOpenVR-OpenTrackを入れる際、2種類どちらを入れたかで設定は変わってきます。
 
-1は起動アプリが増えないのがメリットで、2はフィルタなどを設定でき、他のInputへの切り替えも容易なのがメリットです。
-OpenVR-OpenTrack は FreeTrack版またはUDP版どちらかしか使えないので1と2は排他になります。
-
-OpenTrack はインストーラーで、OpenVR-OpenTrackはZIPの内容を指定フォルダ(SteamVRのドライバーフォルダ)に入れることでインストールできます。
-
-OpenTrackを有効にして SteamVRを起動すると、左右2つの映像が表示されるウィンドウ(HeadView)が出てきます。
-これの配置を変更したい場合は設定ファイル()を編集する必要があります。
-説明は準備中ですが、暫定として他の方が書いてくださってる記事へのリンクが以下になります。
-
-[XREAL AirをWindows PCでSteamVRのHMDとして使う](https://note.com/domtaro/n/nbdf732223dfc)
-**２－３．アドオンの設定 にある設定ファイルの説明のうち windowX, windowY（超重要）** のところを参照してください。
-
-（**要更新：HeadView Window の設定、仮想モニタ等。仮想モニタが使えない場合、完全に使わない人が居るので、VMTラインとOpenTrackラインは説明を完全に別立てにしたほうが良いか**）
+1. FreeTrack版の場合は、OpenTrack.exe で「InputをUDP over network、OutputをFreeTrack」にする
+2. UDP版にした場合は、OpenTrack.exe を起動しない(起動する場合、InputはUDP over netork以外にする)
 
 
 #### 1-1-4. VBTTools の起動テスト
@@ -175,8 +163,7 @@ Cube の向きと挙動を調整すると、手の向きが真逆になったり
 ## 4. JoyCon の利用、ButtonPanelの利用
 ### 4-1. ButtonPanelの利用
 JoyConが無い場合は下方の Use Button Panelを押すと画面でボタン等操作できます。(JoyConがうまく動かない場合もこちらを使ってください)
-
-(**要確認：バグってないか。使い方も記載充実が必要**)
+Systemボタン、A/Bボタン、トリガー、グリップ、サムスティックが扱えます。
 
 ### 4-2. JoyCon の利用
 JoyConを使う場合は、あらかじめPCとBluetooth接続させてください。ペアリング済みではなく、**接続済み** になる必要があります。毎回一度削除して接続しなおさないと接続済みにならないようです。
