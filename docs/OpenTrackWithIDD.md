@@ -4,18 +4,18 @@ SteamVRで仮想HMDを使いたい方向けの説明です(VBTToolsを使わな�
 
 ## 1.OpenTrack(.exe)
 ### 1-1. OpenTrack の概要
-**OpenTrack** はオープンソースのヘッドトラッキングツールで、もともとSteamVR用ではなく、FreeTrack というプロトコルに対応したフライトシミュレーター等を想定して開発されたものっぽい雰囲気です。後述のSteamVR Driver **OpenVR-OpenTrack**と紛らわしいので、以下 **OpenTrack.exe** と .exe をつけて呼びます。
+**OpenTrack** はオープンソースのヘッドトラッキングツールで、もともとSteamVR用ではなく、FreeTrack というプロトコルに対応したフライトシミュレーター等を想定して開発されたものっぽい雰囲気です。後述のSteamVR Driver **OpenVR-OpenTrack**と紛らわしいので、以下 文中では **OpenTrack.exe** と .exe をつけて呼びます。
 
 ### 1-2. OpenTrack のセットアップ
 セットアップは [githubのReleaseページ](https://github.com/opentrack/opentrack/releases)からWindows用のsetup.exe をダウンロードして実行、起動するだけです。(現時点の2024年最新はバグが多いと書いてあるので、[安定板の2023.3.0](https://github.com/opentrack/opentrack/releases/tag/opentrack-2023.3.0)を使っています。)
 UDPを受信する場合があるので、初回起動時または機能有効化時に、ネットワーク受信を有効にするかどうかの確認画面が出る場合があります。出た場合は許可する設定にしてください。
 
 ### 1-3. OpenTrack の入力と出力の設定、動作テスト
-OpenTrack の画面
-![Image of OpenTrack.exe](https://github.com/tbbsakura/VBTTools/blob/main/docs/img_opentrack_idd/opentrack.exe.1.png)
+OpenTrack.exe の画面
+![Image of OpenTrack.exe](https://github.com/tbbsakura/VBTTools/blob/opentrack-doc/docs/img_opentrack_idd/opentrack.exe.1.png)
 
-OpenTrack の Input 選択肢
-![Image of OpenTrack.exe 2](https://github.com/tbbsakura/VBTTools/blob/main/docs/img_opentrack_idd/opentrack.exe.2_input.png)
+OpenTrack.exe の Input 選択肢
+![Image of OpenTrack.exe 2](https://github.com/tbbsakura/VBTTools/blob/opentrack-doc/docs/img_opentrack_idd/opentrack.exe.2_input.png)
 
 様々な入力に対応しており、検索するとマーカーを作る必要があるタイプで説明されていたりしますが、2024年8月時点ではWebcamがあればInputを neuralnet trackerにしてすぐトラッキングできます。ためしに、Outputは適当にfreetrackなどにしておいて使ってみましょう。
 Input を neuralnet trackerにして、Inputの設定画面を開いて、Trackerタブでカメラと解像度を選択してOKを押し、メイン画面右下のOKボタンを押せば、トラッキングが開始してタコの絵が頭にあわせて動くと思います。回転の向きが逆になってしまう場合は、設定画面の Outputタブで、pitch,roll,yawそれぞれについて、Invertにチェックを入れることで反転させられます。位置x/y/zも反転させられるので、設定によってミラーにもできると思います。
@@ -89,7 +89,7 @@ C以外のドライブに展開した場合はそのドライブに移動して�
 以下の説明は、仮想モニタでもリアルモニタでも同じですので、リアルモニタが複数ある場合はいったんリアルモニタで試すとわかりやすいかもしれません。
 
 ## 4-1.モニタの配置例：
-![monitor layout](https://github.com/tbbsakura/VBTTools/blob/main/docs/img_opentrack_idd/idd_right_to_primary.png)
+![monitor layout](https://github.com/tbbsakura/VBTTools/blob/opentrack-doc/docs/img_opentrack_idd/idd_right_to_primary.png)
 
 2がプライマリモニタで、1は現実のサブモニタ（説明には使わないので無視してください）、3が仮想モニタです。右があいてない場合もあるかと思いますが、設定が簡単になる条件は
 - 仮想モニタをプライマリモニタと**隣接**した場所に配置
