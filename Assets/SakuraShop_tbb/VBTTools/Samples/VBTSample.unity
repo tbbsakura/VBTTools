@@ -221,6 +221,11 @@ Transform:
   m_Children: []
   m_Father: {fileID: 626726105}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!1 &256748250 stripped
+GameObject:
+  m_CorrespondingSourceObject: {fileID: 1137525070836221464, guid: 26e1a897638c39b46ac9be91bb984e75, type: 3}
+  m_PrefabInstance: {fileID: 1075109028615049453}
+  m_PrefabAsset: {fileID: 0}
 --- !u!1 &334637852
 GameObject:
   m_ObjectHideFlags: 0
@@ -725,6 +730,11 @@ Transform:
   m_Children: []
   m_Father: {fileID: 356832765}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!1 &1381991641 stripped
+GameObject:
+  m_CorrespondingSourceObject: {fileID: 858746455437401500, guid: 26e1a897638c39b46ac9be91bb984e75, type: 3}
+  m_PrefabInstance: {fileID: 1075109028615049453}
+  m_PrefabAsset: {fileID: 0}
 --- !u!1 &1712047325
 GameObject:
   m_ObjectHideFlags: 0
@@ -865,6 +875,10 @@ PrefabInstance:
     serializedVersion: 3
     m_TransformParent: {fileID: 0}
     m_Modifications:
+    - target: {fileID: 858746455437401500, guid: 26e1a897638c39b46ac9be91bb984e75, type: 3}
+      propertyPath: m_IsActive
+      value: 0
+      objectReference: {fileID: 0}
     - target: {fileID: 1106192668394207328, guid: 26e1a897638c39b46ac9be91bb984e75, type: 3}
       propertyPath: m_LocalPosition.x
       value: 0
@@ -903,6 +917,10 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 1106192668394207328, guid: 26e1a897638c39b46ac9be91bb984e75, type: 3}
       propertyPath: m_LocalEulerAnglesHint.z
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 1137525070836221464, guid: 26e1a897638c39b46ac9be91bb984e75, type: 3}
+      propertyPath: m_IsActive
       value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 2356631634029330091, guid: 26e1a897638c39b46ac9be91bb984e75, type: 3}
@@ -1185,9 +1203,21 @@ PrefabInstance:
       propertyPath: m_Enabled
       value: 1
       objectReference: {fileID: 0}
+    - target: {fileID: 8428708412390459304, guid: 26e1a897638c39b46ac9be91bb984e75, type: 3}
+      propertyPath: _ui2JoyCon
+      value: 
+      objectReference: {fileID: 1381991641}
+    - target: {fileID: 8428708412390459304, guid: 26e1a897638c39b46ac9be91bb984e75, type: 3}
+      propertyPath: _ui2JoyConSub1
+      value: 
+      objectReference: {fileID: 256748250}
     - target: {fileID: 8510167400574462391, guid: 26e1a897638c39b46ac9be91bb984e75, type: 3}
       propertyPath: m_IsActive
       value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 8593876837469894272, guid: 26e1a897638c39b46ac9be91bb984e75, type: 3}
+      propertyPath: m_IsActive
+      value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 8684277008221074905, guid: 26e1a897638c39b46ac9be91bb984e75, type: 3}
       propertyPath: m_SizeDelta.x

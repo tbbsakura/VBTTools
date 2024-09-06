@@ -74,6 +74,7 @@ namespace SakuraScript.VBTTool
         // Controller UI panel
         [SerializeField] private GameObject _ui1Panel;
         [SerializeField] private GameObject _ui2JoyCon;
+        [SerializeField] private GameObject _ui2JoyConSub1;
         [SerializeField] private JoyconToVMT _joyconToVMTInstance;
 
         // Adjust setting UI
@@ -111,99 +112,6 @@ namespace SakuraScript.VBTTool
         // Network setting UI panel
         [SerializeField] GameObject _networkSetting;
         Text _text_NWSetError;
-
-        // // // // // // // // // // // // // // // // // // 
-        // Network setting UI panel
-        void ApplyNetworkSetting()
-        {
-            _server.port = _setting._networkSetting._vmcpListenPort;
-            _client.address = _setting._networkSetting._vmtSendAddress;
-            _client.port = _setting._networkSetting._vmtSendPort;
-            _serverVMT.port = _setting._networkSetting._vmtListenPort;
-            _clientOpentrack.address = _setting._networkSetting._opentrackSendAddress;
-            _clientOpentrack.port = _setting._networkSetting._opentrackSendPort;
-        }
-
-        public void NWSettingOpen()
-        {
-            // Set to input field
-            _inputFieldListenPort.text = _setting._networkSetting._vmcpListenPort.ToString();
-            _inputFieldIP.text =  _setting._networkSetting._vmtSendAddress; 
-            _inputFieldDestPort.text = _setting._networkSetting._vmtSendPort.ToString();
-            _inputFieldListenPortVMT.text = _setting._networkSetting._vmtListenPort.ToString();
-            _inputFieldIPOpentrack.text = _setting._networkSetting._opentrackSendAddress;
-            _inputFieldDestPortOpentrack.text = _setting._networkSetting._opentrackSendPort.ToString();
-            _text_NWSetError.text = "";
-            _networkSetting.SetActive(true);
-        }
-
-        public void OnCancel_NWSetting()
-        {
-            _networkSetting.SetActive(false);
-        }
-
-        public void OnOK_NWSetting()
-        {
-            if ( IsValidIpAddr(_inputFieldIP.text) == false ) {
-                _text_NWSetError.text = "Error: VMT IP Address を適切に設定してください。";
-                return;                
-            } 
-            if (IsValidIpAddr(_inputFieldIPOpentrack.text ) == false) {
-                _text_NWSetError.text = "Error: Opentrack IP Address を適切に設定してください。";
-                return;                
-            }
-
-            int vmcpListenPort = GetValidPortFromStr(_inputFieldListenPort.text);
-            int vmtSendPort = GetValidPortFromStr(_inputFieldDestPort.text);
-            int vmtListenPort = GetValidPortFromStr(_inputFieldListenPortVMT.text);
-            int opentrackSendPort = GetValidPortFromStr(_inputFieldDestPortOpentrack.text);
-            if ( vmcpListenPort == -1 || vmtSendPort == -1 || vmtListenPort == -1 || opentrackSendPort == -1 ) {
-                _text_NWSetError.text = "Error: ポート番号は 0-65535 の範囲で設定してください。";
-                return;                
-            }
-
-            // _setting と server/client に即時適用
-            _setting._networkSetting._vmtSendAddress = _inputFieldIP.text; 
-            _setting._networkSetting._opentrackSendAddress = _inputFieldIPOpentrack.text;
-
-            if ( vmcpListenPort != _setting._networkSetting._vmcpListenPort ) {
-                _setting._networkSetting._vmcpListenPort = vmcpListenPort;
-            }
-            if ( vmtSendPort != _setting._networkSetting._vmtSendPort ) {
-                _setting._networkSetting._vmtSendPort = vmtSendPort;
-            }
-            if ( vmtListenPort != _setting._networkSetting._vmtListenPort ) {
-                _setting._networkSetting._vmtListenPort = vmtListenPort;
-            }
-            if ( opentrackSendPort != _setting._networkSetting._opentrackSendPort ) {
-                _setting._networkSetting._opentrackSendPort = opentrackSendPort;
-            }
-
-            ApplyNetworkSetting();
-            _networkSetting.SetActive(false);
-        }
-
-        string GetJsonDirectory()
-        {
-#if UNITY_EDITOR
-            string path = "Assets\\SakuraShop_tbb\\VBTTools\\etc\\setting";
-#else
-            string path = AppDomain.CurrentDomain.BaseDirectory.TrimEnd('\\');//EXEを実行したカレントディレクトリ (ショートカット等でカレントディレクトリが変わるのでこの方式で)
-#endif
-            return path;
-        }
-
-        string GetMainSettingFilePath()
-        {
-            string path = GetJsonDirectory();
-            return  path + "\\VBTTools.setting.json";
-        }
-
-        string GetDefaultAdjSettingFilePath()
-        {
-            string path = GetJsonDirectory();
-            return path + "\\default.json";
-        }
 
         // // // // // // // // // // // // // // // // // // 
         // Start, Update and initializing functions
@@ -278,6 +186,8 @@ namespace SakuraScript.VBTTool
         }
 
         private void OnDestroy() {
+            Destroy( _ui2JoyConSub1 );
+            Destroy( _ui2JoyCon );
             VBTMainSetting saver = new VBTMainSetting();
             saver.Data = _setting;
             saver.SaveToFile(GetMainSettingFilePath());
@@ -521,7 +431,14 @@ namespace SakuraScript.VBTTool
         // // // // // // // // // // // // // // // // // // 
         // Controller UI functions
         public void OnJoyConToggleChanged(bool value) {
-            _ui2JoyCon.SetActive(value);
+            if (value) {
+                _ui2JoyCon.SetActive(value);
+                _ui2JoyConSub1.SetActive(value);
+            }
+            else {
+                _ui2JoyConSub1.SetActive(value);
+                _ui2JoyCon.SetActive(value);
+            }
         }
 
         public void OnUIPanelToggleChanged(bool value) {
@@ -898,6 +815,99 @@ namespace SakuraScript.VBTTool
         public void SendReset() 
         {
             _client.Send("/VMT/Reset");
+        }
+
+        // // // // // // // // // // // // // // // // // // 
+        // Network setting UI panel
+        void ApplyNetworkSetting()
+        {
+            _server.port = _setting._networkSetting._vmcpListenPort;
+            _client.address = _setting._networkSetting._vmtSendAddress;
+            _client.port = _setting._networkSetting._vmtSendPort;
+            _serverVMT.port = _setting._networkSetting._vmtListenPort;
+            _clientOpentrack.address = _setting._networkSetting._opentrackSendAddress;
+            _clientOpentrack.port = _setting._networkSetting._opentrackSendPort;
+        }
+
+        public void NWSettingOpen()
+        {
+            // Set to input field
+            _inputFieldListenPort.text = _setting._networkSetting._vmcpListenPort.ToString();
+            _inputFieldIP.text =  _setting._networkSetting._vmtSendAddress; 
+            _inputFieldDestPort.text = _setting._networkSetting._vmtSendPort.ToString();
+            _inputFieldListenPortVMT.text = _setting._networkSetting._vmtListenPort.ToString();
+            _inputFieldIPOpentrack.text = _setting._networkSetting._opentrackSendAddress;
+            _inputFieldDestPortOpentrack.text = _setting._networkSetting._opentrackSendPort.ToString();
+            _text_NWSetError.text = "";
+            _networkSetting.SetActive(true);
+        }
+
+        public void OnCancel_NWSetting()
+        {
+            _networkSetting.SetActive(false);
+        }
+
+        public void OnOK_NWSetting()
+        {
+            if ( IsValidIpAddr(_inputFieldIP.text) == false ) {
+                _text_NWSetError.text = "Error: VMT IP Address を適切に設定してください。";
+                return;                
+            } 
+            if (IsValidIpAddr(_inputFieldIPOpentrack.text ) == false) {
+                _text_NWSetError.text = "Error: Opentrack IP Address を適切に設定してください。";
+                return;                
+            }
+
+            int vmcpListenPort = GetValidPortFromStr(_inputFieldListenPort.text);
+            int vmtSendPort = GetValidPortFromStr(_inputFieldDestPort.text);
+            int vmtListenPort = GetValidPortFromStr(_inputFieldListenPortVMT.text);
+            int opentrackSendPort = GetValidPortFromStr(_inputFieldDestPortOpentrack.text);
+            if ( vmcpListenPort == -1 || vmtSendPort == -1 || vmtListenPort == -1 || opentrackSendPort == -1 ) {
+                _text_NWSetError.text = "Error: ポート番号は 0-65535 の範囲で設定してください。";
+                return;                
+            }
+
+            // _setting と server/client に即時適用
+            _setting._networkSetting._vmtSendAddress = _inputFieldIP.text; 
+            _setting._networkSetting._opentrackSendAddress = _inputFieldIPOpentrack.text;
+
+            if ( vmcpListenPort != _setting._networkSetting._vmcpListenPort ) {
+                _setting._networkSetting._vmcpListenPort = vmcpListenPort;
+            }
+            if ( vmtSendPort != _setting._networkSetting._vmtSendPort ) {
+                _setting._networkSetting._vmtSendPort = vmtSendPort;
+            }
+            if ( vmtListenPort != _setting._networkSetting._vmtListenPort ) {
+                _setting._networkSetting._vmtListenPort = vmtListenPort;
+            }
+            if ( opentrackSendPort != _setting._networkSetting._opentrackSendPort ) {
+                _setting._networkSetting._opentrackSendPort = opentrackSendPort;
+            }
+
+            ApplyNetworkSetting();
+            _networkSetting.SetActive(false);
+        }
+
+        string GetJsonDirectory()
+        {
+#if UNITY_EDITOR
+            string path = "Assets\\SakuraShop_tbb\\VBTTools\\etc\\setting";
+#else
+            string path = AppDomain.CurrentDomain.BaseDirectory.TrimEnd('\\');//EXEを実行したカレントディレクトリ (ショートカット等でカレントディレクトリが変わるのでこの方式で)
+#endif
+            return path;
+        }
+
+        string GetMainSettingFilePath()
+        {
+            string path = GetJsonDirectory();
+            return  path + "\\VBTTools.setting.json";
+        }
+
+        string GetDefaultAdjSettingFilePath()
+        {
+            string path = GetJsonDirectory();
+            return path + "\\default.json";
         }
     };   // class end
 }
