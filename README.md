@@ -1,5 +1,5 @@
 # VBTTools
-Virtual Body (VRM Body) Tracking Tools v0.2.0 に向けてのドラフト<br>
+Virtual Body (VRM Body) Tracking Tools v0.2.0<br>
 (最新のソースを利用する場合の説明は、[ReadMeUpdateブランチのReadme](https://github.com/tbbsakura/VBTTools/blob/ReadMeUpdate/README.md)を参照してください)
 
 [![使用例（youtube 動画6秒）](docs/img/youtube_tn01_960x540.jpg)](https://www.youtube.com/watch?v=X4_1aNCIf7s)
