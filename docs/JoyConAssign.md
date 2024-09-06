@@ -1,10 +1,10 @@
-# VBTTools で JoyCon 利用時のボタン等の割り当て
+# VBTTools で Joy-Con 利用時のボタン等の割り当て
 (v0.2.0時点)<br>
 Index互換コントローラーとしての割り当てと、VBTTools.exe固有の割り当てがあります。
 
 ## Indexコントローラー互換割り当て
 <table border=3>
-<tr><th>JoyCon左</th><th>JoyCon右</th><th>Indexコン機能</th></tr>
+<tr><th>Joy-Con左</th><th>Joy-Con右</th><th>Indexコン機能</th></tr>
 <tr><td>▲</td><td>X</td><td>Bボタン（コントローラーの上側ボタン）</td></tr>
 <tr><td>▼</td><td>B</td><td>Aボタン（コントローラーの下側ボタン）</td></tr>
 <tr><td>Home</td><td>Capture</td><td>Systemボタン</td></tr>
@@ -15,7 +15,7 @@ Index互換コントローラーとしての割り当てと、VBTTools.exe固有
 
 ## VBTTools.exe 固有割り当て
 <table border=3>
-<tr><th>JoyCon左</th><th>JoyCon右</th><th>固有機能</th></tr>
+<tr><th>Joy-Con左</th><th>Joy-Con右</th><th>固有機能</th></tr>
 <tr><td>◀</td><td>Y</td><td>ハントラッキング一時停止/解除</td></tr>
 <tr><td>▶</td><td>A</td><td>ハントラッキング一時停止＆VRChat用メニュー位置に手を移動</td></tr>
 <tr><td>SR</td><td>なし</td><td>ヘッドトラッキング一時停止/解除</td></tr>

@@ -1,7 +1,7 @@
-# PCとJoyConの接続
+# PCとJoy-Conの接続
 Windows の"Bluetooth とその他のデバイスの設定"を起動します。キーボードのWinアイコンのキーを押してから bluetooth とタイプすると途中で出てくると思います。<br /><img width ="60%" src="./img/bluetooth_setting1.png" />
 <br /><br />
-JoyConを使う場合は、あらかじめPCとBluetooth接続させてください。**ペアリング済みではなく、接続済み** になる必要があります。毎回一度削除して接続しなおさないと接続済みにならないようです。<br />
+Joy-Conを使う場合は、あらかじめPCとBluetooth接続させてください。**ペアリング済みではなく、接続済み** になる必要があります。毎回一度削除して接続しなおさないと接続済みにならないようです。<br />
 <img width ="60%" src="./img/bluetooth_setting2.png" />
 
 

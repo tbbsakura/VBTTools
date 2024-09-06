@@ -4,12 +4,12 @@ Virtual Body (VRM Body) Tracking Tools v0.2.0<br>
 
 [![使用例（youtube 動画6秒）](docs/img/youtube_tn01_960x540.jpg)](https://www.youtube.com/watch?v=X4_1aNCIf7s)
 
-リアルのボディにトラッカーを付けてトラッキングするのではなく、VRMモデルの姿勢をトラッキングして、[Virtual Motion Tracker(VMT)](https://github.com/gpsnmeajp/VirtualMotionTracker)に情報を渡して、SteamVR の仮想HMD/コントローラーとして利用しようとするものです。
+リアルのボディにトラッカーを付けてトラッキングするのではなく、VRMモデルの姿勢をトラッキングして、[Virtual Motion Tracker(VMT)](https://github.com/gpsnmeajp/VirtualMotionTracker)や [OpenVR-OpenTrack](https://github.com/r57zone/OpenVR-OpenTrack)に情報を渡して、SteamVR の仮想HMD/コントローラーとして利用しようとするものです。
 
 VMCProtocol(VMCP) を受信できるので、VRigUnity、TDPT(ThreeD Pose Tracker)、VSeeFace、Webcam Motion Capture などのソフトでWebカメラの情報で手の動きをトラッキングしてVRMに反映し、VRChat等で頭と手を動かす3点トラッキングができ、指もうごかせます。位置情報を設定できるので、手首にVIVEトラッカーをつけたりする必要がありません。
 
 使用例としては以下のようなものがあります。
-- WebカメラとJoyConを利用したHMDレス3点トラッキング
+- [WebカメラとJoyConを利用したHMDレス3点トラッキング](./docs/VRC3points.md)
 - Quest等のHMDを利用しつつ、コントローラーをSkeletal Input対応のカメラトラッキングに置き換える(LeapMotion等でない普通のカメラではあまり実用的ではないです)
 
 現状、以下のHMD/コントローラー情報(VBTToolsから見ると出力)に対応しています。
