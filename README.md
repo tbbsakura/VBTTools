@@ -2,7 +2,7 @@
 Virtual Body (VRM Body) Tracking Tools v0.2.0 に向けてのドラフト<br>
 (最新のソースを利用する場合の説明は、[ReadMeUpdateブランチのReadme](https://github.com/tbbsakura/VBTTools/blob/ReadMeUpdate/README.md)を参照してください)
 
-[![使用例（youtube 動画6秒）](https://github.com/tbbsakura/VBTTools/blob/main/Assets/SakuraShop_tbb/VBTTools/etc/youtube_tn01_960x540.jpg)](https://www.youtube.com/watch?v=X4_1aNCIf7s)
+[![使用例（youtube 動画6秒）](docs/img/youtube_tn01_960x540.jpg)](https://www.youtube.com/watch?v=X4_1aNCIf7s)
 
 リアルのボディにトラッカーを付けてトラッキングするのではなく、VRMモデルの姿勢をトラッキングして、[Virtual Motion Tracker(VMT)](https://github.com/gpsnmeajp/VirtualMotionTracker)に情報を渡して、SteamVR の仮想HMD/コントローラーとして利用しようとするものです。
 
@@ -85,11 +85,11 @@ VRMモデル(VRoid Studio Beta 用モデルとしてCC0で公開されている 
 
 <table>
 <tr>
-<td><img width="100%" src="Assets/SakuraShop_tbb/VBTTools/etc/tracker_setting.png" />
+<td><img width="100%" src="docs/img_vmt/tracker_setting.png" />
 </td>
 <td>→</td>
-<td><img width="100%" src="Assets/SakuraShop_tbb/VBTTools/etc/vmt1_setting.png" /></td>
-<td><img width="100%" src="Assets/SakuraShop_tbb/VBTTools/etc/vmt2_setting.png" /></td>
+<td><img width="100%" src="docs/img_vmt/vmt1_setting.png" /></td>
+<td><img width="100%" src="docs/img_vmt/vmt2_setting.png" /></td>
 </tr></table>
 
 
@@ -184,11 +184,14 @@ JoyConを使う場合は Use Joy Con (LR) にチェックを入れます。VBTTo
 JoyCon利用時にボタンと動作が異なる場合はここを確認してください。
 
 ### 4-2. JoyCon の一時停止機能
-JoyCon利用時は、通常のSteamVRのコントローラーとしての機能に加えて、**Y/左ボタンでトラッキング(VMCP受信)の一時停止とスティックでの手の位置移動機能**が使えます。
-また**A/右のボタンはトラッキングの停止と同時に、VRChatでのメニューが操作しやすい場所に手が移動します**。メニューの呼び出しは、Y/左で一時停止した後に呼び出すこともできます。
+JoyCon利用時は、通常のSteamVRのコントローラーとしての機能に加えて、**Y/左◀ボタンでトラッキング(VMCP受信)の一時停止とスティックでの手の位置移動機能**が使えます。
+また**A/右▶のボタンはトラッキングの停止と同時に、VRChatでのメニューが操作しやすい場所に手が移動します**。メニューの呼び出しは、Y/左で一時停止した後に呼び出すこともできます。
 
 一時停止中は、TestUIが表示されており、スライダーでも手の位置を変更できます。
 一時停止はY/左ボタンで解除できます。解除すると位置補正もなくなり通常の手の位置に戻ります。(A/右は後からメニューを呼び出せる機能があるため、一時停止解除には使えません)
+
+### 4-3. 機能割り当て詳細
+[こちら](docs/JoyConAssign.md)を参照してください。
 
 ## 5. その他の機能
 ### 5-1. OpenVRM ボタン
