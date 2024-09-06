@@ -1,6 +1,6 @@
 # VRChatでHMDレスで3点トラッキングする設定
 
-[![使用例（youtube 動画）](docs/img/youtube3pts-tn-play.jpg)](https://youtu.be/JelWOjQbNso)
+[![使用例（youtube 動画）](img/youtube3pts-tn-play.jpg)](https://youtu.be/JelWOjQbNso)
 
 頭と手の位置把握をWebCamで、コントローラー操作をJoy-Conで行います。
 PCがBluetooth対応である必要があります(Joy-Conのため)
