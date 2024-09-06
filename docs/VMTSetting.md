@@ -9,12 +9,12 @@ VMTは仮想コントローラーの処理に必要です。v0.15 で開発し�
 重要：この設定はVBTToolsを**起動していない状態**で設定します。
 1. SteamVR を起動します。<br>
 HMDがある状態で起動してください。ない場合はOpenTrackを先に設定してください。
-2. SteamVRの左上の三本線をクリックして出るメニューから「設定」を選び、スタートアップ／シャットダウン設定画面の「アドオンの管理」を開きます。ここでvmtを使う設定になっていない場合は、設定変更します（SteamVR再起動が必要になります）<br><img src="img_vmt/vmt_SteamVR_ADDON.png" />
+2. SteamVRの左上の三本線をクリックして出るメニューから「設定」を選び、スタートアップ／シャットダウン設定画面の「アドオンの管理」を開きます。ここでvmtを使う設定になっていない場合は、設定変更します（SteamVR再起動が必要になります）<br><img src="img_vmt/vmt_SteamVR_ADDON.png" /><br>
 
 3. SteamVRが起動した状態で、Windowsのスタートメニューから Virtual Motion Tracker を選択します。VMT付属のソフト VMT Manager が起動しますので、以下の設定をします。
-- VMT Manager の Controlタブで Always Combatible のON を一度クリックします。（見た目は変わりません）<br><img src="img_vmt/vmt_alwaysCompatible.png" />
-- Input タブで Left(1)をクリックしてから [5]Left Compatibleをクリック。さらにRight(2)をクリックしてから [6]Right Compatibleをクリックします。<br><img src="img_vmt/vmt_mamanger_1526.png" />
-ここで、 SteamVR のパネルに VMTアイコンが2つあることを確認します。<br><img src="img_vmt/vmt_steamVr.png" />
+- VMT Manager の Controlタブで Always Combatible のON を一度クリックします。（見た目は変わりません）<br><img src="img_vmt/vmt_alwaysCompatible.png" /><br>
+- Input タブで Left(1)をクリックしてから [5]Left Compatibleをクリック。さらにRight(2)をクリックしてから [6]Right Compatibleをクリックします。<br><img src="img_vmt/vmt_mamanger_1526.png" /><br>
+ここで、 SteamVR のパネルに VMTアイコンが2つあることを確認します。<br><img src="img_vmt/vmt_steamVr.png" /><br>
 
 4. SteamVRの左上の三本線をクリックして出るメニューから「設定」を選び、VMT_1, VMT_2 のトラッカーをハンドヘルドの左手/右手に割り当てます。<table>
 <tr>
