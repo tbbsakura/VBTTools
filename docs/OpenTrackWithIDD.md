@@ -161,4 +161,5 @@ OpenVR-OpenTrack の設定ファイルの更新に関しては以下のサイト
 [XREAL AirをWindows PCでSteamVRのHMDとして使う](https://note.com/domtaro/n/nbdf732223dfc)
 
 
-
+### 4-5. トラブルシューティング
+いろいろやってもうまくいかない場合、[こちら](./check.md)の内容を確認してください。
