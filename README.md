@@ -1,5 +1,5 @@
 # VBTTools
-Virtual Body (VRM Body) Tracking Tools v0.2.0<br>
+Virtual Body (VRM Body) Tracking Tools v0.3.0<br>
 (最新のソースを利用する場合の説明は、[ReadMeUpdateブランチのReadme](https://github.com/tbbsakura/VBTTools/blob/ReadMeUpdate/README.md)を参照してください)
 
 [![使用例（youtube 動画6秒）](docs/img/youtube_tn01_960x540.jpg)](https://www.youtube.com/watch?v=X4_1aNCIf7s)
@@ -153,7 +153,7 @@ JoyCon利用時は、通常のSteamVRのコントローラーとしての機能�
 
 ## 5. その他の機能
 ### 5-1. OpenVRM ボタン
-画面下方の OpenVRMボタンで異なるVRMモデルを読むことができます。（現状、VRM1は対応していないのでVRM0限定です）
+画面下方の OpenVRMボタンで異なるVRMモデルを読むことができます。（VRM1はv0.3.0で対応）
 次回起動時は最後に読んだVRMが起動時に読み込まれますが、前回のファイルがなくなっている場合などはデフォルトモデルを読み込みます。
 
 ### 5-2. Setting ボタン
@@ -170,15 +170,17 @@ Unity 2022.3.22f1 で開発しています。
 ### 6-1. Unity project に別途入れる必要があるもの
 テスト時バージョンと同じ unitypackage を入れるのが無難かと思います。全てMIT License で公開されているものです。
 1. [EVMCP4U (Eazy Virtual Motion Capture for Unity), External Receiver Pack](https://booth.pm/ja/items/1801535)
+    - テスト時バージョン(v0.3.0以降): ExternalReceiverPack_v5_0b.unitypackage
     - テスト時バージョン: ExternalReceiverPack_v4_1.unitypackage
 
 2. [UniVRM (必要に応じて)](https://github.com/vrm-c/UniVRM/releases)
-    - 1 でエラー等でなければ入れなくていいと思いますが、
-最新にしたい場合等は入れます。
-    - テスト時バージョン: UniVRM-0.125.0_f812.unitypackage VRM0
+    - 1 でエラー等でなければ入れなくていいと思いますが、最新にしたい場合等は入れます。
+    - テスト時バージョン: External Receiver付属の物
+    - (v0.2.xまでは)UniVRM-0.125.0_f812.unitypackage VRM0
 
 3. [uOSC](https://github.com/hecomi/uOSC)
-    - テスト時バージョン： uOSC-v2.2.0.unitypackage
+    - (v0.3.0~) こちらもExternal Receiver付属のでOKです
+    - (~v0.2.x) テスト時バージョン： uOSC-v2.2.0.unitypackage
 
 4. [UnityStandaloneFileBrowser](https://github.com/gkngkc/UnityStandaloneFileBrowser)
     - テスト時バージョン：  1.2
